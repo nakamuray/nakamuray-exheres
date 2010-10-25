@@ -1,7 +1,7 @@
 # Copyright 2008-2009 Saleem Abdulrasool <compnerd@compnerd.org>
 # Distributed under the terms of the GNU General Purpose License v2
 
-require gstreamer
+require gstreamer fix-gst-8spaces
 
 SLOT="0.10"
 PLATFORMS="~amd64 ~x86"
@@ -18,8 +18,3 @@ DEPENDENCIES="
 "
 
 DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'doc gtk-doc' 'gobject-introspection introspection' )
-
-src_prepare () {
-    default
-    sed -i -e 's/^ \{8\}/\t/' docs/{gst,libs,plugins}/Makefile.in
-}
