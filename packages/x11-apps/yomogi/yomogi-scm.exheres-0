@@ -1,0 +1,7 @@
+# Copyright 2010 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+SCM_REPOSITORY="http://bitbucket.org/nakamura/yomogi"
+require yomogi scm-hg distutils
+
+PLATFORMS="~amd64"
