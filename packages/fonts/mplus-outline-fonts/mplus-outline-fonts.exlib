@@ -1,0 +1,37 @@
+MY_PNV="mplus-TESTFLIGHT-${PV}"
+
+require xfont sourceforge [ project=mplus-fonts suffix=tar.gz pnv=${MY_PNV} ]
+
+SUMMARY="M+ Japanese outline fonts"
+HOMEPAGE="http://mplus-fonts.sourceforge.jp/mplus-outline-fonts/"
+
+LICENCES="FREE"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        media-gfx/fontforge
+        fonts/IPAfont
+"
+
+BUGS_TO=""
+
+REMOTE_IDS=""
+
+UPSTREAM_CHANGELOG=""
+UPSTREAM_DOCUMENTATION=""
+UPSTREAM_RELEASE_NOTES=""
+
+WORK="${WORKBASE}/${MY_PNV}"
+
+src_compile() {
+    ln -s /usr/share/fonts/X11/IPAfont/ipag.ttf .
+    fontforge -script m++ipa.pe
+}
+
+src_install() {
+    insinto /usr/share/fonts/X11/${FONT}
+    doins *+IPAG.ttf
+    fix_fonts
+}
