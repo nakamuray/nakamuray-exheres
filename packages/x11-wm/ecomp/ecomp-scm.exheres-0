@@ -1,0 +1,26 @@
+# Copyright 2010 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+SCM_REPOSITORY="git://github.com/jeffdameth/ecomp"
+require scm-git
+
+SUMMARY="OpenGL compositing manager based on compiz"
+HOMEPAGE="http://code.google.com/p/itask-module/wiki/Stuff"
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+        dev-libs/eet
+        dev-libs/eina
+"
+
+src_prepare() {
+    default
+    patch -p1 < "${FILES}/ecomp-eina-1.patch"
+    NOCONFIGURE=NoThanks edo ./autogen.sh
+}

@@ -1,0 +1,28 @@
+# Copyright 2010 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+SCM_REPOSITORY="http://svn.enlightenment.org/svn/e"
+SCM_SUBPATH="eet"
+require scm-svn
+
+SUMMARY="A data storage and compression library"
+HOMEPAGE="http://www.enlightenment.org"
+
+LICENCES="BSD"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+        dev-libs/eina
+        dev-libs/gnutls
+        dev-libs/openssl
+        media-libs/jpeg
+"
+
+src_prepare() {
+    default
+    NOCONFIGURE=NoThanks edo ./autogen.sh
+}

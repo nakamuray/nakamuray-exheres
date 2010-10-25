@@ -1,0 +1,31 @@
+# Copyright 2010 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+SCM_REPOSITORY="http://svn.enlightenment.org/svn/e"
+SCM_SUBPATH="eina"
+require scm-svn
+
+SUMMARY="E17 file chunk reading/writing library"
+HOMEPAGE="http://www.enlightenment.org"
+
+LICENCES="LGPL2"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+"
+
+src_prepare() {
+    default
+    #eautoconf
+    #eautoheader
+    NOCONFIGURE=NoThanks edo ./autogen.sh
+}
+
+src_install() {
+    default
+    rmdir "${IMAGE}/usr/bin"
+}
