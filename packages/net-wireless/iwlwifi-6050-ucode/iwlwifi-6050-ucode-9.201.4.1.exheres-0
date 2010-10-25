@@ -1,0 +1,27 @@
+# Copyright 2010 Michael Forney
+# Distributed under the terms of the GNU General Public License v2
+# Based in part upon 'iwlwifi-3945-ucode.exlib', which is:
+#     Copyright 2008 Richard Brown
+
+require multilib
+
+SUMMARY="Intel Wireless WiFi 6000 Series AGN ucode"
+HOMEPAGE="http://intellinuxwireless.org/?p=iwlwifi"
+DOWNLOADS="http://intellinuxwireless.org/iwlwifi/downloads/${PNV}.tgz"
+
+LICENCES="iwlwifi-ucode"
+# The third component of PV indicates the interface version, changes when the
+# new uCode becomes incompatible with earlier drivers
+SLOT="$(ever range 3)"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
+src_install() {
+    insinto /$(get_libdir)/firmware
+    doins ${PN/-ucode}-${SLOT}.ucode
+
+    emagicdocs
+}
+
