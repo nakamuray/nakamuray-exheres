@@ -1,0 +1,35 @@
+# Copyright 2010 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="IP Calculator"
+HOMEPAGE="http://jodies.de/ipcalc"
+DOWNLOADS="http://jodies.de/ipcalc-archive/${PNV}.tar.gz"
+
+LICENCES="GPL"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+        dev-lang/perl
+"
+
+BUGS_TO=""
+
+DEFAULT_SRC_CONFIGURE_PARAMS=( )
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( )
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( )
+
+src_configure() {
+    : do nothing
+}
+
+src_compile() {
+    : do nothing
+}
+
+src_install() {
+    dobin ipcalc
+}
