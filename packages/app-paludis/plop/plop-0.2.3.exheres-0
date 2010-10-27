@@ -1,0 +1,54 @@
+# Copyright 2010 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require bash-completion
+
+SUMMARY="A nice paludis.log parser (patched genlop)"
+HOMEPAGE="http://www.genoetigt.de/site/projects/plop"
+# I copied the genlop-0.30.8.tar.gz and renamed it to plop-0.1.tar.gz
+DOWNLOADS="listed-only: http://www.genoetigt.de/plop/${PNV}.tar.gz"
+
+LICENCES="GPL-2 insecure"
+SLOT="0"
+PLATFORMS="~amd64 ~x86"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+        dev-lang/perl[>=5.8.0-r12]
+        dev-perl/Date-Manip[>=5.40]
+        dev-perl/libwww-perl
+"
+
+src_unpack() {
+    unpack "${ARCHIVES}"
+    mv  "${WORKBASE}"/genlop-0.30.8/ "${WORK}"
+}
+
+src_prepare() {
+    mv genlop plop
+    mv genlop.1 plop.1
+#	mv genlop.bash-completion plop.bash-completion
+
+    expatch "${FILES}"/plop-"${PV}"_0.30.8.patch
+}
+
+src_install() {
+    dobin plop || die "failed to install plop (via dobin)"
+    dodoc README Changelog
+    doman plop.1
+    dobashcompletion "${FILES}"/plop.bash-completion plop
+}
+
+pkg_postinst() {
+    einfo "Note that plop is just a patched genlop-0.30.8. I only patched the"
+    einfo "main script. The manpage, README, etc. are all original genlop"
+    einfo "files, but since plop is expected to work like genlop this"
+    einfo "shouldn't be a problem. so if you find see genlop somewhere, simply"
+    einfo "substitute it with plop, as long as it hasn't to do anything with"
+    einfo "copyright or other credits"
+
+    einfo "to convert old emerge.logfiles I've written a small perlscript that"
+    einfo "you can download on the plop homepage"
+}
