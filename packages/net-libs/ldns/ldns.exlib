@@ -1,0 +1,20 @@
+
+
+SUMMARY="Libray for DNS programming"
+HOMEPAGE="http://www.nlnetlabs.nl/projects/ldns/"
+DOWNLOADS="http://www.nlnetlabs.nl/downloads/ldns/${PNV}.tar.gz"
+
+LICENCES="BSD"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/openssl
+"
+
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --enable-sha2
+    --with-ssl
+)
+
