@@ -1,0 +1,31 @@
+# Copyright 2010 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+require gnome-2
+
+SUMMARY="IP messenger client for GNOME2 environments"
+HOMEPAGE="http://www.ipmsg.org/"
+DOWNLOADS="http://www.ipmsg.org/archive/${PNV}.tar.gz"
+
+LICENCES="GPL-2"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="ssl"
+
+# may need dev-perl/XML-Parser for build dep.
+DEPENDENCIES="
+    build:
+        dev-util/intltool
+    build+run:
+        gnome-platform/GConf
+"
+
+BUGS_TO=""
+
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --enable-systray
+    --with-ext-charcode=CP932
+)
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( ssl )
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( )
+
+
