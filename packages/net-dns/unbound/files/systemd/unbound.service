@@ -1,0 +1,9 @@
+[Unit]
+Description=unbound caching DNS resolver
+
+[Service]
+ExecStart=/usr/sbin/unbound -d
+Restart=always
+
+[Install]
+WantedBy=network.target
