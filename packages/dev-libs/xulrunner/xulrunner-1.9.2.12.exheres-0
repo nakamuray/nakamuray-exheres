@@ -1,0 +1,18 @@
+# Copyright 2008 Ingmar Vanhassel <ingmar@exherbo.org>
+# Copyright 2009 Xavier Barrachina <xabarci@ega.upv.es>
+# Distributed under the terms of the GNU General Public License v2
+
+require xulrunner
+
+SLOT="0"
+PLATFORMS="~amd64 ~ppc64 ~x86"
+
+DEPENDENCIES="
+    build+run:
+        x11-libs/libnotify[>=0.4]
+"
+
+MOZILLA_SRC_CONFIGURE_PARAMS+=(
+    --disable-necko-wifi
+)
+
