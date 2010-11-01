@@ -1,0 +1,45 @@
+From 80d946a00c83a81a103f2ce21ea29ce3e00625b2 Mon Sep 17 00:00:00 2001
+From: Ali Polatel <hawking@gentoo.org>
+Date: Sun, 26 Oct 2008 16:22:23 +0200
+Subject: [PATCH 10/10] Add -Wa,--noexecstack to CFLAGS when building ctypes module.
+Organization: Gentoo
+
+---
+ setup.py |   11 +++++++++++
+ 1 files changed, 11 insertions(+), 0 deletions(-)
+
+diff --git a/setup.py b/setup.py
+index 0d6605f..77d796f 100644
+--- a/setup.py
++++ b/setup.py
+@@ -208,6 +208,8 @@ class PyBuildExt(build_ext):
+             args['compiler_so'] = compiler + ' ' + ccshared + ' ' + cflags
+         self.compiler.set_executables(**args)
+ 
++        self.make_args = args
++
+         build_ext.build_extensions(self)
+ 
+         longest = max([len(e.name) for e in self.extensions])
+@@ -240,9 +242,18 @@ class PyBuildExt(build_ext):
+ 
+     def build_extension(self, ext):
+ 
++        nexecf = " -Wa,--noexecstack"
+         if ext.name == '_ctypes':
+             if not self.configure_ctypes(ext):
+                 return
++            # Add -Wa,--noexecstack to CFLAGS
++            if 'compiler_so' in self.make_args:
++                if not self.make_args['compiler_so'].endswith(nexecf):
++                    self.make_args['compiler_so'] += nexecf
++        elif 'compiler_so' in self.make_args:
++            self.make_args['compiler_so'] = \
++                    self.make_args['compiler_so'].replace(nexecf,'')
++        self.compiler.set_executables(**self.make_args)
+ 
+         try:
+             build_ext.build_extension(self, ext)
+-- 
+1.6.0.2
+
