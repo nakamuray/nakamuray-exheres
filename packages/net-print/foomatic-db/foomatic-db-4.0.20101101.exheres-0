@@ -1,0 +1,28 @@
+# Copyright 2010 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Foomatic - The collected knowledge about printers, drivers, and driver options in XML
+files, used by foomatic-db-engine to generate PPD files."
+HOMEPAGE="http://www.linuxprinting.org/foomatic.html"
+DOWNLOADS="http://www.linuxprinting.org/download/foomatic/${PN}-$(ever replace 2 - $PV).tar.gz"
+
+LICENCES="GPL"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+        dev-lang/perl
+        dev-libs/libxml2
+"
+
+BUGS_TO=""
+
+DEFAULT_SRC_CONFIGURE_PARAMS=( )
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( )
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( )
+
+WORK="${WORKBASE}/${PN}-$(ever range 3 $PV)/"
+
