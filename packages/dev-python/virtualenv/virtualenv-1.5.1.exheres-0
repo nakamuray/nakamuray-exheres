@@ -1,0 +1,10 @@
+# Copyright 2010 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+require distutils [ has_bin=true ] pypi
+
+SUMMARY="Virtual Python Environment builder"
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+
