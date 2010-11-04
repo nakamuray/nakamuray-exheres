@@ -1,9 +1,11 @@
 MY_PNV="mplus-TESTFLIGHT-${PV}"
+PROJ_NAME="mplus-fonts"
 
-require xfont sourceforge [ project=mplus-fonts suffix=tar.gz pnv=${MY_PNV} ]
+require xfont
 
 SUMMARY="M+ Japanese outline fonts"
 HOMEPAGE="http://mplus-fonts.sourceforge.jp/mplus-outline-fonts/"
+DOWNLOADS="http://sourceforge.jp/frs/redir.php?f=/${PROJ_NAME}/${SRC_NR}/${MY_PNV}.tar.gz -> ${MY_PNV}.tar.gz"
 
 LICENCES="FREE"
 SLOT="0"
