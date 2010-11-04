@@ -1,0 +1,487 @@
+diff --git a/Cabal2Ebuild.hs b/Cabal2Ebuild.hs
+index 0d1ca5e..0b17538 100644
+--- a/Cabal2Ebuild.hs
++++ b/Cabal2Ebuild.hs
+@@ -48,28 +48,25 @@ default_ghc_dependency = OrLaterVersionOf (Version [6,8,1] Nothing [] 0) (Portag
+ 
+ cabal2ebuild :: Cabal.PackageDescription -> Portage.EBuild
+ cabal2ebuild pkg = Portage.ebuildTemplate {
+-    E.name        = map toLower cabalPkgName,
++    E.name        = cabalPkgName,
+     E.version     = display (Cabal.pkgVersion (Cabal.package pkg)),
+-    E.description = if null (Cabal.synopsis pkg) then Cabal.description pkg
+-                                               else Cabal.synopsis pkg,
++    E.summary     = Cabal.synopsis pkg,
++    E.description = if null (Cabal.description pkg) then Nothing else Just $ Cabal.description pkg,
+     E.homepage        = thisHomepage,
+-    E.src_uri         = thisSRC_URI,
++    E.download        = thisDOWNLOAD,
+     E.license         = Cabal.license pkg,
+-    E.my_pn           = if any isUpper cabalPkgName then Just cabalPkgName else Nothing,
+-    E.features        = E.features E.ebuildTemplate
+-                   ++ (if hasExe then ["bin"] else [])
+-                   ++ maybe [] (const (["lib","profile","haddock"]
+-                        ++ if cabalPkgName == "hscolour" then [] else ["hscolour"])
+-                        ) (Cabal.library pkg) -- hscolour can't colour its own sources
++    E.hackage_args    = E.hackage_args E.ebuildTemplate
++                   ++ (if hasExe then ["has_bin=true"] else [])
++                   ++ maybe ["has_lib=false"] (const []) (Cabal.library pkg)
+   } where
+         cabalPkgName = display $ Cabal.pkgName (Cabal.package pkg)
+         hasExe = (not . null) (Cabal.executables pkg) 
+         thisHomepage = if (null $ Cabal.homepage pkg)
+                          then E.homepage E.ebuildTemplate
+-                         else Cabal.homepage pkg
+-        thisSRC_URI = if (null $ Cabal.pkgUrl pkg)
+-                        then E.src_uri E.ebuildTemplate
+-                        else Cabal.pkgUrl pkg
++                         else Just $ Cabal.homepage pkg
++        thisDOWNLOAD = if (null $ Cabal.pkgUrl pkg)
++                        then E.download E.ebuildTemplate
++                        else Just $ Cabal.pkgUrl pkg
+ 
+ convertDependencies :: Portage.Category -> [Cabal.Dependency] -> [Dependency]
+ convertDependencies category = concatMap (convertDependency category)
+diff --git a/Merge.hs b/Merge.hs
+index ccb3419..b597700 100644
+--- a/Merge.hs
++++ b/Merge.hs
+@@ -166,16 +166,15 @@ merge verbosity repo serverURI args overlayPath = do
+   debug verbosity ("Selected flags: " ++ show flags)
+ 
+   let ebuild = fixSrc serverURI (packageId pkgDesc)
++               . (\e -> e { E.hdepend       = Merge.hdep edeps } )
+                . (\e -> e { E.depend        = Merge.dep edeps } )
+-               . (\e -> e { E.depend_extra  = Merge.dep_e edeps } )
+                . (\e -> e { E.rdepend       = Merge.rdep edeps } )
+-               . (\e -> e { E.rdepend_extra = Merge.rdep_e edeps } )
+                $ C2E.cabal2ebuild pkgDesc
+ 
+   mergeEbuild verbosity overlayPath (Portage.unCategory cat) ebuild
+   fetchAndDigest
+     verbosity
+-    (overlayPath </> display cat </> display norm_pkgName)
++    (overlayPath </> "packages" </> display cat </> display norm_pkgName)
+     (display cabal_pkgId <.> "tar.gz")
+     (mkUri cabal_pkgId)
+ 
+@@ -204,8 +203,8 @@ fetchAndDigest verbosity ebuildDir tarballName tarballURI =
+      -- TODO: downloadURI will throw a non-hackport exception if the
+      -- download fails
+      notice verbosity $ "Saved to " ++ tarDestination
+-     notice verbosity "Recalculating digests..."
+-     _ <- system "repoman manifest"
++     --notice verbosity "Recalculating digests..."
++     --_ <- system "repoman manifest"
+      return ()
+ 
+ withWorkingDirectory :: FilePath -> IO a -> IO a
+@@ -218,8 +217,8 @@ withWorkingDirectory newDir action = do
+ 
+ mergeEbuild :: Verbosity -> FilePath -> String -> E.EBuild -> IO () 
+ mergeEbuild verbosity target cat ebuild = do 
+-  let edir = target </> cat </> E.name ebuild
+-      elocal = E.name ebuild ++"-"++ E.version ebuild <.> "ebuild"
++  let edir = target </> "packages" </> cat </> E.name ebuild
++      elocal = E.name ebuild ++"-"++ E.version ebuild <.> "exheres-0"
+       epath = edir </> elocal
+   createDirectoryIfMissing True edir
+   info verbosity $ "Writing " ++ elocal
+@@ -228,16 +227,12 @@ mergeEbuild verbosity target cat ebuild = do
+ fixSrc :: URI -> PackageIdentifier -> E.EBuild -> E.EBuild
+ fixSrc serverURI p ebuild =
+   ebuild {
+-    E.src_uri = show $ serverURI {
++    E.download = Just $ show $ serverURI {
+       uriPath =
+         uriPath serverURI
+           </> display (pkgName p) 
+           </> display (pkgVersion p) 
+           </> display (pkgName p) ++ "-" ++ display (pkgVersion p) 
+           <.> "tar.gz"
+-      },
+-    E.homepage = case E.homepage ebuild of
+-                "" -> "http://hackage.haskell.org/package/"
+-                        ++ display (pkgName p)
+-                x -> x
++      }
+     }
+diff --git a/Merge/Dependencies.hs b/Merge/Dependencies.hs
+index c33d21b..a191b17 100644
+--- a/Merge/Dependencies.hs
++++ b/Merge/Dependencies.hs
+@@ -68,25 +68,24 @@ import Debug.Trace ( trace )
+ -- | Dependencies of an ebuild
+ data EDep = EDep
+   {
++    hdep :: [Portage.Dependency],
+     rdep :: [Portage.Dependency],
+-    rdep_e :: [String],
+-    dep :: [Portage.Dependency],
+-    dep_e :: [String]
++    dep :: [Portage.Dependency]
+   }
+ 
+ emptyEDep :: EDep
+ emptyEDep = EDep
+   {
++    hdep = [],
+     rdep = [],
+-    rdep_e = [],
+-    dep = [],
+-    dep_e = []
++    dep = []
+   }
+ 
+ resolveDependencies :: PackageDescription -> EDep
+ resolveDependencies pkg =
+     edeps
+       {
++        hdep = Portage.simplify_deps (hdep edeps),
+         dep  = Portage.simplify_deps ( dep edeps),
+         rdep = Portage.simplify_deps (rdep edeps)
+         -- todo: if rdep includes cabal or ghc, make sure it's the same
+@@ -94,33 +93,16 @@ resolveDependencies pkg =
+       }
+   where
+     hasBuildableExes p = any (buildable . buildInfo) . executables $ p
+-    treatAsLibrary = (not . hasBuildableExes) pkg || hasLibs pkg
+     haskell_deps = haskellDependencies pkg
+-    cabal_dep = cabalDependency pkg
+-    ghc_dep = ghcDependency pkg
+     extra_libs = findCLibs pkg
+     build_tools = buildToolsDependencies pkg
+     pkg_config = pkgConfigDependencies pkg
+-    edeps
+-        | treatAsLibrary = emptyEDep
+-                  {
+-                    dep = cabal_dep
+-                          : build_tools,
+-                    dep_e = [ "${RDEPEND}" ],
+-                    rdep = ghc_dep
+-                            : haskell_deps
+-                            ++ extra_libs
+-                            ++ pkg_config
+-                  }
+-        | otherwise = emptyEDep
+-                  {
+-                    dep = ghc_dep
+-                          : cabal_dep
+-                          : build_tools
+-                          ++ haskell_deps,
+-                    dep_e = [ "${RDEPEND}" ],
+-                    rdep = extra_libs ++ pkg_config
+-                  }
++    edeps = emptyEDep
++              {
++                hdep = haskell_deps,
++                dep = build_tools,
++                rdep = extra_libs ++ pkg_config
++              }
+ 
+ ---------------------------------------------------------------
+ -- Haskell packages
+diff --git a/Portage.hs b/Portage.hs
+index 4b870b6..5538f04 100644
+--- a/Portage.hs
++++ b/Portage.hs
+@@ -5,7 +5,7 @@ import Text.Regex
+ import Data.Maybe
+ 
+ ebuildVersionRegex :: String -> Regex
+-ebuildVersionRegex name = mkRegex ("^"++name++"-(.*)\\.ebuild$")
++ebuildVersionRegex name = mkRegex ("^"++name++"-(.*)\\.exheres-0$")
+ 
+ filterPackages :: String -> [String] -> IO [String]
+ filterPackages _ [] = return []
+diff --git a/Portage/Dependency.hs b/Portage/Dependency.hs
+index 0182f7e..f8a3aed 100644
+--- a/Portage/Dependency.hs
++++ b/Portage/Dependency.hs
+@@ -36,11 +36,11 @@ a <-> b = a <> Disp.char '-' <> b
+ 
+ showDepend :: Dependency -> Disp.Doc
+ showDepend (AnyVersionOf         p) = disp p
+-showDepend (ThisVersionOf      v p) = Disp.char '~' <> disp p <-> disp v { versionRevision = 0 }
+-showDepend (LaterVersionOf     v p) = Disp.char '>' <> disp p <-> disp v
+-showDepend (EarlierVersionOf   v p) = Disp.char '<' <> disp p <-> disp v
+-showDepend (OrLaterVersionOf   v p) = Disp.text ">=" <> disp p <-> disp v
+-showDepend (OrEarlierVersionOf v p) = Disp.text "<=" <> disp p <-> disp v
++showDepend (ThisVersionOf      v p) = disp p <> Disp.text "[~"  <> disp v { versionRevision = 0 } <> Disp.char ']'
++showDepend (LaterVersionOf     v p) = disp p <> Disp.text "[>"  <> disp v                         <> Disp.char ']'
++showDepend (EarlierVersionOf   v p) = disp p <> Disp.text "[<"  <> disp v                         <> Disp.char ']'
++showDepend (OrLaterVersionOf   v p) = disp p <> Disp.text "[>=" <> disp v                         <> Disp.char ']'
++showDepend (OrEarlierVersionOf v p) = disp p <> Disp.text "[<=" <> disp v                         <> Disp.char ']'
+ showDepend (DependEither       dep_groups0)
+               = Disp.text "|| " <> spaceParens dep_groups
+   where dep_groups = map (spaceParens . map disp) dep_groups0
+@@ -49,7 +49,7 @@ showDepend (DependIfUse        useflag dep@(DependEither _))
+               = Disp.text useflag <> Disp.text "? " <> disp dep
+ showDepend (DependIfUse        useflag dep)
+               = Disp.text useflag <> Disp.text "? " <>  Disp.parens (disp dep)
+-showDepend (ThisMajorOf        v p) = Disp.char '=' <> disp p <-> disp v <> Disp.char '*'
++showDepend (ThisMajorOf        v p) = disp p <> Disp.text "[=" <> disp v <> Disp.text "*]"
+ 
+ {- Here goes code for dependencies simplification -}
+ 
+@@ -132,7 +132,9 @@ simplify_group deps = simplify_group_table package
+ 
+ -- divide packages to groups (by package name), simplify groups, merge again
+ simplify_deps :: [Dependency] -> [Dependency]
+-simplify_deps deps = (concatMap (simplify_group.nub) $
++-- no need to depend cabal (dev-lang/ghc contain cabal)
++simplify_deps deps = filter ((/=Just (mkPackageName "dev-haskell" "Cabal")) . getPackage) $
++                     (concatMap (simplify_group.nub) $
+                        groupBy cmpPkgName $
+                          sortBy (comparing getPackagePart) groupable)
+                      ++ ungroupable
+diff --git a/Portage/EBuild.hs b/Portage/EBuild.hs
+index 0f15864..5093271 100644
+--- a/Portage/EBuild.hs
++++ b/Portage/EBuild.hs
+@@ -17,19 +17,18 @@ data EBuild = EBuild {
+     name :: String,
+     version :: String,
+     hackportVersion :: String,
+-    description :: String,
+-    homepage :: String,
+-    src_uri :: String,
++    summary :: String,
++    description :: Maybe String,
++    homepage :: Maybe String,
++    download :: Maybe String,
+     license :: Cabal.License,
+     slot :: String,
+-    keywords :: [String],
+-    iuse :: [String],
++    platforms :: [String],
++    myoptions :: [String],
++    hdepend :: [Dependency],
+     depend :: [Dependency],
+-    depend_extra :: [String],
+     rdepend :: [Dependency],
+-    rdepend_extra :: [String],
+-    features :: [String],
+-    my_pn :: Maybe String --If the package's name contains upper-case
++    hackage_args :: [String]
+   }
+ 
+ getHackportVersion :: Version -> String
+@@ -41,19 +40,18 @@ ebuildTemplate = EBuild {
+     name = "foobar",
+     version = "0.1",
+     hackportVersion = getHackportVersion Paths_hackport.version,
+-    description = "",
+-    homepage = "http://hackage.haskell.org/package/${PN}",
+-    src_uri = "http://hackage.haskell.org/packages/archive/${PN}/${PV}/${P}.tar.gz",
++    summary = "",
++    description = Nothing,
++    homepage = Nothing,
++    download = Nothing,
+     license = Cabal.UnknownLicense "xxx UNKNOWN xxx",
+     slot = "0",
+-    keywords = ["~amd64","~x86"],
+-    iuse = [],
++    platforms = ["~amd64","~x86"],
++    myoptions = [],
++    hdepend = [],
+     depend = [],
+-    depend_extra = [],
+     rdepend = [],
+-    rdepend_extra = [],
+-    features = [],
+-    my_pn = Nothing
++    hackage_args = []
+   }
+ 
+ instance Text EBuild where
+@@ -67,31 +65,35 @@ showEBuild ebuild =
+   nl.
+   ss ("# ebuild generated by hackport " ++ hackportVersion ebuild). nl.
+   nl.
+-  ss "CABAL_FEATURES=". quote' (sepBy " " $ features ebuild). nl.
+-  ss "inherit haskell-cabal". nl.
++  ss "require hackage [ ". (sepBy " " $ hackage_args ebuild). ss " ]". nl.
+   nl.
+-  (case my_pn ebuild of
++  ss "SUMMARY=". quote (summary ebuild). nl.
++  (case description ebuild of
+      Nothing -> id
+-     Just pn -> ss "MY_PN=". quote pn. nl.
+-                ss "MY_P=". quote "${MY_PN}-${PV}". nl. nl).
+-  ss "DESCRIPTION=". quote (description ebuild). nl.
+-  ss "HOMEPAGE=". quote (expandVars (homepage ebuild)). nl.
+-  ss "SRC_URI=". quote (replaceVars (src_uri ebuild)). nl.
++     Just dc -> ss "DESCRIPTION=". quote dc. nl).
++  (case homepage ebuild of
++     Nothing -> id
++     Just hp -> ss "HOMEPAGE=". quote (expandVars (hp)). nl).
++  (case download ebuild of
++     Nothing -> id
++     Just dn -> ss "DOWNLOAD=". quote (replaceVars (dn)). nl).
+   nl.
+-  ss "LICENSE=". quote (convertLicense . license $ ebuild).
++  ss "LICENCES=". quote (convertLicense . license $ ebuild).
+      (if null (licenseComment . license $ ebuild) then id
+          else ss "\t#". ss (licenseComment . license $ ebuild)). nl.
+   ss "SLOT=". quote (slot ebuild). nl.
+-  ss "KEYWORDS=". quote' (sepBy " " $ keywords ebuild).nl.
+-  ss "IUSE=". quote' (sepBy ", " $ iuse ebuild). nl.
++  ss "PLATFORMS=". quote' (sepBy " " $ platforms ebuild).nl.
++  ss "MYOPTIONS=". quote' (sepBy ", " $ myoptions ebuild). nl.
+   nl.
+-  dep_str "RDEPEND" (rdepend_extra ebuild) (rdepend ebuild).
+-  dep_str "DEPEND"  ( depend_extra ebuild) ( depend ebuild).
+-  (case my_pn ebuild of
+-     Nothing -> id
+-     Just _ -> nl. ss "S=". quote ("${WORKDIR}/${MY_P}"). nl)
++  ss "DEPENDENCIES=". quote' (nl.
++      dep_str "build+run" (rdepend ebuild).
++      dep_str "build"     (depend ebuild).
++      (if "has_lib=false" `elem` hackage_args ebuild
++         then hdep_bin    (hdepend ebuild)
++         else hdep_lib    (hdepend ebuild))
++  ) . nl. nl
+   $ []
+-  where replaceVars = replaceCommonVars (name ebuild) (my_pn ebuild) (version ebuild)
++  where replaceVars = replaceCommonVars (name ebuild) (version ebuild)
+         expandVars = replaceMultiVars [(name ebuild, "${PN}")]
+ 
+ ss :: String -> String -> String
+@@ -103,8 +105,14 @@ sc = showChar
+ nl :: String -> String
+ nl = sc '\n'
+ 
+-dep_str :: String -> [String] -> [Dependency] -> (String -> String)
+-dep_str var extra deps = ss var. sc '='. quote' (sepBy "\n\t\t" $ extra ++ map display deps). nl
++dep_str :: String -> [Dependency] -> (String -> String)
++dep_str var deps = ss "    ". ss var. sc ':'. nl. (sepBy "\n        " $ map display deps). nl
++
++hdep_bin :: [Dependency] -> (String -> String)
++hdep_bin deps = ss "    $(haskell_bin_dependencies \"". (sepBy "\n        " $ map display deps). nl. ss "    \")". nl
++
++hdep_lib :: [Dependency] -> (String -> String)
++hdep_lib deps = ss "    $(haskell_lib_dependencies \"". (sepBy "\n        " $ map display deps). nl. ss "    \")". nl
+ 
+ quote :: String -> String -> String
+ quote str = sc '"'. ss (esc str). sc '"'
+@@ -150,16 +158,13 @@ replaceMultiVars whole@((pname,cont):rest) str = case subStr cont str of
+ 
+ replaceCommonVars ::
+ 	String ->	-- ^ PN
+-	Maybe String ->	-- ^ MYPN
+ 	String ->	-- ^ PV
+ 	String ->	-- ^ the string to be replaced
+ 	String
+-replaceCommonVars pn mypn pv str
++replaceCommonVars pn pv str
+ 	= replaceMultiVars
+-		([("${P}",pn++"-"++pv)]
+-		++ maybe [] (\x->[("${MY_P}",x++"-"++pv)]) mypn
++		([("${PNV}",pn++"-"++pv)]
+ 		++[("${PN}",pn)]
+-		++ maybe [] (\x->[("${MY_PN}",x)]) mypn
+ 		++[("${PV}",pv)]) str
+ 
+ 
+diff --git a/Portage/Host.hs b/Portage/Host.hs
+index 9664374..18bc155 100644
+--- a/Portage/Host.hs
++++ b/Portage/Host.hs
+@@ -5,7 +5,7 @@ module Portage.Host
+ 
+ import Util (run_cmd)
+ import Data.Char (isSpace)
+-import Data.Maybe (fromJust, isJust)
++import Data.Maybe (fromJust, isJust, catMaybes)
+ 
+ 
+ data LocalInfo =
+@@ -50,42 +50,40 @@ bad_paludis_overlay =
+                         }
+ 
+ parse_paludis_output :: String -> LocalInfo
+-parse_paludis_output raw_data =
+-    foldl updateInfo defaultInfo $ parse_paludis_overlays raw_data
+-    where updateInfo info po =
+-              case (format po) of
+-                  "ebuild" | (repo_name po) /= "gentoo" -- hack, skip main repo
+-                      -> info{ distfiles_dir = distdir po -- we override last distdir here (FIXME?)
+-                             , overlay_list  = (location po) : overlay_list info
+-                             }
+-                  "ebuild" -- hack, main repo -- (repo_name po) == "gentoo"
+-                      -> info{ portage_dir = location po }
++parse_paludis_output text =
++  let chunks = splitBy (=="") . lines $ text
++      repositories = catMaybes (map parseRepository chunks)
++  in  fromJust (mkLocalInfo repositories)
++  where
++  parseRepository :: [String] -> Maybe (String, (String, String))
++  parseRepository (firstLine:lns) = do
++    name <- case words firstLine of
++                ["Repository", nm] -> return (init nm)
++                _ -> fail "not a repository chunk"
++    let dict = [ (head ln, unwords (tail ln)) | ln <- map words lns ]
++    location <- lookup "location:" dict
++    distfiles <- lookup "distdir:" dict
++    return (name, (location, distfiles))
+ 
+-                  _   -> info
++  knownRepos = ["unavailable", "unavailable-unofficial", "unwritten", "accounts", "arbor",
++                "installed", "installed-accounts", "installed-unpackaged", "repository"]
+ 
+-parse_paludis_overlays :: String -> [LocalPaludisOverlay]
+-parse_paludis_overlays raw_data =
+-    parse_paludis_overlays' (reverse $ lines raw_data) bad_paludis_overlay
++  mkLocalInfo :: [(String, (String, String))] -> Maybe LocalInfo
++  mkLocalInfo repos = do
++    (arborLocation, arborDistfiles) <- lookup "arbor" repos
++    let overlays = [ loc | (name, (loc, _dist)) <- repos, name `notElem` knownRepos ]
++    return (LocalInfo
++              { distfiles_dir = arborDistfiles
++              , portage_dir = arborLocation
++              , overlay_list = overlays
++              })
+ 
+--- parse in reverse order :]
+-parse_paludis_overlays' :: [String] -> LocalPaludisOverlay -> [LocalPaludisOverlay]
+-parse_paludis_overlays' [] _ = []
+-parse_paludis_overlays' (l:ls) info =
+-    case (words l) of
+-    -- look for "Repository <repo-name>:"
+-    ["Repository", r_name] -> info{repo_name = init r_name} :
+-                                      go bad_paludis_overlay
+-    -- else - parse attributes
+-    _ -> case (break (== ':') (refine l)) of
+-            ("location", ':':value)
+-                -> go info{location = refine value}
+-            ("distdir", ':':value)
+-                -> go info{distdir = refine value}
+-            ("format", ':':value)
+-                -> go info{format = refine value}
+-            _   -> go info
+-    where go = parse_paludis_overlays' ls
+-          refine = dropWhile isSpace
++splitBy :: (a -> Bool) -> [a] -> [[a]]
++splitBy c [] = []
++splitBy c lst =
++  let (x,xs) = break c lst
++      (_,xs') = span c xs
++  in x : splitBy c xs'
+ 
+ parse_emerge_output :: String -> LocalInfo
+ parse_emerge_output raw_data =
+diff --git a/Portage/PackageId.hs b/Portage/PackageId.hs
+index 2f4757a..7c47cb8 100644
+--- a/Portage/PackageId.hs
++++ b/Portage/PackageId.hs
+@@ -58,8 +58,7 @@ fromCabalPackageId category (Cabal.PackageIdentifier name version) =
+             (Portage.fromCabalVersion version)
+ 
+ normalizeCabalPackageName :: Cabal.PackageName -> Cabal.PackageName
+-normalizeCabalPackageName (Cabal.PackageName name) =
+-  Cabal.PackageName (map Char.toLower name)
++normalizeCabalPackageName = id
+ 
+ normalizeCabalPackageId :: Cabal.PackageIdentifier -> Cabal.PackageIdentifier
+ normalizeCabalPackageId (Cabal.PackageIdentifier name version) =
