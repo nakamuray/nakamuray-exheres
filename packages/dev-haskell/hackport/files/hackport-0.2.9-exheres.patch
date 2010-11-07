@@ -43,10 +43,10 @@ index 0d1ca5e..0b17538 100644
  convertDependencies :: Portage.Category -> [Cabal.Dependency] -> [Dependency]
  convertDependencies category = concatMap (convertDependency category)
 diff --git a/Merge.hs b/Merge.hs
-index ccb3419..b597700 100644
+index ccb3419..278ca7e 100644
 --- a/Merge.hs
 +++ b/Merge.hs
-@@ -166,16 +166,15 @@ merge verbosity repo serverURI args overlayPath = do
+@@ -166,10 +166,9 @@ merge verbosity repo serverURI args overlayPath = do
    debug verbosity ("Selected flags: " ++ show flags)
  
    let ebuild = fixSrc serverURI (packageId pkgDesc)
@@ -58,13 +58,6 @@ index ccb3419..b597700 100644
                 $ C2E.cabal2ebuild pkgDesc
  
    mergeEbuild verbosity overlayPath (Portage.unCategory cat) ebuild
-   fetchAndDigest
-     verbosity
--    (overlayPath </> display cat </> display norm_pkgName)
-+    (overlayPath </> "packages" </> display cat </> display norm_pkgName)
-     (display cabal_pkgId <.> "tar.gz")
-     (mkUri cabal_pkgId)
- 
 @@ -204,8 +203,8 @@ fetchAndDigest verbosity ebuildDir tarballName tarballURI =
       -- TODO: downloadURI will throw a non-hackport exception if the
       -- download fails
@@ -76,13 +69,11 @@ index ccb3419..b597700 100644
       return ()
  
  withWorkingDirectory :: FilePath -> IO a -> IO a
-@@ -218,8 +217,8 @@ withWorkingDirectory newDir action = do
- 
+@@ -219,7 +218,7 @@ withWorkingDirectory newDir action = do
  mergeEbuild :: Verbosity -> FilePath -> String -> E.EBuild -> IO () 
  mergeEbuild verbosity target cat ebuild = do 
--  let edir = target </> cat </> E.name ebuild
+   let edir = target </> cat </> E.name ebuild
 -      elocal = E.name ebuild ++"-"++ E.version ebuild <.> "ebuild"
-+  let edir = target </> "packages" </> cat </> E.name ebuild
 +      elocal = E.name ebuild ++"-"++ E.version ebuild <.> "exheres-0"
        epath = edir </> elocal
    createDirectoryIfMissing True edir
@@ -107,7 +98,7 @@ index ccb3419..b597700 100644
 +      }
      }
 diff --git a/Merge/Dependencies.hs b/Merge/Dependencies.hs
-index c33d21b..a191b17 100644
+index c33d21b..fcea670 100644
 --- a/Merge/Dependencies.hs
 +++ b/Merge/Dependencies.hs
 @@ -68,25 +68,24 @@ import Debug.Trace ( trace )
@@ -181,6 +172,25 @@ index c33d21b..a191b17 100644
  
  ---------------------------------------------------------------
  -- Haskell packages
+@@ -233,7 +215,9 @@ resolvePkgConfig (Cabal.Dependency (Cabal.PackageName pn) _cabalVersion) = do
+ 
+ table :: [(String, (String, String))]
+ table =
+-  [("gconf-2.0",    ("gnome-base", "gconf"))
++  [("gconf-2.0",    ("gnome-platform", "GConf"))
++  ,("glib-2.0",     ("dev-libs", "glib")) -- should be slot 2
++  ,("gobject-2.0",  ("dev-libs", "glib")) -- should be slot 2
+   ,("gthread-2.0",  ("dev-libs", "glib")) -- should be slot 2
+   ,("gtk+-2.0",     ("x11-libs", "gtk+")) -- should be slot 2
+   ,("cairo",        ("x11-libs", "cairo"))
+@@ -241,6 +225,7 @@ table =
+   ,("cairo-pdf",        ("x11-libs", "cairo"))
+   ,("cairo-svg",        ("x11-libs", "cairo")) -- need [svg] for dev-haskell/cairo
+   ,("pango",        ("x11-libs", "pango"))
++  ,("pangocairo",   ("x11-libs", "pango")) -- XXX: maybe
+   ,("gio-2.0",      ("dev-libs", "glib"))
+   ,("libglade-2.0", ("gnome-base", "libglade"))
+   ,("gnome-vfs-2.0", ("gnome-base", "gnome-vfs"))
 diff --git a/Portage.hs b/Portage.hs
 index 4b870b6..5538f04 100644
 --- a/Portage.hs
@@ -385,19 +395,20 @@ index 0f15864..5093271 100644
  
  
 diff --git a/Portage/Host.hs b/Portage/Host.hs
-index 9664374..18bc155 100644
+index 9664374..3c5cbe5 100644
 --- a/Portage/Host.hs
 +++ b/Portage/Host.hs
-@@ -5,7 +5,7 @@ module Portage.Host
+@@ -5,7 +5,8 @@ module Portage.Host
  
  import Util (run_cmd)
  import Data.Char (isSpace)
 -import Data.Maybe (fromJust, isJust)
 +import Data.Maybe (fromJust, isJust, catMaybes)
++import System.FilePath ((</>))
  
  
  data LocalInfo =
-@@ -50,42 +50,40 @@ bad_paludis_overlay =
+@@ -50,42 +51,40 @@ bad_paludis_overlay =
                          }
  
  parse_paludis_output :: String -> LocalInfo
@@ -436,7 +447,7 @@ index 9664374..18bc155 100644
 +  mkLocalInfo :: [(String, (String, String))] -> Maybe LocalInfo
 +  mkLocalInfo repos = do
 +    (arborLocation, arborDistfiles) <- lookup "arbor" repos
-+    let overlays = [ loc | (name, (loc, _dist)) <- repos, name `notElem` knownRepos ]
++    let overlays = [ loc </> "packages" | (name, (loc, _dist)) <- repos, name `notElem` knownRepos ]
 +    return (LocalInfo
 +              { distfiles_dir = arborDistfiles
 +              , portage_dir = arborLocation
@@ -471,6 +482,28 @@ index 9664374..18bc155 100644
  
  parse_emerge_output :: String -> LocalInfo
  parse_emerge_output raw_data =
+diff --git a/Portage/Overlay.hs b/Portage/Overlay.hs
+index 3c1ca2b..1c171aa 100644
+--- a/Portage/Overlay.hs
++++ b/Portage/Overlay.hs
+@@ -87,7 +87,7 @@ loadLazy dir = fmap (mkOverlay . readOverlayByPackage) (getDirectoryTree dir)
+                         , let portageId = Portage.PackageId pkgName version
+                         , Just cabalId <- [ Portage.toCabalPackageId portageId ]
+                         , let filepath =
+-                                dir </> display pkgName <-> display version <.> "ebuild"
++                                dir </> display pkgName <-> display version <.> "exheres-0"
+                         ])
+             | (pkgName, allVersions) <- packages
+             , let allowedVersions = filter allowed allVersions
+@@ -133,7 +133,7 @@ readOverlayByPackage tree =
+       [ version
+       | File fileName <- entries
+       , let (baseName, ext) = splitExtension fileName
+-      , ext == ".ebuild"
++      , ext == ".exheres-0"
+       , let fullName = category ++ '/' : baseName
+       , Just (Portage.PackageId name' version) <- [simpleParse fullName]
+       , name == name' ]
 diff --git a/Portage/PackageId.hs b/Portage/PackageId.hs
 index 2f4757a..7c47cb8 100644
 --- a/Portage/PackageId.hs
