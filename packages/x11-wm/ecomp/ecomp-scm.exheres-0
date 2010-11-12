@@ -21,6 +21,5 @@ DEPENDENCIES="
 
 src_prepare() {
     default
-    patch -p1 < "${FILES}/ecomp-eina-1.patch"
     NOCONFIGURE=NoThanks edo ./autogen.sh
 }
