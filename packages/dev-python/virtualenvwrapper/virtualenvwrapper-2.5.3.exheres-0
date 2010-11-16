@@ -1,0 +1,33 @@
+# Copyright 2010 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require distutils pypi
+
+SUMMARY="Enhancements to virtualenv"
+DESCRIPTION="
+virtualenvwrapper is a set of extensions to Ian Bicking's virtualenv tool. The extensions include
+wrappers for creating and deleting virtual environments and otherwise managing your development
+workflow, making it easier to work on more than one project at a time without introducing conflicts
+in their dependencies.
+"
+HOMEPAGE="http://www.doughellmann.com/docs/virtualenvwrapper/"
+
+LICENCES="BSD"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+        dev-lang/python
+        dev-python/virtualenv
+"
+
+BUGS_TO=""
+
+DEFAULT_SRC_CONFIGURE_PARAMS=( )
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( )
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( )
+
+
