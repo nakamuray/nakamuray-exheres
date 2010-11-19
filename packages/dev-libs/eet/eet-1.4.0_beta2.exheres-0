@@ -1,12 +1,12 @@
 # Copyright 2010 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-SCM_REPOSITORY="http://svn.enlightenment.org/svn/e"
-SCM_SUBPATH="eet"
-require scm-svn
+MY_PNV="${PN}-${PV/_/.}"
 
 SUMMARY="A data storage and compression library"
 HOMEPAGE="http://www.enlightenment.org"
+
+DOWNLOADS="http://download.enlightenment.org/releases/${MY_PNV}.tar.bz2"
 
 LICENCES="BSD"
 SLOT="0"
@@ -22,7 +22,5 @@ DEPENDENCIES="
         media-libs/jpeg
 "
 
-src_prepare() {
-    default
-    NOCONFIGURE=NoThanks edo ./autogen.sh
-}
+WORK="${WORKBASE}/${MY_PNV}"
+
