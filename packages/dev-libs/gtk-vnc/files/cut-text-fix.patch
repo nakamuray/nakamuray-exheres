@@ -1,0 +1,38 @@
+From f01086725f1996af7396de83632fe5ec1dc0ead5 Mon Sep 17 00:00:00 2001
+From: Daniel P. Berrange <berrange@redhat.com>
+Date: Wed, 03 Nov 2010 14:34:23 +0000
+Subject: Fix data type of arg to cut-text signal in VncConnection
+
+The vnc-server-cut-text signal is marshalled by
+
+  g_cclosure_marshal_VOID__STRING
+
+so its argument must be a 'const char *', not a 'GString *'
+datatype.
+
+* src/vncconnection.c: Fix data type for cut-text signal arg
+---
+diff --git a/src/vncconnection.c b/src/vncconnection.c
+index 571cb3a..4a0c53c 100644
+--- a/src/vncconnection.c
++++ b/src/vncconnection.c
+@@ -389,7 +389,7 @@ struct signal_data
+ 	union {
+ 		VncCursor *cursor;
+ 		gboolean absPointer;
+-		GString *text;
++		const char *text;
+ 		struct {
+ 			int x;
+ 			int y;
+@@ -2474,7 +2474,7 @@ static void vnc_connection_server_cut_text(VncConnection *conn,
+ 		return;
+ 
+ 	text = g_string_new_len ((const gchar *)data, len);
+-	sigdata.params.text = text;
++	sigdata.params.text = text->str;
+ 
+ 	vnc_connection_emit_main_context(conn, VNC_SERVER_CUT_TEXT, &sigdata);
+ 
+--
+cgit v0.8.3.1
