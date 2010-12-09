@@ -2,7 +2,7 @@
 # Copyright (c) 2008, 2009, 2010 Ingmar Vanhassel <ingmar@exherbo.org>
 # Distributed under the terms of the GNU General Public License v2
 
-require bash-completion zsh-completion distutils
+require bash-completion zsh-completion elisp-optional [ source_directory=contrib ] distutils
 
 SUMMARY="A fast, lightweight, distributed source control management system"
 HOMEPAGE="http://mercurial.selenic.com/"
@@ -36,6 +36,11 @@ DEPENDENCIES="
 
 REMOTE_IDS="pypi:${PN}"
 
+src_compile() {
+    distutils_src_compile
+    elisp-optional_src_compile
+}
+
 src_test() {
     sydboxcmd sandunbox/net
     edo cd tests
@@ -50,6 +55,7 @@ src_install() {
     distutils_src_install
     dobashcompletion contrib/bash_completion
     dozshcompletion contrib/zsh_completion _hg
+    elisp-optional_src_install
     doman doc/hg*.?
     dodoc doc/{hg.1,hgignore.5,hgrc.5}.{html,txt} contrib/sample.hgrc
 

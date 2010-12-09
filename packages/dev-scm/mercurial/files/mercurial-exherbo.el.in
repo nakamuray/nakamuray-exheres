@@ -1,0 +1,3 @@
+(add-to-list 'load-path "@SITE_LISP@/mercurial")
+(require 'mercurial)
+(require 'mq)
