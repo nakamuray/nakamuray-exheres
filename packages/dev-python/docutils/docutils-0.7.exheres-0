@@ -1,0 +1,73 @@
+# Copyright 2008, 2009 Ali Polatel
+# Distributed under the terms of the GNU General Public License v2
+# Based in part upon 'docutils-0.4-r3.ebuild' from Gentoo, which is:
+#   Copyright 1999-2008 Gentoo Foundation
+
+require distutils [ python_dep=2.4 ] common-metadata
+
+DOWNLOADS="mirror://sourceforge/docutils/${PNV}.tar.gz"
+
+SLOT="0"
+PLATFORMS="~amd64 ~x86"
+
+
+DEPENDENCIES="
+    build:
+        dev-python/setuptools
+"
+# TODO emacs support can be written,
+# when someone writes an exheres for emacs :P
+
+src_compile() {
+    distutils_src_compile
+
+    # make roman.py available for the doc building process
+    ln -s extras/roman.py .
+
+    pushd tools
+
+    # Place html4css1.css in base directory. This makes sure the
+    # generated reference to it is correct.
+    cp ../docutils/writers/html4css1/html4css1.css ..
+
+    PYTHONPATH=.. ${PYTHON} ./buildhtml.py \
+        --stylesheet-path=../html4css1.css \
+        --traceback .. || die "buildhtml.py failed."
+
+    popd
+
+    # clean up after the doc building
+    rm roman.py html4css1.css
+}
+
+src_install() {
+    distutils_src_install
+
+    dodoc *.txt
+
+    # Tools
+    cd "${WORK}"/tools
+    for tool in *.py; do
+        dobin ${tool}
+    done
+
+    # Docs
+    cd "${WORK}"
+    dodoc docs/* tools/*
+    # manually install the stylesheet file
+    insinto /usr/share/doc/${PNVR}/html
+    doins docutils/writers/html4css1/html4css1.css
+
+    local install_dir
+    for doc in $(find docs tools -name '*.txt'); do
+        install_dir="txt/$(dirname ${doc})"
+        docinto ${install_dir}
+        dodoc ${doc}
+    done
+}
+
+src_test() {
+    cd test
+    PYTHONPATH="${WORK}" ./alltests.py || die "alltests.py failed"
+}
+
