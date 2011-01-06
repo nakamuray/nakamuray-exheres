@@ -1,0 +1,174 @@
+# Copyright 2010 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service
+
+SUMMARY="nginx [engine x] is a HTTP and reverse proxy server, as well as a mail proxy server"
+HOMEPAGE="http://nginx.org/"
+DOWNLOADS="http://nginx.org/download/${PNV}.tar.gz"
+
+LICENCES="BSD"
+SLOT="0"
+PLATFORMS="~amd64"
+
+NGINX_HTTP_OPTIONS=(
+    ssl
+    realip
+    addition
+    xslt
+    image_filter
+    geoip
+    sub
+    dav
+    flv
+    gzip_static
+    random_index
+    secure_link
+    degradation
+    stub_status
+    perl
+)
+
+NGINX_DEFAULT_HTTP_OPTION=(
+    charset
+    gzip
+    ssi
+    userid
+    access
+    auth_basic
+    autoindex
+    geo
+    map
+    split_clients
+    referer
+    rewrite
+    proxy
+    fastcgi
+    uwsgi
+    scgi
+    memcached
+    limit_zone
+    limit_req
+    empty_gif
+    browser
+    upstream_ip_hash
+)
+
+NGINX_MAIL_OPTION=(
+    # ssl
+)
+
+NGINX_DEFAULT_MAIL_OPTION=(
+    pop3
+    imap
+    smtp
+)
+
+MYOPTIONS="
+    file-aio             [[ description = [ enable file aio support ] ]]
+    ipv6
+
+    http                 [[ description = [ enable HTTP server ] ]]
+    http-cache           [[ description = [ enable HTTP cache ] ]]
+    
+    mail                 [[ description = [ enable POP3/IMAP4/SMTP proxy module ] ]]
+
+    nginx_modules:
+        ( ${NGINX_HTTP_OPTIONS[@]} )        [[ requires = http ]]
+        ( ${NGINX_DEFAULT_HTTP_OPTION[@]} ) [[ requires = http ]]
+        ( ${NGINX_MAIL_OPTION[@]} )         [[ requires = mail ]]
+        ( ${NGINX_DEFAULT_MAIL_OPTION[@]} ) [[ requires = mail ]]
+
+"
+
+DEPENDENCIES="
+    build:
+    build+run:
+        user/nginx
+        dev-libs/pcre
+        nginx_modules:perl? ( dev-lang/perl )
+        nginx_modules:ssl?  ( dev-libs/openssl )
+        nginx_modules:gzip? ( sys-libs/zlib )
+"
+
+BUGS_TO=""
+
+DEFAULT_SRC_CONFIGURE_PARAMS=( )
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( )
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( )
+
+
+src_configure() {
+    ./configure \
+        --prefix=/usr \
+        --sbin-path=/usr/sbin/nginx \
+        --conf-path=/etc/nginx/nginx.conf \
+        --error-log-path=/var/log/nginx/error_log \
+        --pid-path=/var/run/nginx.pid \
+        --lock-path=/var/lock/nginx.lock \
+        --user=nginx --group=nginx \
+        --http-log-path=/var/log/nginx/access_log \
+        --http-client-body-temp-path=/var/tmp/nginx/client \
+        --http-proxy-temp-path=/var/tmp/nginx/proxy \
+        --http-fastcgi-temp-path=/var/tmp/nginx/fastcgi \
+        --http-scgi-temp-path=/var/tmp/nginx/scgi \
+        --http-uwsgi-temp-path=/var/tmp/nginx/uwsgi \
+        $(nginx_with file-aio) \
+        $(nginx_with ipv6) \
+        $(for s in "${NGINX_HTTP_OPTIONS[@]}" ; do \
+            nginx_module_with http ${s} ; \
+        done ) \
+        $(for s in "${NGINX_DEFAULT_HTTP_OPTION[@]}" ; do \
+            nginx_module_without http ${s} ; \
+        done ) \
+        $(nginx_without http) \
+        $(nginx_without http-cache) \
+        $(nginx_with mail) \
+        $(for s in "${NGINX_MAIL_OPTION[@]}" ; do \
+            nginx_module_with mail ${s} ; \
+        done ) \
+        $(for s in "${NGINX_DEFAULT_MAIL_OPTION[@]}" ; do \
+            nginx_module_without mail ${s} ; \
+        done )
+}
+
+src_install() {
+    keepdir /var/log/nginx /var/tmp/nginx/{client,proxy,fastcgi,scgi,uwsgi}
+
+    dosbin objs/nginx
+
+    dodir /etc/nginx
+    insinto /etc/nginx
+    doins conf/*
+
+    dodoc CHANGES* README
+
+    # TODO: install perl modules
+
+    install_systemd_files
+}
+
+nginx_with() {
+    if optionq "${1}"; then
+        echo "--with-${1}"
+    fi
+}
+
+nginx_without() {
+    if ! optionq "${1}"; then
+        echo "--without-${1}"
+    fi
+}
+
+nginx_module_with() {
+    if optionq "nginx_modules:${2}"; then
+        echo "--with-${1}_${2}_module"
+    fi
+}
+
+nginx_module_without() {
+    if ! optionq "nginx_modules:${2}"; then
+        echo "--without-${1}_${2}_module"
+    fi
+}
+
