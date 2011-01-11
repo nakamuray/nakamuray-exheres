@@ -1,0 +1,35 @@
+# Copyright 2011 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Evented IO for V8 Javascript"
+HOMEPAGE="http://nodejs.org/"
+DOWNLOADS="http://nodejs.org/dist/node-v${PV}.tar.gz"
+
+LICENCES="GPL-2"
+SLOT="0"
+PLATFORMS="~amd64"
+
+DEPENDENCIES="
+    build:
+    build+run:
+        dev-lang/v8[>=2.5.9.6]
+        dev-libs/openssl
+"
+
+BUGS_TO=""
+
+DEFAULT_SRC_CONFIGURE_PARAMS=( )
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( )
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( )
+
+WORK="${WORKBASE}/node-v${PV}"
+
+src_configure() {
+    # this is a waf confuserator
+    ./configure --shared-v8 --prefix=/usr || die
+}
+
+src_test() {
+    emake test || die
+}
+
