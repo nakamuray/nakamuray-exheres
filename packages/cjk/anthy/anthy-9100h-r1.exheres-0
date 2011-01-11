@@ -5,12 +5,13 @@
 
 SUMMARY="Japanese Kana-Kanji Conversion Engine library with G-HAL patches"
 HOMEPAGE="http://sourceforge.jp/projects/anthy"
-DOWNLOADS="http://www.fenix.ne.jp/~G-HAL/soft/nosettle/anthy-9100h.patch13-release-2010915-fix2010X25.alt-depgraph-100603d.alt-cannadic-100603-patch100628-ticket22612.zipdic-201008.tar.lzma"
+DOWNLOADS="ghal? ( http://www.fenix.ne.jp/~G-HAL/soft/nosettle/anthy-9100h.patch13-release-2010Z20.alt-depgraph-100603d.alt-cannadic-100603-patch100628-ticket22612.zipdic-201008.tar.lzma )
+           !ghal? ( mirror://sourceforge.jp/${PN}/37536/${PNV}.tar.gz )"
 
 LICENCES="LGPL-2.1 GPL-2"
 SLOT="0"
 PLATFORMS="~amd64 ~x86"
-MYOPTIONS="emacs"
+MYOPTIONS="emacs ghal"
 
 DEPENDENCIES="
     build:
