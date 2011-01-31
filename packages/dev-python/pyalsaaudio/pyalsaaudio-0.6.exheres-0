@@ -1,0 +1,22 @@
+# Copyright 2011 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require pypi distutils
+
+SUMMARY="A Python wrapper for the ALSA API"
+HOMEPAGE="http://www.sourceforge.net/projects/pyalsaaudio"
+
+LICENCES="PSF-2.4"
+SLOT="0"
+PLATFORMS="~amd64"
+
+DEPENDENCIES="
+    build:
+    build+run:
+        sys-sound/alsa-lib
+"
+
+src_test() {
+    PYTHONPATH="$(ls -d build/lib.*)" python test.py -v
+}
+

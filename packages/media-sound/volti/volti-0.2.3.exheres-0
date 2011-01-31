@@ -1,0 +1,23 @@
+# Copyright 2011 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require distutils
+
+SUMMARY="GTK+ application for controlling audio volume from system tray/notification area"
+HOMEPAGE="http://code.google.com/p/volti/"
+DOWNLOADS="http://${PN}.googlecode.com/files/${PNV}.tar.gz"
+
+LICENCES="GPL-3"
+SLOT="0"
+PLATFORMS="~amd64"
+
+DEPENDENCIES="
+    build:
+    build+run:
+        gnome-bindings/pygtk[>=2.16]
+        dev-python/pyalsaaudio[>=0.6]
+        dev-python/dbus-python
+"
+# TODO: optional python-xlib deps
+
+
