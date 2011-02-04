@@ -1,0 +1,23 @@
+# Copyright 2009, 2010 Ingmar Vanhassel
+# Distributed under the terms of the GNU General Public License v2
+
+SCM_REPOSITORY="git://notmuchmail.org/git/notmuch"
+
+require notmuch scm-git
+
+DOWNLOADS=""
+
+PLATFORMS="~amd64"
+
+notmuch_src_install() {
+    default
+
+    bash-completion_src_install
+    install-zsh-completions
+
+    elisp-optional_src_install
+
+    edo rm "${IMAGE}"/dev/null/{_,}notmuch
+    edo rmdir "${IMAGE}"/dev/{null,}
+}
+
