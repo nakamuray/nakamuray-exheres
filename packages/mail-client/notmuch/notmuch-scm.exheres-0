@@ -9,6 +9,8 @@ DOWNLOADS=""
 
 PLATFORMS="~amd64"
 
+MYOPTIONS+=" vim-plugin"
+
 notmuch_src_install() {
     default
 
@@ -16,6 +18,13 @@ notmuch_src_install() {
     install-zsh-completions
 
     elisp-optional_src_install
+
+    if option vim-plugin; then
+        cd vim
+        dodir /usr/share/vim/vimfiles/{plugin,syntax}
+        edo make PREFIX="${IMAGE}/usr/share/vim/vimfiles" install
+        cd -
+    fi
 
     edo rm "${IMAGE}"/dev/null/{_,}notmuch
     edo rmdir "${IMAGE}"/dev/{null,}
