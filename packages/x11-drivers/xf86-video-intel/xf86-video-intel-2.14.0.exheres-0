@@ -1,0 +1,9 @@
+# Copyright (c) 2007 Alexander Færøy <ahf@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+require xf86-video-intel
+
+PLATFORMS="~amd64 ~x86"
+
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/da990536eca09c6de74627541cd56ecfad925eda.patch" )
+
