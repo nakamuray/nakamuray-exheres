@@ -1,0 +1,33 @@
+MY_PN="Migu"
+PROJ_NAME="mix-mplus-ipa"
+
+require xfont
+
+SUMMARY="M+ + IPA fonts with some modification"
+HOMEPAGE="http://mix-mplus-ipa.sourceforge.jp/migu/"
+DOWNLOADS="
+    http://en.sourceforge.jp/frs/redir.php?f=/${PROJ_NAME}/${SRC_NR}/${MY_PN}-1M-${PV}.zip -> ${MY_PN}-1M-${PV}.zip
+    http://en.sourceforge.jp/frs/redir.php?f=/${PROJ_NAME}/${SRC_NR}/${MY_PN}-1P-${PV}.zip -> ${MY_PN}-1P-${PV}.zip
+"
+
+LICENCES="FREE"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
+BUGS_TO=""
+
+REMOTE_IDS=""
+
+UPSTREAM_CHANGELOG=""
+UPSTREAM_DOCUMENTATION=""
+UPSTREAM_RELEASE_NOTES=""
+
+WORK="${WORKBASE}"
+
+src_install() {
+    insinto /usr/share/fonts/X11/${FONT}
+    doins ${MY_PN}-1?-${PV}/${MY_PN}-*.ttf
+    fix_fonts
+}
