@@ -1,0 +1,13 @@
+diff -up fbterm-1.4/src/font.cpp.antialias fbterm-1.4/src/font.cpp
+--- fbterm-1.4/src/font.cpp.antialias	2009-03-14 11:07:59.000000000 +0900
++++ fbterm-1.4/src/font.cpp	2009-04-04 05:27:03.000000000 +0900
+@@ -212,7 +212,8 @@ void Font::openFont(u32 index)
+ 			load_flags |= FT_LOAD_TARGET_LIGHT;
+ 		}
+ 	} else {
+-		load_flags |= FT_LOAD_TARGET_MONO;
++		load_flags |= FT_LOAD_TARGET_NORMAL;
++		//load_flags |= FT_LOAD_TARGET_MONO;
+ 	}
+ 
+ 	mpFontList[index].face = face;
