@@ -13,7 +13,7 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build:
-        media-gfx/fontforge
+        media-gfx/fontforge[native-script]
         fonts/IPAfont
 "
 
