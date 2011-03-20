@@ -4,7 +4,7 @@
 #     Copyright 1999-2007 Gentoo Foundation
 
 SCM_REPOSITORY="git://git.savannah.gnu.org/screen.git"
-require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.11 ] ] scm-git
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.11 ] ] scm-git pam
 
 SUMMARY="A full-screen terminal multiplexer/window manager"
 
@@ -12,19 +12,22 @@ LICENCES="GPL-2"
 SLOT="0"
 PLATFORMS=""
 MYOPTIONS="
-pam
 setuid [[ description = [ Install screen setuid root, allowing you to share screen sessions between multiple users ] ]]
 "
 
 DEPENDENCIES="
     build+run:
         sys-libs/ncurses
-        pam? ( sys-libs/pam )
+        sys-libs/pam
 "
 
-DEFAULT_SRC_CONFIGURE_PARAMS=( '--enable-colors256'
-    '--with-sys-screenrc=/etc/screenrc' '--hates=docdir' )
-DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( pam )
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/${PN}-4.0.3-termcap.patch" )
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --hates=docdir
+    --enable-colors256
+    --enable-pam
+    --with-sys-screenrc=/etc/screenrc
+)
 
 WORK="${WORK}/src"
 MY_PNV="${PN}-4.1.0"
@@ -42,5 +45,7 @@ EOF
         edo chown root:utmp "${IMAGE}"/usr/bin/${MY_PNV}
         edo chmod 2755 "${IMAGE}"/usr/bin/${MY_PNV}
     fi
+
+    pamd_mimic_system screen auth
 }
 
