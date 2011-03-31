@@ -1,0 +1,25 @@
+From d09507ae5db1ff2afcf571bdeec382abb7366c82 Mon Sep 17 00:00:00 2001
+From: NAKAMURA Yoshitaka <arumakanoy@gmail.com>
+Date: Wed, 23 Mar 2011 13:57:39 +0900
+Subject: [PATCH] wscript: use ${RST2MAN}
+
+---
+ wscript |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wscript b/wscript
+index 218b778..23ff3ab 100644
+--- a/wscript
++++ b/wscript
+@@ -263,7 +263,7 @@ def build(bld):
+ 		bld.new_task_gen(
+ 			source = "Documentation/Manpage.rst",
+ 			target = "kupfer.1",
+-			rule = 'rst2man ${SRC} > ${TGT}',
++			rule = '${RST2MAN} ${SRC} > ${TGT}',
+ 		)
+ 		bld.add_group()
+ 		# compress and install man page
+-- 
+1.7.4.1
+
