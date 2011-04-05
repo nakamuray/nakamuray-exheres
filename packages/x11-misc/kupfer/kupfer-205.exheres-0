@@ -1,7 +1,7 @@
 # Copyright 2010, 2011 Jonathan Dahan <jedahan@gmail.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require freedesktop-desktop freedesktop-mime waf
+require freedesktop-desktop freedesktop-mime waf gtk-icon-cache
 
 MY_PNV="${PN}-v${PV}"
 SUMMARY="A convenient command and access tool, like Gnome-Do or Quicksilver"
@@ -36,7 +36,10 @@ DEPENDENCIES="
 
 WORK="${WORKBASE}/${MY_PNV}"
 
-DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/fix-rst2man-not-found.patch" )
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}/fix-rst2man-not-found.patch"
+    "${FILES}/move-icon-header.patch"
+)
 
 src_configure() {
     WAF_SRC_CONFIGURE_PARAMS=(

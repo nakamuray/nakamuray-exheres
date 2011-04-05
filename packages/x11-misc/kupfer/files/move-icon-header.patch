@@ -1,0 +1,33 @@
+diff --git a/auxdata/kupfer.svg b/auxdata/kupfer.svg
+index 8561b1d..5b9d6cb 100644
+--- a/auxdata/kupfer.svg
++++ b/auxdata/kupfer.svg
+@@ -1,5 +1,13 @@
+ <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+ <!-- Created with Inkscape (http://www.inkscape.org/) -->
++<svg
++   xmlns:svg="http://www.w3.org/2000/svg"
++   xmlns="http://www.w3.org/2000/svg"
++   xmlns:xlink="http://www.w3.org/1999/xlink"
++   version="1.1"
++   width="350"
++   height="350"
++   id="svg2">
+ 
+ <!-- Copyright 2010 Nasser Alshammari <designernasser@gmail.com>
+ 
+@@ -18,14 +26,6 @@
+ -->
+ 
+ 
+-<svg
+-   xmlns:svg="http://www.w3.org/2000/svg"
+-   xmlns="http://www.w3.org/2000/svg"
+-   xmlns:xlink="http://www.w3.org/1999/xlink"
+-   version="1.1"
+-   width="350"
+-   height="350"
+-   id="svg2">
+   <defs
+      id="defs4">
+     <linearGradient
