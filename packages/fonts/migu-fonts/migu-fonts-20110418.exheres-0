@@ -1,6 +1,6 @@
 # Copyright 2010 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
-SRC_NR="50857"
+SRC_NR="51710"
 require migu-fonts
 
 PLATFORMS="~amd64"
