@@ -1,0 +1,14 @@
+# Copyright 2009, 2010 Wulf C. Krueger <philantrop@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+require virt-viewer
+
+PLATFORMS="~amd64 ~x86"
+
+DEPENDENCIES+="
+    build+run:
+        virtualization-ui/spice-gtk
+"
+
+DEFAULT_SRC_CONFIGURE_PARAMS=( --enable-plugin=no )
+
