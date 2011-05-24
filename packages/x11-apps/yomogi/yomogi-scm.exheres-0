@@ -5,3 +5,4 @@ SCM_REPOSITORY="http://bitbucket.org/nakamura/yomogi"
 require yomogi scm-hg distutils
 
 PLATFORMS="~amd64"
+
