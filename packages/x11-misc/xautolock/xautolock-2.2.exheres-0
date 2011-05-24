@@ -1,0 +1,31 @@
+# Copyright 2011 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="An automatic X screen-locker/screen-saver"
+HOMEPAGE="http://ibiblio.org/pub/Linux/X11/screensavers/"
+DOWNLOADS="http://ibiblio.org/pub/Linux/X11/screensavers/${PNV}.tgz"
+
+LICENCES="GPL-2"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        x11-utils/imake
+        x11-utils/xorg-cf-files
+    build+run:
+        x11-libs/libXScrnSaver
+"
+
+src_compile() {
+    xmkmf
+    emake
+}
+
+src_install() {
+    default
+    newman xautolock.man xautolock.1
+    dodoc Changelog Readme Todo
+}
+
