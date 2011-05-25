@@ -9,7 +9,7 @@ DOWNLOADS="http://www.ipmsg.org/archive/${PNV}.tar.gz"
 LICENCES="GPL-2"
 SLOT="0"
 PLATFORMS="~amd64"
-MYOPTIONS="ssl"
+MYOPTIONS="ssl applet"
 
 # may need dev-perl/XML-Parser for build dep.
 DEPENDENCIES="
@@ -17,6 +17,7 @@ DEPENDENCIES="
         dev-util/intltool
     build+run:
         gnome-platform/GConf
+        applet? ( gnome-desktop/gnome-applets )
 "
 
 BUGS_TO=""
@@ -26,6 +27,6 @@ DEFAULT_SRC_CONFIGURE_PARAMS=(
     --with-ext-charcode=CP932
 )
 DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( ssl )
-DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( )
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( applet )
 
 
