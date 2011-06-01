@@ -1,0 +1,87 @@
+# Copyright 2011 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="fast, compliant alternative implementation of the Python language"
+HOMEPAGE="http://pypy.org/"
+DOWNLOADS="
+    https://bitbucket.org/${PN}/${PN}/downloads/${PNV}-src.tar.bz2
+"
+# XXX: they depend on old openssl so can't use in exherbo
+#    bootstrap? (
+#        platform:amd64? (
+#            https://bitbucket.org/${PN}/${PN}/downloads/${PNV}-linux64.tar.bz2
+#        )
+#        platform:x86? (
+#            https://bitbucket.org/${PN}/${PN}/downloads/${PNV}-linux.tar.bz2
+#        )
+#    )
+
+# TODO:
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+#MYOPTIONS="bootstrap platform: amd64 x86"
+MYOPTIONS="use-cpython [[ description = [ use CPython to build pypy ] ]]"
+
+DEPENDENCIES="
+    build:
+        use-cpython? ( dev-lang/python )
+        !use-cpython? ( dev-lang/pypy )
+        dev-libs/libffi
+    build+run:
+"
+# optional deps
+#    pkg-config (to help us locate libffi files)
+#    libz-dev (for the optional zlib module)
+#    libbz2-dev (for the optional bz2 module)
+#    libncurses-dev (for the optional _minimal_curses module)
+#    libexpat1-dev (for the optional pyexpat module)
+#    libssl-dev (for the optional _ssl module)
+#    libgc-dev (for the Boehm garbage collector: only needed when translating with –opt=0, 1 or size)
+#    python-sphinx (for the optional documentation build. You need version 1.0.7 or later)
+#    python-greenlet (for the optional stackless support in interpreted mode/testing)
+
+WORK="${WORKBASE}/${PNV}-src"
+
+#BOOTSTRAP_ID_AMD64="43780-b590cf6de419"
+#BOOTSTRAP_ID_X86=""
+
+src_compile() {
+    #if option bootstrap; then
+    #    if option platform:amd64; then
+    #        "${WORKBASE}"/${PN}-c-jit-${BOOTSTRAP_ID_AMD64}-linux64/bin/pypy
+    #    elif option platform:x86; then
+    #        "${WORKBASE}"/${PN}-c-jit-${BOOTSTRAP_ID_X86}-linux/bin/pypy
+    #    else
+    #        die "no bootstrap binary for youre platform"
+    #    fi
+    #else
+    #    pypy=pypy
+    #fi
+    if option use-cpython; then
+        pypy=python
+    else
+        pypy=pypy
+    fi
+
+    cd pypy/translator/goal
+    edo "${pypy}" translate.py --opt=jit targetpypystandalone.py
+}
+
+src_install() {
+    prefix=/opt/pypy
+
+    exeinto "${prefix}"/bin
+    doexe "${WORK}"/pypy/translator/goal/pypy-c
+
+    dodir "${prefix}"/lib-python/
+    # to copy executable bit, use cp instead of doins
+    edo cp -r "${WORK}"/lib-python/2.7 "${WORK}"/lib-python/modified-2.7 "${IMAGE}/${prefix}"/lib-python/
+    edo cp -r "${WORK}"/lib_pypy "${WORK}"/include "${IMAGE}/${prefix}"
+
+    dodir /usr/bin
+    dosym "${prefix}"/bin/pypy-c /usr/bin/pypy
+
+    dodoc LICENSE README
+}
+
