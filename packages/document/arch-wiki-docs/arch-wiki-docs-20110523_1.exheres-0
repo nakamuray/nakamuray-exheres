@@ -1,0 +1,26 @@
+# Copyright 2011 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+MY_PV="${PV/_/-}"
+MY_PNV="${PN}-${MY_PV}"
+WORK="${WORKBASE}"
+
+SUMMARY="Documentation from wiki.archlinux.org"
+HOMEPAGE="http://wiki.archlinux.org"
+DOWNLOADS="http://ftp.archlinux.org/community/os/i686/${MY_PNV}-any.pkg.tar.xz"
+
+LICENCES="FDL"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+"
+
+src_install() {
+    insinto /usr/share/doc/
+    doins -r "${WORK}"/usr/share/doc/arch-wiki
+}
+
