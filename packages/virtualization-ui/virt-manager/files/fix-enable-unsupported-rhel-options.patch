@@ -1,0 +1,25 @@
+Source: Upstream
+Upstream: Yes, commit bdb54488b77f54e0cb7f3100625df3fd2af2b858
+Reason: Fix broken configure script
+
+commit bdb54488b77f54e0cb7f3100625df3fd2af2b858
+Author: Cole Robinson <crobinso@redhat.com>
+Date:   Tue Mar 29 09:28:49 2011 -0400
+
+    configure: Fix --enable-unsupported-rhel-options
+
+diff --git a/configure.ac b/configure.ac
+index 51258be..c3bfa40 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -69,7 +69,9 @@ AC_ARG_ENABLE([unsupported-rhel-options],
+   AC_HELP_STRING(
+     [--enable-unsupported-rhel-options],
+     [enable VM config options unsupported by RHEL @<:@default=yes@:>@]),
+-  [test "x$enableval" == "xno" && ENABLE_UNSUPPORTED_RHEL_OPTS=0],
++  [test "x$enableval" == "xno" && \
++   ENABLE_UNSUPPORTED_RHEL_OPTS=0 ||
++   ENABLE_UNSUPPORTED_RHEL_OPTS=1],
+   [ENABLE_UNSUPPORTED_RHEL_OPTS=1])
+ 
+ dnl Allow passing in a prefered distro list

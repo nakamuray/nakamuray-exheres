@@ -1,0 +1,88 @@
+# Copyright 2009 Wulf C. Krueger <philantrop@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+require gtk-vnc
+
+SLOT="2.0"
+PLATFORMS="~amd64 ~x86"
+
+MYOPTIONS="gobject-introspection sasl gtk2"
+
+DEPENDENCIES="
+    build:
+        dev-util/intltool[>=0.40.0]
+        dev-util/pkg-config[>=0.20]
+        gobject-introspection? ( gnome-desktop/gobject-introspection[>=0.9.4] )
+    build+run:
+        dev-libs/glib:2[>=2.10.0]
+        x11-libs/gdk-pixbuf:2.0[>=2.10.0]
+        x11-libs/libX11
+        x11-libs/cairo[>=1.2.0]
+        dev-libs/gnutls[>=1.4.0]
+        x11-libs/gtk+:3[>=3.0.0]
+        !dev-libs/gtk-vnc:1 [[
+            description = [ Libraries and binaries collide with these slots ]
+            resolution = uninstall-blocked-after
+        ]]
+        sasl? ( net-libs/cyrus-sasl )
+"
+
+DEFAULT_SRC_CONFIGURE_PARAMS=( '--with-coroutine=gthread' '--without-libview'
+                               '--disable-plugin' '--with-gtk=3.0' )
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( sasl )
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'gobject-introspection introspection' )
+
+WORK_GTK2="${WORKBASE}/${PNV}-gtk2"
+
+src_prepare() {
+    default
+
+    if option gtk2; then
+        edo cp -r "${WORK}" "${WORK_GTK2}"
+    fi
+}
+
+src_configure() {
+    default
+
+    if option gtk2; then
+        cd "${WORK_GTK2}"
+        econf \
+            "${DEFAULT_SRC_CONFIGURE_PARAMS[@]}" \
+            --with-gtk=2.0 \
+            $(for s in "${DEFAULT_SRC_CONFIGURE_OPTION_ENABLES[@]}" ; do \
+                option_enable ${s} ; \
+            done ) \
+            $(for s in "${DEFAULT_SRC_CONFIGURE_OPTION_WITHS[@]}" ; do \
+                option_with ${s} ; \
+            done )
+    fi
+}
+
+src_compile() {
+    default
+
+    if option gtk2; then
+        cd "${WORK_GTK2}"
+        default
+    fi
+}
+
+src_test() {
+    default
+
+    if option gtk2; then
+        cd "${WORK_GTK2}"
+        default
+    fi
+}
+
+src_install() {
+    default
+
+    if option gtk2; then
+        cd "${WORK_GTK2}"
+        default
+    fi
+}
+

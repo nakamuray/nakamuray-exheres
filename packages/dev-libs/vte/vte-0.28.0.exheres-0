@@ -1,0 +1,37 @@
+# Copyright (C) 2008 Stephen Bennett <spb@exherbo.org>
+# Copyright (C) 2008 Saleem Abdulrasool <compnerd@compnerd.org>
+# Distributed under the terms of the GNU General Public License v2
+
+require gnome.org
+
+SUMMARY="A terminal emulator widget"
+HOMEPAGE="http://developer.gnome.org/arch/gnome/widgets/vte.html"
+
+LICENCES="GPL-2"
+SLOT="3.0"
+PLATFORMS="~amd64 ~x86"
+MYOPTIONS="gobject-introspection gtk-doc
+    gnome-pty-helper [[ description = [ Build a setuid helper for opening ptys ] ]]
+"
+
+DEPENDENCIES="
+    build:
+        dev-util/intltool[>=0.40.0]
+        dev-util/pkg-config[>=0.19]
+        gtk-doc? ( dev-doc/gtk-doc[>=1.13] )
+        gobject-introspection? ( gnome-desktop/gobject-introspection[>=0.9.0] )
+    build+run:
+        x11-libs/gtk+:3[>=3.0.0]
+        dev-libs/glib:2[>=2.26.0]
+        x11-libs/pango[>=1.22.0]
+        sys-libs/ncurses
+        gnome-pty-helper? (
+            !dev-libs/vte:0[gnome-pty-helper] [[
+                description = [ Installs the same file ]
+            ]]
+        )
+"
+
+DEFAULT_SRC_CONFIGURE_PARAMS=( --disable-deprecation '--with-gtk=3.0' )
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'gtk-doc' 'gnome-pty-helper' 'gobject-introspection introspection' )
+
