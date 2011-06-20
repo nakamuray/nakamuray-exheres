@@ -1,0 +1,27 @@
+# Copyright 2011 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="GTK2 and GTK3 theme that mimic the look of Adwaita"
+HOMEPAGE="http://gnome-look.org/content/show.php/Aldabra?content=142247"
+DOWNLOADS="http://gnome-look.org/CONTENT/content-files/142247-Aldabra-${PV}.zip"
+
+LICENCES="LGPL-2"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+        gnome-desktop/gtk-engines:2
+        x11-themes/gtk-engines-murrine
+"
+
+WORK="${WORKBASE}"
+
+src_install() {
+    insinto "/usr/share/themes"
+    doins -r Aldabra
+    dodoc COPYING NEWS
+}
+
