@@ -1,0 +1,41 @@
+# Copyright 2011 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+SCM_REPOSITORY="git://github.com/facebook/pfff.git"
+require scm-git
+
+SUMMARY="set of tools and APIs to perform some analysis on source code"
+HOMEPAGE="https://github.com/facebook/pfff/wiki/Main"
+
+LICENCES="LGPL-2.1"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        dev-ocaml/findlib
+        dev-lang/ocaml
+    build+run:
+        dev-libs/pcre
+"
+
+BUGS_TO=""
+
+src_configure() {
+    # TODO: build gui visual
+    edo ./configure -nogui -novisual
+}
+
+src_compile() {
+    edo make depend
+    edo make
+    #edo make opt
+}
+
+src_install() {
+    # TODO: codemap pfff_db_heavy
+    dobin pfff sgrep spatch scheck stags pfff_db ppp
+    dodoc *.txt
+}
+
