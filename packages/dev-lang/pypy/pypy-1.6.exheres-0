@@ -4,7 +4,7 @@
 SUMMARY="fast, compliant alternative implementation of the Python language"
 HOMEPAGE="http://pypy.org/"
 DOWNLOADS="
-    https://bitbucket.org/${PN}/${PN}/downloads/${PNV}-src.tar.bz2
+    https://bitbucket.org/pypy/pypy/get/release-${PV}.tar.bz2 -> ${PNV}-src.tar.bz2
 "
 # XXX: they depend on old openssl so can't use in exherbo
 #    bootstrap? (
@@ -41,7 +41,7 @@ DEPENDENCIES="
 #    python-sphinx (for the optional documentation build. You need version 1.0.7 or later)
 #    python-greenlet (for the optional stackless support in interpreted mode/testing)
 
-WORK="${WORKBASE}/${PNV}-src"
+WORK="${WORKBASE}/${PN}-${PN}-release-${PV}"
 
 #BOOTSTRAP_ID_AMD64="43780-b590cf6de419"
 #BOOTSTRAP_ID_X86=""
