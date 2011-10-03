@@ -1,4 +1,4 @@
-MY_PN="Migu"
+MY_PN="migu"
 PROJ_NAME="mix-mplus-ipa"
 
 require xfont
@@ -6,10 +6,10 @@ require xfont
 SUMMARY="M+ + IPA fonts with some modification"
 HOMEPAGE="http://mix-mplus-ipa.sourceforge.jp/migu/"
 DOWNLOADS="
-    http://en.sourceforge.jp/frs/redir.php?f=/${PROJ_NAME}/${SRC_NR}/${MY_PN}-1M-${PV}.zip -> ${MY_PN}-1M-${PV}.zip
-    http://en.sourceforge.jp/frs/redir.php?f=/${PROJ_NAME}/${SRC_NR}/${MY_PN}-2M-${PV}.zip -> ${MY_PN}-2M-${PV}.zip
-    http://en.sourceforge.jp/frs/redir.php?f=/${PROJ_NAME}/${SRC_NR}/${MY_PN}-1P-${PV}.zip -> ${MY_PN}-1P-${PV}.zip
-    http://en.sourceforge.jp/frs/redir.php?f=/${PROJ_NAME}/${SRC_NR}/${MY_PN}-1C-${PV}.zip -> ${MY_PN}-1C-${PV}.zip
+    http://en.sourceforge.jp/frs/redir.php?f=/${PROJ_NAME}/${SRC_NR}/${MY_PN}-1m-${PV}.zip -> ${MY_PN}-1m-${PV}.zip
+    http://en.sourceforge.jp/frs/redir.php?f=/${PROJ_NAME}/${SRC_NR}/${MY_PN}-2m-${PV}.zip -> ${MY_PN}-2m-${PV}.zip
+    http://en.sourceforge.jp/frs/redir.php?f=/${PROJ_NAME}/${SRC_NR}/${MY_PN}-1p-${PV}.zip -> ${MY_PN}-1p-${PV}.zip
+    http://en.sourceforge.jp/frs/redir.php?f=/${PROJ_NAME}/${SRC_NR}/${MY_PN}-1c-${PV}.zip -> ${MY_PN}-1c-${PV}.zip
 "
 
 LICENCES="FREE"
@@ -30,7 +30,7 @@ WORK="${WORKBASE}"
 
 src_install() {
     insinto /usr/share/fonts/X11/${FONT}
-    for f in 1M 2M 1P 1C; do
+    for f in 1m 2m 1p 1c; do
         doins ${MY_PN}-${f}-${PV}/${MY_PN}-*.ttf
     done
     fix_fonts
