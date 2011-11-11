@@ -5,7 +5,7 @@ require xfont
 
 SUMMARY="M+ Japanese outline fonts"
 HOMEPAGE="http://mplus-fonts.sourceforge.jp/mplus-outline-fonts/"
-DOWNLOADS="http://sourceforge.jp/frs/redir.php?f=/${PROJ_NAME}/${SRC_NR}/${MY_PNV}.tar.gz -> ${MY_PNV}.tar.gz"
+DOWNLOADS="http://sourceforge.jp/frs/redir.php?f=/${PROJ_NAME}/${SRC_NR}/${MY_PNV}.tar.xz -> ${MY_PNV}.tar.xz"
 
 LICENCES="FREE"
 SLOT="0"
