@@ -1,0 +1,26 @@
+# Copyright 2011 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+MY_PN=unico
+MY_PNV=${MY_PN}-${PV}
+
+SUMMARY="Gtk+ engine that aims to be the more complete yet powerful theming engine for Gtk+ 3.0 and newer"
+HOMEPAGE="https://launchpad.net/${MY_PN}"
+DOWNLOADS="http://launchpad.net/${MY_PN}/1.0/${PV}/+download/${MY_PNV}.tar.gz"
+
+LICENCES="LGPL-2.1"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        dev-util/pkg-config
+    build+run:
+        dev-libs/glib[>=2.26.0]
+        x11-libs/cairo[>=1.10]
+        x11-libs/gtk+:3[>=3.1.10]
+"
+
+WORK="${WORKBASE}"/${MY_PNV}
+
