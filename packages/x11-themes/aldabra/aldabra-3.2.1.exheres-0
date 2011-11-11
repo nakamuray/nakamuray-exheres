@@ -3,13 +3,14 @@
 
 SUMMARY="GTK2 and GTK3 theme that mimic the look of Adwaita"
 HOMEPAGE="http://gnome-look.org/content/show.php/Aldabra?content=142247"
-DOWNLOADS="http://gnome-look.org/CONTENT/content-files/142247-Aldabra-${PV}.zip"
+DOWNLOADS="http://dl.dropbox.com/u/45326422/Aldabra-${PV}.tar.gz"
 
 LICENCES="LGPL-2"
 SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS=""
 
+# FIXME: gnome-3.2
 DEPENDENCIES="
     build:
     build+run:
