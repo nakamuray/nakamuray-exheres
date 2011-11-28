@@ -21,12 +21,12 @@ LICENCES="MIT"
 SLOT="0"
 PLATFORMS="~amd64"
 #MYOPTIONS="bootstrap platform: amd64 x86"
-MYOPTIONS="use-cpython [[ description = [ use CPython to build pypy ] ]]"
+MYOPTIONS="bootstrap-cpython [[ description = [ use CPython to build pypy ] ]]"
 
 DEPENDENCIES="
     build:
-        use-cpython? ( dev-lang/python )
-        !use-cpython? ( dev-lang/pypy )
+        bootstrap-cpython? ( dev-lang/python )
+        !bootstrap-cpython? ( dev-lang/pypy )
         dev-libs/libffi
     build+run:
 "
@@ -46,6 +46,10 @@ WORK="${WORKBASE}/${PN}-${PN}-release-${PV}"
 #BOOTSTRAP_ID_AMD64="43780-b590cf6de419"
 #BOOTSTRAP_ID_X86=""
 
+pkg_setup() {
+    exdirectory --allow /opt
+}
+
 src_compile() {
     #if option bootstrap; then
     #    if option platform:amd64; then
@@ -58,7 +62,7 @@ src_compile() {
     #else
     #    pypy=pypy
     #fi
-    if option use-cpython; then
+    if option bootstrap-cpython; then
         pypy=python
     else
         pypy=pypy
