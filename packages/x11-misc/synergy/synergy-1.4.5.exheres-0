@@ -1,0 +1,44 @@
+# Copyright 2012 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require cmake
+
+SUMMARY="lets you easily share your mouse and keyboard between multiple computers"
+HOMEPAGE="http://synergy-foss.org/"
+DOWNLOADS="http://synergy.googlecode.com/files/${PNV}-Source.tar.gz"
+
+LICENCES="GPL-2"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        x11-proto/xextproto
+        x11-proto/xproto
+        x11-proto/kbproto
+        x11-proto/xineramaproto
+        x11-libs/libXt
+    build+run:
+        x11-libs/libXtst
+        x11-libs/libX11
+        x11-libs/libXext
+        x11-libs/libXinerama
+"
+
+WORK="${WORKBASE}"/${PNV}-Source
+
+src_install() {
+    dobin bin/synergy{c,s}
+
+    insinto /etc
+    newins doc/synergy.conf.example synergy.conf
+
+    edo mv doc/synergyc.{man,1}
+    edo mv doc/synergys.{man,1}
+    doman doc/synergy{c,s}.1
+
+    dodoc README doc/synergy.conf.example*
+}
+
+
