@@ -1,0 +1,46 @@
+# Copyright 2012 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require gtk-icon-cache
+
+SUMMARY="An icon theme for Gnome"
+HOMEPAGE="http://code.google.com/p/faenza-icon-theme/
+http://gnome-look.org/content/show.php/Faenza?content=128143"
+#DOWNLOADS="http://faenza-icon-theme.googlecode.com/files/faenza-sources_${PV}.tar.gz"
+DOWNLOADS="http://ppa.launchpad.net/tiheum/equinox/ubuntu/pool/main/f/${PN}/${PN}_${PV}.tar.gz"
+
+LICENCES="GPL-3"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+"
+
+src_prepare() {
+    for d in Faenza Faenza-Dark; do
+        edo pushd ${d}/places
+
+        for size in [0-9]*; do
+            ln -sf ./start-here-gnome.png ${size}/start-here.png
+            ln -sf ./start-here-gnome-symbolic.png ${size}/start-here-symbolic.png
+        done
+
+        ln -sf ./start-here-gnome.svg scalable/start-here.svg
+        ln -sf ./start-here-gnome-symbolic.svg scalable/start-here-symbolic.svg
+
+        popd
+    done
+
+    edo rm Faenza/places/*/distributor-logo.*
+}
+
+src_install() {
+    insinto /usr/share/icons
+
+    doins -r Faenza*
+}
+
+
