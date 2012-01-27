@@ -1,0 +1,69 @@
+# Copyright 2011 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service
+
+SUMMARY="pair of programs which are used to maintain the accuracy of the system clock on a computer"
+HOMEPAGE="http://chrony.tuxfamily.org/"
+DOWNLOADS="http://download.tuxfamily.org/chrony/${PNV}.tar.gz"
+
+LICENCES="GPL-2"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="caps ipv6 readline"
+
+DEPENDENCIES="
+    build:
+    build+run:
+        user/chrony
+        readline? ( sys-libs/readline )
+        caps? ( sys-libs/libcap )
+"
+
+BUGS_TO=""
+
+DEFAULT_SRC_CONFIGURE_PARAMS=( )
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( )
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
+    'caps linuxcaps'
+    ipv6
+    readline
+)
+
+src_configure() {
+    myconf=()
+
+    option caps || myconf+=( --disable-linuxcaps )
+    option ipv6 || myconf+=( --disable-ipv6 )
+    option readline || myconf+=( --disable-readline )
+
+    edo ./configure \
+        --prefix=/usr \
+        --sysconfdir=/etc/chrony \
+        --infodir=/usr/share/info \
+        --mandir=/usr/share/man \
+        --docdir=/usr/share/doc/${PNV} \
+        "${myconf[@]}"
+}
+
+src_compile() {
+    emake all
+    emake docs
+}
+
+src_install() {
+    default
+
+    dodoc examples/*
+
+    insinto /etc/chrony
+    newins examples/chrony.conf.example chrony.conf
+    edo sed -i -e '/^driftfile/ s:/etc/:/var/lib/chrony/:' "${IMAGE}"/etc/chrony/chrony.conf
+
+    keepdir /var/lib/chrony
+    edo chown chrony "${IMAGE}"/var/lib/chrony
+
+    install_systemd_files
+}
+
+
