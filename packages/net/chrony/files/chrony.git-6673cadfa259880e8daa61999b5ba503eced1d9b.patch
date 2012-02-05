@@ -1,0 +1,57 @@
+From 6673cadfa259880e8daa61999b5ba503eced1d9b Mon Sep 17 00:00:00 2001
+From: Miroslav Lichvar <mlichvar@redhat.com>
+Date: Thu, 5 Jan 2012 15:11:54 +0100
+Subject: [PATCH] Check if struct in6_pktinfo is usable
+
+---
+ configure |    5 ++++-
+ ntp_io.c  |    4 ++--
+ 2 files changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/configure b/configure
+index 9ec0dbd..c9c0a56 100755
+--- a/configure
++++ b/configure
+@@ -373,13 +373,16 @@ if [ $feat_ipv6 = "1" ] && \
+     return !inet_ntop(AF_INET6, &n.sin6_addr.s6_addr, p, sizeof(p));'
+ then
+   add_def HAVE_IPV6
+-  if ! test_code 'in6_pktinfo' 'sys/socket.h netinet/in.h' '' '' '
++  if test_code 'in6_pktinfo' 'sys/socket.h netinet/in.h' '' '' '
+     return sizeof(struct in6_pktinfo);'
+   then
++    add_def HAVE_IN6_PKTINFO
++  else
+     if test_code 'in6_pktinfo with _GNU_SOURCE' 'sys/socket.h netinet/in.h' \
+       '-D_GNU_SOURCE' '' 'return sizeof(struct in6_pktinfo);'
+     then
+       add_def _GNU_SOURCE
++      add_def HAVE_IN6_PKTINFO
+     fi
+   fi
+ fi
+diff --git a/ntp_io.c b/ntp_io.c
+index 6a556f6..57e979b 100644
+--- a/ntp_io.c
++++ b/ntp_io.c
+@@ -355,7 +355,7 @@ read_from_socket(void *anything)
+       }
+ #endif
+ 
+-#ifdef IPV6_PKTINFO
++#if defined(IPV6_PKTINFO) && defined(HAVE_IN6_PKTINFO)
+       if (cmsg->cmsg_level == IPPROTO_IPV6 && cmsg->cmsg_type == IPV6_PKTINFO) {
+         struct in6_pktinfo ipi;
+ 
+@@ -462,7 +462,7 @@ send_packet(void *packet, int packetlen, NTP_Remote_Address *remote_addr)
+   }
+ #endif
+ 
+-#ifdef IPV6_PKTINFO
++#if defined(IPV6_PKTINFO) && defined(HAVE_IN6_PKTINFO)
+   if (remote_addr->local_ip_addr.family == IPADDR_INET6) {
+     struct cmsghdr *cmsg;
+     struct in6_pktinfo *ipi;
+-- 
+1.7.2.5
+
