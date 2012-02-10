@@ -1,0 +1,37 @@
+# Copyright 2012 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+SCM_REPOSITORY="git://github.com/zfsonlinux/spl.git"
+require scm-git
+
+SUMMARY="Solaris Porting Layer"
+HOMEPAGE="http://zfsonlinux.org/"
+
+LICENCES="GPL-2"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+"
+
+# XXX: need root privileges
+RESTRICT="test"
+
+src_install() {
+    # XXX: who need this dir for what?
+    edo mkdir -p "${IMAGE}"/lib64/modules/99.98.3.2.5
+
+    default
+
+    edo rm -r "${IMAGE}"/lib64/modules/99.98.3.2.5
+
+    if [[ ${LIBDIR} != lib ]]; then
+        edo mv "${IMAGE}"/lib/modules/* "${IMAGE}"/${LIBDIR}/modules/
+        edo rmdir "${IMAGE}"/lib/{modules,}
+    fi
+}
+
+
