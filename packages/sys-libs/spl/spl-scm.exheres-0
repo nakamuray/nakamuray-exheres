@@ -36,4 +36,8 @@ src_install() {
     fi
 }
 
+pkg_postinst() {
+    depmod
+}
+
 
