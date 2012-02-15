@@ -24,12 +24,14 @@ DEFAULT_SRC_CONFIGURE_PARAMS=( --with-udevdir=/${LIBDIR}/udev )
 RESTRICT="test"
 
 src_install() {
+    kern_ver=$( uname -r )
+
     # XXX: who need this dir for what?
-    edo mkdir -p "${IMAGE}"/lib64/modules/99.98.3.2.5
+    edo mkdir -p "${IMAGE}"/lib64/modules/99.98.${kern_ver}
 
     default
 
-    edo rm -r "${IMAGE}"/lib64/modules/99.98.3.2.5
+    edo rm -r "${IMAGE}"/lib64/modules/99.98.${kern_ver}
     edo rmdir "${IMAGE}"/usr/include/libzfs/linux
 
     if [[ ${LIBDIR} != lib ]]; then

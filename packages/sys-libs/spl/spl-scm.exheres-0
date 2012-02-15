@@ -21,12 +21,14 @@ DEPENDENCIES="
 RESTRICT="test"
 
 src_install() {
+    kern_ver=$( uname -r )
+
     # XXX: who need this dir for what?
-    edo mkdir -p "${IMAGE}"/lib64/modules/99.98.3.2.5
+    edo mkdir -p "${IMAGE}"/lib64/modules/99.98.${kern_ver}
 
     default
 
-    edo rm -r "${IMAGE}"/lib64/modules/99.98.3.2.5
+    edo rm -r "${IMAGE}"/lib64/modules/99.98.${kern_ver}
 
     if [[ ${LIBDIR} != lib ]]; then
         edo mv "${IMAGE}"/lib/modules/* "${IMAGE}"/${LIBDIR}/modules/
