@@ -1,6 +1,8 @@
 # Copyright 2011 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
+REVID="2346207d9946"
+
 SUMMARY="fast, compliant alternative implementation of the Python language"
 HOMEPAGE="http://pypy.org/"
 DOWNLOADS="
@@ -41,7 +43,8 @@ DEPENDENCIES="
 #    python-sphinx (for the optional documentation build. You need version 1.0.7 or later)
 #    python-greenlet (for the optional stackless support in interpreted mode/testing)
 
-WORK="${WORKBASE}/${PN}-${PN}-release-${PV}"
+#WORK="${WORKBASE}/${PN}-${PN}-release-${PV}"
+WORK="${WORKBASE}/${PN}-${PN}-${REVID}"
 
 #BOOTSTRAP_ID_AMD64="43780-b590cf6de419"
 #BOOTSTRAP_ID_X86=""
