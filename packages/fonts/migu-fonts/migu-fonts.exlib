@@ -12,7 +12,7 @@ DOWNLOADS="
     http://en.sourceforge.jp/frs/redir.php?f=/${PROJ_NAME}/${SRC_NR}/${MY_PN}-1c-${PV}.zip -> ${MY_PN}-1c-${PV}.zip
 "
 
-LICENCES="FREE"
+LICENCES="IPAFL M+"
 SLOT="0"
 MYOPTIONS=""
 
