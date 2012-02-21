@@ -16,12 +16,6 @@ DEPENDENCIES="
         dev-lang/perl
 "
 
-BUGS_TO=""
-
-DEFAULT_SRC_CONFIGURE_PARAMS=( )
-DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( )
-DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( )
-
 src_configure() {
     : do nothing
 }
@@ -33,3 +27,4 @@ src_compile() {
 src_install() {
     dobin ipcalc
 }
+

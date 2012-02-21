@@ -17,14 +17,6 @@ DEPENDENCIES="
         fonts/IPAfont
 "
 
-BUGS_TO=""
-
-REMOTE_IDS=""
-
-UPSTREAM_CHANGELOG=""
-UPSTREAM_DOCUMENTATION=""
-UPSTREAM_RELEASE_NOTES=""
-
 WORK="${WORKBASE}/${MY_PNV}"
 
 src_compile() {
@@ -37,3 +29,4 @@ src_install() {
     doins *+IPAG.ttf
     fix_fonts
 }
+

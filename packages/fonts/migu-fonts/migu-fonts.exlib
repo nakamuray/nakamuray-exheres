@@ -18,14 +18,6 @@ MYOPTIONS=""
 
 DEPENDENCIES=""
 
-BUGS_TO=""
-
-REMOTE_IDS=""
-
-UPSTREAM_CHANGELOG=""
-UPSTREAM_DOCUMENTATION=""
-UPSTREAM_RELEASE_NOTES=""
-
 WORK="${WORKBASE}"
 
 src_install() {
@@ -35,3 +27,4 @@ src_install() {
     done
     fix_fonts
 }
+

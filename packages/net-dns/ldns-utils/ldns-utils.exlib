@@ -15,14 +15,6 @@ DEPENDENCIES="
         net-libs/ldns[=${PV}]
 "
 
-BUGS_TO=""
-
-REMOTE_IDS=""
-
-UPSTREAM_CHANGELOG=""
-UPSTREAM_DOCUMENTATION=""
-UPSTREAM_RELEASE_NOTES=""
-
 WORK="${WORKBASE}/${MY_PNV}"
 
 SUBDIRS="drill"
@@ -47,3 +39,4 @@ src_install() {
         emake DESTDIR="${IMAGE}" install
     done
 }
+

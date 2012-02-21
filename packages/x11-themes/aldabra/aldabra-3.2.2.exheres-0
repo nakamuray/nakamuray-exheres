@@ -10,7 +10,6 @@ SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS=""
 
-# FIXME: gnome-3.2
 DEPENDENCIES="
     build:
     build+run:

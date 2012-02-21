@@ -20,8 +20,6 @@ DEPENDENCIES="
         applet? ( gnome-desktop/gnome-applets )
 "
 
-BUGS_TO=""
-
 DEFAULT_SRC_CONFIGURE_PARAMS=(
     --enable-systray
     --with-ext-charcode=CP932

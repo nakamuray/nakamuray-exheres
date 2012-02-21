@@ -3,3 +3,4 @@
 require mecab-ipadic
 
 PLATFORMS="~amd64"
+

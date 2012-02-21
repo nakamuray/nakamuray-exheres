@@ -1,8 +1,6 @@
 require distutils
 
 SUMMARY="A POP3 mail retriever with reliable Maildir and mbox delivery"
-DESCRIPTION="
-"
 HOMEPAGE="http://pyropus.ca/software/getmail/"
 DOWNLOADS="${HOMEPAGE}/old-versions/${PNV}.tar.gz"
 
@@ -15,14 +13,3 @@ DEPENDENCIES="
         dev-lang/python:=[>=2.3.3]
 "
 
-BUGS_TO=""
-
-REMOTE_IDS=""
-
-UPSTREAM_CHANGELOG=""
-UPSTREAM_DOCUMENTATION=""
-UPSTREAM_RELEASE_NOTES=""
-
-DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}/getmail-sorted-cache.diff"
-)

@@ -5,12 +5,23 @@ HOMEPAGE="http://code.google.com/p/bmpanel2/"
 
 LICENCES="MIT"
 SLOT="0"
+MYOPTIONS="bmpanel2cfg"
 
-# TODO
 DEPENDENCIES="
     build+run:
+        dev-libs/glib:2
+        x11-libs/pango
+        x11-libs/cairo
+        x11-libs/libX11
+        bmpanel2cfg? (
+            dev-lang/python
+            gnome-bindings/pygtk
+        )
+    suggestion:
+        fonts/dejavu
 "
 
 src_configure () {
     cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RELEASE .
 }
+

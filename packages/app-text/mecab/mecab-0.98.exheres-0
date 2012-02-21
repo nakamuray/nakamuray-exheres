@@ -3,3 +3,4 @@
 require mecab
 
 PLATFORMS="~amd64"
+

@@ -91,13 +91,6 @@ DEPENDENCIES="
         nginx_modules:gzip? ( sys-libs/zlib )
 "
 
-BUGS_TO=""
-
-DEFAULT_SRC_CONFIGURE_PARAMS=( )
-DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( )
-DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( )
-
-
 src_configure() {
     ./configure \
         --prefix=/usr \

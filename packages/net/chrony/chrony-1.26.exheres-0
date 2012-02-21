@@ -20,12 +20,8 @@ DEPENDENCIES="
         caps? ( sys-libs/libcap )
 "
 
-BUGS_TO=""
-
 DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/chrony.git-6673cadfa259880e8daa61999b5ba503eced1d9b.patch )
 
-DEFAULT_SRC_CONFIGURE_PARAMS=( )
-DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( )
 DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
     'caps linuxcaps'
     ipv6

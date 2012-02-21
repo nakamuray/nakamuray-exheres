@@ -1,10 +1,7 @@
 require sourceforge
 
 SUMMARY="Mail delivery agent/filter"
-DESCRIPTION="
-"
 HOMEPAGE="http://www.courier-mta.org/maildrop/"
-#DOWNLOADS=""
 
 LICENCES="GPL-3"
 SLOT="0"
@@ -15,14 +12,6 @@ DEPENDENCIES="
         net-dns/libidn
 "
 
-BUGS_TO=""
-
-REMOTE_IDS=""
-
-UPSTREAM_CHANGELOG=""
-UPSTREAM_DOCUMENTATION=""
-UPSTREAM_RELEASE_NOTES=""
-
 DEFAULT_SRC_CONFIGURE_PARAMS=(
     --with-devel
 )
@@ -32,3 +21,4 @@ src_install () {
     #fperms 4755 /usr/bin/maildrop
     chmod u+s "${IMAGE}/usr/bin/maildrop"
 }
+
