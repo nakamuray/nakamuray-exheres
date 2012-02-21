@@ -1,4 +1,4 @@
-require googlecode [ suffix=tar.gz ]
+require cmake googlecode [ suffix=tar.gz ]
 
 SUMMARY="NETWM compliant panel for X"
 HOMEPAGE="http://code.google.com/p/bmpanel2/"
@@ -22,6 +22,8 @@ DEPENDENCIES="
 "
 
 src_configure () {
-    cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RELEASE .
+    ecmake -DCMAKE_BUILD_TYPE=RELEASE \
+           -DBMPANEL2_FEATURE_CONFIG=$(option bmpanel2cfg && echo ON || echo off) \
+           .
 }
 
