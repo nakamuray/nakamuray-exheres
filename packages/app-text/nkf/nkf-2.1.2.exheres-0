@@ -3,7 +3,7 @@
 
 SUMMARY="Network Kanji Filter"
 HOMEPAGE="http://nkf.sourceforge.jp/"
-DOWNLOADS="http://jaist.dl.sourceforge.jp/nkf/48945/nkf-2.1.1.tar.gz"
+DOWNLOADS="mirror://sourceforge.jp/${PN}/53171/${PNV}.tar.gz"
 
 LICENCES="as-is"
 SLOT="0"
