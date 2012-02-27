@@ -1,6 +1,8 @@
 MY_PNV="mplus-TESTFLIGHT-${PV}"
 PROJ_NAME="mplus-fonts"
 
+FONT="M+"
+
 require xfont
 
 SUMMARY="M+ Japanese outline fonts"
