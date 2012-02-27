@@ -21,6 +21,7 @@ NGINX_HTTP_OPTIONS=(
     sub
     dav
     flv
+    mp4
     gzip_static
     random_index
     secure_link
@@ -92,7 +93,7 @@ DEPENDENCIES="
 "
 
 src_configure() {
-    ./configure \
+    edo ./configure \
         --prefix=/usr \
         --sbin-path=/usr/sbin/nginx \
         --conf-path=/etc/nginx/nginx.conf \
