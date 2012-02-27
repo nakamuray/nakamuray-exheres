@@ -1,0 +1,35 @@
+# Copyright 2012 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+FONT="ipamona"
+
+require xfont
+
+MY_PNV="opfc-ModuleHP-1.1.1_withIPAMonaFonts-${PV}"
+
+SUMMARY="modified version of IPA font for AA"
+HOMEPAGE="http://www.geocities.jp/ipa_mona/"
+DOWNLOADS="http://www.geocities.jp/ipa_mona/${MY_PNV}.tar.gz"
+
+LICENCES="grass-ipafonts as-is"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+"
+
+WORK="${WORKBASE}"/${MY_PNV}
+
+src_configure() {
+    : do nothing
+}
+
+src_install() {
+    insinto /usr/share/fonts/X11/${FONT}
+    doins fonts/ipa*-mona.ttf
+    fix_fonts
+}
+
