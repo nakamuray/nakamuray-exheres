@@ -2,8 +2,6 @@ MY_PNV="${PN}-${PV%.*}-${PV/*.}"
 require sourceforge [ suffix=tar.gz project=mecab pnv=${MY_PNV} ]
 
 SUMMARY="Morphological Analysis Tool, ipadic"
-DESCRIPTION="
-"
 HOMEPAGE="http://mecab.sourceforge.net/"
 
 LICENCES="BSD"
@@ -14,14 +12,6 @@ DEPENDENCIES="
     build+run:
         app-text/mecab
 "
-
-BUGS_TO=""
-
-REMOTE_IDS=""
-
-UPSTREAM_CHANGELOG=""
-UPSTREAM_DOCUMENTATION=""
-UPSTREAM_RELEASE_NOTES=""
 
 DEFAULT_SRC_CONFIGURE_PARAMS=(
     --with-charset=utf-8
