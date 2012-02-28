@@ -1,4 +1,0 @@
-src_prepare () {
-    default
-    find ./ -name Makefile.in | xargs sed -i -e 's/^ \{8\}/\t/'
-}
