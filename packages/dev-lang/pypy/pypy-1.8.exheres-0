@@ -23,12 +23,12 @@ LICENCES="MIT"
 SLOT="0"
 PLATFORMS="~amd64"
 #MYOPTIONS="bootstrap platform: amd64 x86"
-MYOPTIONS="bootstrap-cpython [[ description = [ use CPython to build pypy ] ]]"
+MYOPTIONS="bootstrap [[ description = [ use CPython to build pypy ] ]]"
 
 DEPENDENCIES="
     build:
-        bootstrap-cpython? ( dev-lang/python )
-        !bootstrap-cpython? ( dev-lang/pypy )
+        bootstrap? ( dev-lang/python )
+        !bootstrap? ( dev-lang/pypy )
         dev-libs/libffi
     build+run:
 "
@@ -65,7 +65,7 @@ src_compile() {
     #else
     #    pypy=pypy
     #fi
-    if option bootstrap-cpython; then
+    if option bootstrap; then
         pypy=python
     else
         pypy=pypy
