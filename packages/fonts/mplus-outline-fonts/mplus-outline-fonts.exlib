@@ -1,3 +1,6 @@
+# Copyright 2012 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
 MY_PNV="mplus-TESTFLIGHT-${PV}"
 PROJ_NAME="mplus-fonts"
 

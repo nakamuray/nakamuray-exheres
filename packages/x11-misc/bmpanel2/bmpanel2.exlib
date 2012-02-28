@@ -1,3 +1,6 @@
+# Copyright 2012 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
 require cmake googlecode [ suffix=tar.gz ]
 
 SUMMARY="NETWM compliant panel for X"

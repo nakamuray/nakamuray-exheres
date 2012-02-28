@@ -1,3 +1,6 @@
+# Copyright 2012 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
 require systemd-service
 
 SUMMARY="validating, recursive, and caching DNS resolver"
