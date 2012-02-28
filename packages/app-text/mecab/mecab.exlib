@@ -13,8 +13,6 @@ SLOT="0"
 MYOPTIONS=""
 
 DEPENDENCIES="
-    build+run:
-        dev-lang/perl
     suggestion:
         app-dicts/mecab-ipadic
 "
