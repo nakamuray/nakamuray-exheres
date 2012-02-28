@@ -87,7 +87,7 @@ DEPENDENCIES="
     build+run:
         user/nginx
         dev-libs/pcre
-        nginx_modules:perl? ( dev-lang/perl )
+        nginx_modules:perl? ( dev-lang/perl:= )
         nginx_modules:ssl?  ( dev-libs/openssl )
         nginx_modules:gzip? ( sys-libs/zlib )
 "
@@ -137,7 +137,14 @@ src_install() {
 
     dodoc CHANGES* README
 
-    # TODO: install perl modules
+    if option nginx_modules:perl; then
+        edo pushd objs/src/http/modules/perl
+        default
+        edo rm "${IMAGE}"/usr/${LIBDIR}/perl5/5.*/*/perllocal.pod
+        edo rmdir "${IMAGE}"/usr/${LIBDIR}/perl5/5.*/*/
+        edo rmdir "${IMAGE}"/usr/${LIBDIR}/perl5/5.*/
+        popd
+    fi
 
     install_systemd_files
 }
