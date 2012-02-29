@@ -27,9 +27,7 @@ WORK="${WORKBASE}"
 
 src_install() {
     insinto /usr/share/fonts/X11/${FONT}
-    for f in 1m 2m 1p 1c; do
-        doins ${MY_PN}-${f}-${PV}/${MY_PN}-*.ttf
-    done
+    doins ${MY_PN}-{1m,2m,1p,1c}-${PV}/${MY_PN}-*.ttf
     fix_fonts
 }
 
