@@ -17,28 +17,5 @@ DEPENDENCIES="
         net-libs/ldns[=${PV}]
 "
 
-WORK="${WORKBASE}/${MY_PNV}"
-
-SUBDIRS="drill"
-
-src_configure() {
-    for subdir in ${SUBDIRS}; do
-        cd "${WORK}/${subdir}"
-        econf
-    done
-}
-
-src_compile() {
-    for subdir in ${SUBDIRS}; do
-        cd "${WORK}/${subdir}"
-        emake
-    done
-}
-
-src_install() {
-    for subdir in ${SUBDIRS}; do
-        cd "${WORK}/${subdir}"
-        emake DESTDIR="${IMAGE}" install
-    done
-}
+WORK="${WORKBASE}/${MY_PNV}/drill"
 
