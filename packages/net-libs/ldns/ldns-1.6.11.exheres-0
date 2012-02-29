@@ -4,9 +4,7 @@ require ldns
 
 PLATFORMS="~amd64"
 
-src_test() {
-    # disable broken test
-    # bash: test/test_all.sh: No such file or directory
-    return
-}
+# disable broken test
+# bash: test/test_all.sh: No such file or directory
+RESTRICT="test"
 
