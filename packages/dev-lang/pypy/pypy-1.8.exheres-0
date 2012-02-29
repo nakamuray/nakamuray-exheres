@@ -27,10 +27,9 @@ MYOPTIONS="bootstrap [[ description = [ use CPython to build pypy ] ]]"
 
 DEPENDENCIES="
     build:
+        dev-libs/libffi
         bootstrap? ( dev-lang/python )
         !bootstrap? ( dev-lang/pypy )
-        dev-libs/libffi
-    build+run:
 "
 # optional deps
 #    pkg-config (to help us locate libffi files)

@@ -13,7 +13,6 @@ PLATFORMS="~amd64"
 MYOPTIONS=""
 
 DEPENDENCIES="
-    build:
     build+run:
         x11-themes/gtk-engines-murrine[>=0.98.1.1]
         x11-themes/gtk-engines-unico

@@ -12,11 +12,10 @@ SLOT="0"
 PLATFORMS="~amd64"
 
 DEPENDENCIES="
-    build:
     build+run:
-        gnome-bindings/pygtk[>=2.16]
-        dev-python/pyalsaaudio[>=0.6]
         dev-python/dbus-python
+        dev-python/pyalsaaudio[>=0.6]
+        gnome-bindings/pygtk[>=2.16]
 "
 # TODO: optional python-xlib deps
 

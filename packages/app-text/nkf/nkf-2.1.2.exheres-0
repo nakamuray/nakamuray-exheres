@@ -10,10 +10,7 @@ SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS=""
 
-DEPENDENCIES="
-    build:
-    build+run:
-"
+DEPENDENCIES=""
 
 src_install() {
     dobin nkf

@@ -14,8 +14,8 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build:
-        dev-ocaml/findlib
         dev-lang/ocaml
+        dev-ocaml/findlib
     build+run:
         dev-libs/pcre
 "

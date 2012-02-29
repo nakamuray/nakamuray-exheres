@@ -13,9 +13,9 @@ MYOPTIONS="bmpanel2cfg"
 DEPENDENCIES="
     build+run:
         dev-libs/glib:2
-        x11-libs/pango
         x11-libs/cairo
         x11-libs/libX11
+        x11-libs/pango
         bmpanel2cfg? (
             dev-lang/python
             gnome-bindings/pygtk

@@ -83,13 +83,12 @@ MYOPTIONS="
 "
 
 DEPENDENCIES="
-    build:
     build+run:
-        user/nginx
         dev-libs/pcre
+        user/nginx
+        nginx_modules:gzip? ( sys-libs/zlib )
         nginx_modules:perl? ( dev-lang/perl:= )
         nginx_modules:ssl?  ( dev-libs/openssl )
-        nginx_modules:gzip? ( sys-libs/zlib )
 "
 
 src_configure() {

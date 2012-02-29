@@ -13,11 +13,10 @@ PLATFORMS="~amd64"
 MYOPTIONS="caps ipv6 readline"
 
 DEPENDENCIES="
-    build:
     build+run:
         user/chrony
-        readline? ( sys-libs/readline )
         caps? ( sys-libs/libcap )
+        readline? ( sys-libs/readline )
 "
 
 DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/chrony.git-6673cadfa259880e8daa61999b5ba503eced1d9b.patch )

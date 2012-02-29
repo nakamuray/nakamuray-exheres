@@ -13,7 +13,6 @@ PLATFORMS="~amd64"
 MYOPTIONS=""
 
 DEPENDENCIES="
-    build:
     build+run:
         sys-libs/spl
 "

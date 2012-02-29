@@ -13,10 +13,10 @@ MYOPTIONS="threads"
 
 DEPENDENCIES="
     build+run:
-        user/unbound
         dev-libs/libevent
         dev-libs/openssl
         net-libs/ldns
+        user/unbound
 "
 
 DEFAULT_SRC_CONFIGURE_PARAMS=(

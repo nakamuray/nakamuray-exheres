@@ -11,7 +11,6 @@ SLOT="0"
 PLATFORMS="~amd64"
 
 DEPENDENCIES="
-    build:
     build+run:
         sys-sound/alsa-lib
 "
