@@ -17,8 +17,7 @@ MYOPTIONS=""
 DEPENDENCIES="
     build:
     build+run:
-        app-shells/bash
-        dev-lang/perl
+        dev-lang/perl:=
         dev-libs/libxml2
         net-print/foomatic-filters
 "
