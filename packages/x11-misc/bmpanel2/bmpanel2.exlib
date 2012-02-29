@@ -21,7 +21,7 @@ DEPENDENCIES="
             gnome-bindings/pygtk
         )
     suggestion:
-        fonts/dejavu
+        fonts/dejavu [[ description = [ used by a lot of themes ] ]]
 "
 
 src_configure () {

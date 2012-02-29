@@ -14,6 +14,6 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     suggestion:
-        app-dicts/mecab-ipadic
+        app-dicts/mecab-ipadic [[ description = [ dictionary for mecab ] ]]
 "
 
