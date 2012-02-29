@@ -13,7 +13,7 @@ MYOPTIONS=""
 DEPENDENCIES="
     build:
     build+run:
-        dev-lang/perl
+        dev-lang/perl:*
 "
 
 src_configure() {
