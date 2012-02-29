@@ -20,8 +20,9 @@ DEFAULT_SRC_CONFIGURE_PARAMS=(
 )
 
 src_install () {
-    make DESTDIR="${IMAGE}" install || die
+    default
+
     #fperms 4755 /usr/bin/maildrop
-    chmod u+s "${IMAGE}/usr/bin/maildrop"
+    edo chmod u+s "${IMAGE}/usr/bin/maildrop"
 }
 

@@ -21,12 +21,12 @@ src_prepare() {
         edo pushd ${d}/places
 
         for size in [0-9]*; do
-            ln -sf ./start-here-gnome.png ${size}/start-here.png
-            ln -sf ./start-here-gnome-symbolic.png ${size}/start-here-symbolic.png
+            edo ln -sf ./start-here-gnome.png ${size}/start-here.png
+            edo ln -sf ./start-here-gnome-symbolic.png ${size}/start-here-symbolic.png
         done
 
-        ln -sf ./start-here-gnome.svg scalable/start-here.svg
-        ln -sf ./start-here-gnome-symbolic.svg scalable/start-here-symbolic.svg
+        edo ln -sf ./start-here-gnome.svg scalable/start-here.svg
+        edo ln -sf ./start-here-gnome-symbolic.svg scalable/start-here-symbolic.svg
 
         popd
     done

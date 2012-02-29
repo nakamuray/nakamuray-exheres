@@ -16,6 +16,6 @@ DEPENDENCIES="
 "
 
 src_test() {
-    PYTHONPATH="$(ls -d build/lib.*)" python test.py -v
+    PYTHONPATH="$(ls -d build/lib.*)" edo python test.py -v
 }
 

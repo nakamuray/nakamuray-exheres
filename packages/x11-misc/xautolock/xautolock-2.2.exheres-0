@@ -19,7 +19,7 @@ DEPENDENCIES="
 "
 
 src_compile() {
-    xmkmf
+    edo xmkmf
     emake
 }
 

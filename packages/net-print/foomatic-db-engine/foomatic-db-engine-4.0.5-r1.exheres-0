@@ -24,13 +24,13 @@ DEPENDENCIES="
 src_prepare() {
     default
 
-    sed -i -e "s:@LIB_CUPS@:$(cups-config --serverbin):" "${WORK}"/Makefile.in
+    edo sed -i -e "s:@LIB_CUPS@:$(cups-config --serverbin):" "${WORK}"/Makefile.in
 }
 
 src_install() {
     default
 
-    rmdir "${IMAGE}/etc/foomatic"
-    rmdir "${IMAGE}/etc"
+    edo rmdir "${IMAGE}/etc/foomatic"
+    edo rmdir "${IMAGE}/etc"
 }
 
