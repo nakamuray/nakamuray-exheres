@@ -67,10 +67,11 @@ NGINX_DEFAULT_MAIL_OPTION=(
 
 MYOPTIONS="
     file-aio             [[ description = [ enable file aio support ] ]]
-    ipv6
 
     http                 [[ description = [ enable HTTP server ] ]]
     http-cache           [[ description = [ enable HTTP cache ] ]]
+
+    ipv6
     
     mail                 [[ description = [ enable POP3/IMAP4/SMTP proxy module ] ]]
 

@@ -9,7 +9,7 @@ DOWNLOADS="http://www.ipmsg.org/archive/${PNV}.tar.gz"
 LICENCES="GPL-2"
 SLOT="0"
 PLATFORMS="~amd64"
-MYOPTIONS="ssl applet"
+MYOPTIONS="applet ssl"
 
 # may need dev-perl/XML-Parser for build dep.
 DEPENDENCIES="
