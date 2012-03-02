@@ -7,7 +7,7 @@ SUMMARY="GTK2, GTK3, GNOME-Shell theme"
 HOMEPAGE="http://gnome-look.org/content/show.php/Zukini?content=147431"
 DOWNLOADS="http://gnome-look.org/CONTENT/content-files/147431-Zukini.zip -> ${PNV}.zip"
 
-LICENCES="GPL"
+LICENCES="GPL-3"
 SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS=""

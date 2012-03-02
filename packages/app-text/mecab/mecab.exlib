@@ -8,7 +8,7 @@ DESCRIPTION="
 "
 HOMEPAGE="http://mecab.sourceforge.net/"
 
-LICENCES="BSD"
+LICENCES="GPL-2 LGPL-2.1 BSD-3"
 SLOT="0"
 MYOPTIONS=""
 

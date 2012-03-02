@@ -8,7 +8,7 @@ SUMMARY="tools using ldns"
 HOMEPAGE="http://www.nlnetlabs.nl/projects/ldns/"
 DOWNLOADS="http://www.nlnetlabs.nl/downloads/ldns/${MY_PNV}.tar.gz"
 
-LICENCES="BSD"
+LICENCES="BSD-3"
 SLOT="0"
 MYOPTIONS=""
 

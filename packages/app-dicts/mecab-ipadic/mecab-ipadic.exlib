@@ -7,7 +7,7 @@ require sourceforge [ suffix=tar.gz project=mecab pnv=${MY_PNV} ]
 SUMMARY="Morphological Analysis Tool, ipadic"
 HOMEPAGE="http://mecab.sourceforge.net/"
 
-LICENCES="BSD"
+LICENCES="as-is"
 SLOT="0"
 MYOPTIONS=""
 

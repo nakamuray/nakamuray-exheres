@@ -12,7 +12,8 @@ in their dependencies.
 "
 HOMEPAGE="http://www.doughellmann.com/docs/virtualenvwrapper/"
 
-LICENCES="BSD"
+# XXX: it says it use BSD, but ...
+LICENCES="as-is"
 SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS=""

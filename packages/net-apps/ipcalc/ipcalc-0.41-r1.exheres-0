@@ -5,7 +5,7 @@ SUMMARY="IP Calculator"
 HOMEPAGE="http://jodies.de/ipcalc"
 DOWNLOADS="http://jodies.de/ipcalc-archive/${PNV}.tar.gz"
 
-LICENCES="GPL"
+LICENCES="GPL-2"
 SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS=""

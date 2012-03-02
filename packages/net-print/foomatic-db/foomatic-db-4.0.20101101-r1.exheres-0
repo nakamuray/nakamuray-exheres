@@ -9,7 +9,7 @@ files, used by foomatic-db-engine to generate PPD files.
 HOMEPAGE="http://www.linuxprinting.org/foomatic.html"
 DOWNLOADS="http://www.linuxprinting.org/download/foomatic/${PN}-$(ever replace 2 - $PV).tar.gz"
 
-LICENCES="GPL"
+LICENCES="GPL-2"
 SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS=""

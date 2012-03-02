@@ -7,7 +7,7 @@ SUMMARY="nginx [engine x] is a HTTP and reverse proxy server, as well as a mail 
 HOMEPAGE="http://nginx.org/"
 DOWNLOADS="http://nginx.org/download/${PNV}.tar.gz"
 
-LICENCES="BSD"
+LICENCES="BSD-2"
 SLOT="0"
 PLATFORMS="~amd64"
 

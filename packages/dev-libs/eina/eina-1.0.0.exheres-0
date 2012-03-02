@@ -7,7 +7,7 @@ SUMMARY="E17 file chunk reading/writing library"
 HOMEPAGE="http://www.enlightenment.org"
 DOWNLOADS="http://download.enlightenment.org/releases/${MY_PNV}.tar.bz2"
 
-LICENCES="LGPL2"
+LICENCES="LGPL-2.1"
 SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS=""
