@@ -12,31 +12,32 @@ SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS=""
 
-DEPENDENCIES="
-    build+run:
-"
+DEPENDENCIES=""
+
+DEFAULT_SRC_CONFIGURE_PARAMS=( --with-config=user )
 
 # XXX: need root privileges
 RESTRICT="test"
 
 src_install() {
-    kern_ver=$( uname -r )
-
-    # XXX: who need this dir for what?
-    edo mkdir -p "${IMAGE}"/lib64/modules/99.98.${kern_ver}
-
     default
 
-    edo rm -r "${IMAGE}"/lib64/modules/99.98.${kern_ver}
+    insinto /usr/src/${PNV}
+    doins -r META config include module
+    exeinto /usr/src/${PNV}
+    doexe configure
 
-    if [[ ${LIBDIR} != lib ]]; then
-        edo mv "${IMAGE}"/lib/modules/* "${IMAGE}"/${LIBDIR}/modules/
-        edo rmdir "${IMAGE}"/lib/{modules,}
-    fi
+    find ./ -name "*.in" | while read n; do
+        insinto /usr/src/${PNV}/"$(dirname "${n}")"
+        doins "${n}"
+    done
 }
 
 pkg_postinst() {
-    depmod
+    elog "The kernel module source is installed int /usr/src/${PNV}"
+    elog "You have to build it yourself:"
+    elog "# cd /usr/src/${PNV}"
+    elog "# ./configure --with-config=kernel"
+    elog "# make && make install"
 }
-
 
