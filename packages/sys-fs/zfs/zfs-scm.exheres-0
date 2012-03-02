@@ -17,30 +17,38 @@ DEPENDENCIES="
         sys-libs/spl
 "
 
-DEFAULT_SRC_CONFIGURE_PARAMS=( --with-udevdir=/${LIBDIR}/udev )
+DEFAULT_SRC_CONFIGURE_PARAMS=( --with-config=user --with-udevdir=/${LIBDIR}/udev )
 
 # XXX: need root privileges
 RESTRICT="test"
 
 src_install() {
-    kern_ver=$( uname -r )
-
-    # XXX: who need this dir for what?
-    edo mkdir -p "${IMAGE}"/lib64/modules/99.98.${kern_ver}
-
     default
 
-    edo rm -r "${IMAGE}"/lib64/modules/99.98.${kern_ver}
+    edo rmdir "${IMAGE}"/usr/include/libzfs/linux
+}
+
+src_install() {
+    default
+
     edo rmdir "${IMAGE}"/usr/include/libzfs/linux
 
-    if [[ ${LIBDIR} != lib ]]; then
-        edo mv "${IMAGE}"/lib/modules/* "${IMAGE}"/${LIBDIR}/modules/
-        edo rmdir "${IMAGE}"/lib/{modules,}
-    fi
+    insinto /usr/src/${PNV}
+    doins -r META config include module
+    exeinto /usr/src/${PNV}
+    doexe configure
+
+    find ./ -name "*.in" | while read n; do
+        insinto /usr/src/${PNV}/"$(dirname "${n}")"
+        doins "${n}"
+    done
 }
 
 pkg_postinst() {
-    depmod
+    elog "The kernel module source is installed into /usr/src/${PNV}"
+    elog "You have to build it yourself:"
+    elog "# cd /usr/src/${PNV}"
+    elog "# ./configure --with-config=kernel"
+    elog "# make && make install"
 }
-
 
