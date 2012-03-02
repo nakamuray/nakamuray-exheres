@@ -1,7 +1,7 @@
 # Copyright 2010 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-require distutils pypi
+require distutils [ python_dep="2.6" ] pypi
 
 SUMMARY="Enhancements to virtualenv"
 DESCRIPTION="
@@ -20,7 +20,6 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build+run:
-        dev-lang/python
         dev-python/virtualenv
 "
 
