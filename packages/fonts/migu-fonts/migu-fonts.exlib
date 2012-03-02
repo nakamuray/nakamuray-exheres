@@ -1,6 +1,8 @@
 # Copyright 2012 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
+myexparam src_nr
+
 MY_PN="migu"
 PROJ_NAME="mix-mplus-ipa"
 
@@ -11,10 +13,10 @@ require xfont
 SUMMARY="M+ + IPA fonts with some modification"
 HOMEPAGE="http://mix-mplus-ipa.sourceforge.jp/migu/"
 DOWNLOADS="
-    mirror://sourceforge.jp/${PROJ_NAME}/${SRC_NR}/${MY_PN}-1m-${PV}.zip
-    mirror://sourceforge.jp/${PROJ_NAME}/${SRC_NR}/${MY_PN}-2m-${PV}.zip
-    mirror://sourceforge.jp/${PROJ_NAME}/${SRC_NR}/${MY_PN}-1p-${PV}.zip
-    mirror://sourceforge.jp/${PROJ_NAME}/${SRC_NR}/${MY_PN}-1c-${PV}.zip
+    mirror://sourceforge.jp/${PROJ_NAME}/$(exparam src_nr)/${MY_PN}-1m-${PV}.zip
+    mirror://sourceforge.jp/${PROJ_NAME}/$(exparam src_nr)/${MY_PN}-2m-${PV}.zip
+    mirror://sourceforge.jp/${PROJ_NAME}/$(exparam src_nr)/${MY_PN}-1p-${PV}.zip
+    mirror://sourceforge.jp/${PROJ_NAME}/$(exparam src_nr)/${MY_PN}-1c-${PV}.zip
 "
 
 LICENCES="IPAFL M+"
