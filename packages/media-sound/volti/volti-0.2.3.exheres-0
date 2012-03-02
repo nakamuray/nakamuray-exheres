@@ -15,7 +15,7 @@ DEPENDENCIES="
     build+run:
         dev-python/dbus-python
         dev-python/pyalsaaudio[>=0.6]
-        gnome-bindings/pygtk[>=2.16]
+        gnome-bindings/pygtk:2[>=2.16]
 "
 # TODO: optional python-xlib deps
 
