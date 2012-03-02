@@ -17,8 +17,8 @@ DEPENDENCIES="
         x11-libs/libX11
         x11-libs/pango
         bmpanel2cfg? (
-            dev-lang/python
-            gnome-bindings/pygtk
+            dev-lang/python:=[>=2&<3]
+            gnome-bindings/pygtk:2
         )
     suggestion:
         fonts/dejavu [[ description = [ used by a lot of themes ] ]]
