@@ -14,8 +14,8 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build+run:
-        dev-libs/eet
-        dev-libs/eina
+        enlightenment-platform/eet
+        enlightenment-platform/eina
 "
 
 src_prepare() {
