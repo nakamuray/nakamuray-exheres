@@ -17,7 +17,7 @@ DEPENDENCIES="
     build:
         dev-util/pkg-config
     build+run:
-        dev-libs/glib[>=2.26.0]
+        dev-libs/glib:2[>=2.26.0]
         x11-libs/cairo[>=1.10]
         x11-libs/gtk+:3[>=3.1.10]
 "
