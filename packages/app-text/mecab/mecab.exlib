@@ -4,8 +4,6 @@
 require sourceforge [ suffix=tar.gz ]
 
 SUMMARY="Morphological Analysis Tool"
-DESCRIPTION="
-"
 HOMEPAGE="http://mecab.sourceforge.net/"
 
 LICENCES="GPL-2 LGPL-2.1 BSD-3"

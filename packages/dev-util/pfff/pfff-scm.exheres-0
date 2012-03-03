@@ -20,8 +20,6 @@ DEPENDENCIES="
         dev-libs/pcre
 "
 
-BUGS_TO=""
-
 src_configure() {
     # TODO: build gui visual
     edo ./configure -nogui -novisual
