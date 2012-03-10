@@ -1,6 +1,8 @@
 # Copyright 2012 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
+export_exlib_phases src_install
+
 require sourceforge
 
 SUMMARY="Mail delivery agent/filter"
@@ -19,7 +21,7 @@ DEFAULT_SRC_CONFIGURE_PARAMS=(
     --with-devel
 )
 
-src_install () {
+maildrop_src_install () {
     default
 
     #fperms 4755 /usr/bin/maildrop
