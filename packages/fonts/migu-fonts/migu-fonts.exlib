@@ -1,6 +1,8 @@
 # Copyright 2012 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
+export_exlib_phases src_install
+
 myexparam src_nr
 
 MY_PN="migu"
@@ -27,7 +29,7 @@ DEPENDENCIES=""
 
 WORK="${WORKBASE}"
 
-src_install() {
+migu-fonts_src_install() {
     insinto /usr/share/fonts/X11/${FONT}
     doins ${MY_PN}-{1m,2m,1p,1c}-${PV}/${MY_PN}-*.ttf
     fix_fonts
