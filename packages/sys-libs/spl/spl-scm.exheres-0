@@ -16,7 +16,7 @@ DEPENDENCIES=""
 
 DEFAULT_SRC_CONFIGURE_PARAMS=( --with-config=user )
 
-# XXX: need root privileges
+# XXX: need root privileges. also, kernel modules should be build to run test
 RESTRICT="test"
 
 src_install() {
