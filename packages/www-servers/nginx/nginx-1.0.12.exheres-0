@@ -157,6 +157,9 @@ EOF
     fi
 
     install_systemd_files
+    option systemd && edo sed -i -e "1 i# for systemd, don't daemonize" \
+                                 -e '1 idaemon off;' \
+                                 "${IMAGE}"/etc/nginx/nginx.conf
 }
 
 nginx_with() {
