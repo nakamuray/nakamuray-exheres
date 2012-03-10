@@ -22,7 +22,7 @@ DEPENDENCIES="
 "
 
 DEFAULT_SRC_CONFIGURE_PARAMS=(
-    --with-pidfile=/var/run/unbound.pid
+    --with-pidfile=/run/unbound.pid
     --with-ldns=/usr
     --with-libevent=/usr
 )
