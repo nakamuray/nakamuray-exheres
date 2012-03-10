@@ -1,6 +1,8 @@
 # Copyright 2012 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
+export_exlib_phases src_configure
+
 require cmake googlecode [ suffix=tar.gz ]
 
 SUMMARY="NETWM compliant panel for X"
@@ -24,7 +26,7 @@ DEPENDENCIES="
         fonts/dejavu [[ description = [ used by a lot of themes ] ]]
 "
 
-src_configure () {
+bmpanel2_src_configure () {
     ecmake -DCMAKE_BUILD_TYPE=RELEASE \
            -DBMPANEL2_FEATURE_CONFIG=$(option bmpanel2cfg && echo ON || echo off) \
            .
