@@ -1,6 +1,8 @@
 # Copyright 2012 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
+export_exlib_phases src_compile src_install
+
 myexparam src_nr
 
 MY_PNV="mplus-TESTFLIGHT-${PV}"
@@ -26,12 +28,12 @@ DEPENDENCIES="
 
 WORK="${WORKBASE}/${MY_PNV}"
 
-src_compile() {
+mplus-outline-fonts_src_compile() {
     edo ln -s /usr/share/fonts/X11/IPAfont/ipag.ttf .
     edo fontforge -script m++ipa.pe
 }
 
-src_install() {
+mplus-outline-fonts_src_install() {
     insinto /usr/share/fonts/X11/${FONT}
     doins *+IPAG.ttf
     fix_fonts
