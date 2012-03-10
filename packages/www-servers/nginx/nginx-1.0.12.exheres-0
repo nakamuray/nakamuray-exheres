@@ -102,11 +102,11 @@ src_configure() {
         --lock-path=/run/lock/nginx.lock \
         --user=nginx --group=nginx \
         --http-log-path=/var/log/nginx/access_log \
-        --http-client-body-temp-path=/var/tmp/nginx/client \
-        --http-proxy-temp-path=/var/tmp/nginx/proxy \
-        --http-fastcgi-temp-path=/var/tmp/nginx/fastcgi \
-        --http-scgi-temp-path=/var/tmp/nginx/scgi \
-        --http-uwsgi-temp-path=/var/tmp/nginx/uwsgi \
+        --http-client-body-temp-path=/tmp/nginx/client \
+        --http-proxy-temp-path=/tmp/nginx/proxy \
+        --http-fastcgi-temp-path=/tmp/nginx/fastcgi \
+        --http-scgi-temp-path=/tmp/nginx/scgi \
+        --http-uwsgi-temp-path=/tmp/nginx/uwsgi \
         $(nginx_with file-aio) \
         $(nginx_with ipv6) \
         $(for s in "${NGINX_HTTP_OPTIONS[@]}" ; do \
@@ -127,7 +127,17 @@ src_configure() {
 }
 
 src_install() {
-    keepdir /var/log/nginx /var/tmp/nginx/{client,proxy,fastcgi,scgi,uwsgi}
+    keepdir /var/log/nginx
+
+    insinto /usr/${LIBDIR}/tmpfiles.d
+    hereins nginx.conf <<EOF
+d /tmp/nginx 0755 nginx nginx
+d /tmp/nginx/client 0700 nginx nginx
+d /tmp/nginx/proxy 0700 nginx nginx
+d /tmp/nginx/fastcgi 0700 nginx nginx
+d /tmp/nginx/scgi 0700 nginx nginx
+d /tmp/nginx/uwsgi 0700 nginx nginx
+EOF
 
     dosbin objs/nginx
 
