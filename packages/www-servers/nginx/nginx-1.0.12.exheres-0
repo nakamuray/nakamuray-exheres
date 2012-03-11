@@ -142,7 +142,10 @@ src_configure() {
 }
 
 src_install() {
+    default
+
     keepdir /var/log/nginx
+    edo rmdir "${IMAGE}"/run
 
     insinto /usr/${LIBDIR}/tmpfiles.d
     hereins nginx.conf <<EOF
@@ -154,21 +157,10 @@ d /tmp/nginx/scgi 0700 nginx nginx
 d /tmp/nginx/uwsgi 0700 nginx nginx
 EOF
 
-    dosbin objs/nginx
-
-    dodir /etc/nginx
-    insinto /etc/nginx
-    doins conf/*
-
-    dodoc CHANGES* README
-
     if option nginx_modules:perl; then
-        edo pushd objs/src/http/modules/perl
-        default
         edo rm "${IMAGE}"/usr/${LIBDIR}/perl5/5.*/*/perllocal.pod
         edo rmdir "${IMAGE}"/usr/${LIBDIR}/perl5/5.*/*/
         edo rmdir "${IMAGE}"/usr/${LIBDIR}/perl5/5.*/
-        popd
     fi
 
     install_systemd_files
