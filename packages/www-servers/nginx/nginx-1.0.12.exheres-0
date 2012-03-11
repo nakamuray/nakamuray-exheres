@@ -93,37 +93,52 @@ DEPENDENCIES="
 "
 
 src_configure() {
-    edo ./configure \
-        --prefix=/usr \
-        --sbin-path=/usr/sbin/nginx \
-        --conf-path=/etc/nginx/nginx.conf \
-        --error-log-path=/var/log/nginx/error_log \
-        --pid-path=/run/nginx.pid \
-        --lock-path=/run/lock/nginx.lock \
-        --user=nginx --group=nginx \
-        --http-log-path=/var/log/nginx/access_log \
-        --http-client-body-temp-path=/tmp/nginx/client \
-        --http-proxy-temp-path=/tmp/nginx/proxy \
-        --http-fastcgi-temp-path=/tmp/nginx/fastcgi \
-        --http-scgi-temp-path=/tmp/nginx/scgi \
-        --http-uwsgi-temp-path=/tmp/nginx/uwsgi \
-        $(nginx_with file-aio) \
-        $(nginx_with ipv6) \
-        $(for s in "${NGINX_HTTP_OPTIONS[@]}" ; do \
-            nginx_module_with http ${s} ; \
-        done ) \
-        $(for s in "${NGINX_DEFAULT_HTTP_OPTION[@]}" ; do \
-            nginx_module_without http ${s} ; \
-        done ) \
-        $(nginx_without http) \
-        $(nginx_without http-cache) \
-        $(nginx_with mail) \
-        $(for s in "${NGINX_MAIL_OPTION[@]}" ; do \
-            nginx_module_with mail ${s} ; \
-        done ) \
-        $(for s in "${NGINX_DEFAULT_MAIL_OPTION[@]}" ; do \
-            nginx_module_without mail ${s} ; \
-        done )
+    local myconf=(
+        --prefix=/usr
+        --sbin-path=/usr/sbin/nginx
+        --conf-path=/etc/nginx/nginx.conf
+        --error-log-path=/var/log/nginx/error_log
+        --pid-path=/run/nginx.pid
+        --lock-path=/run/lock/nginx.lock
+        --user=nginx --group=nginx
+        --http-log-path=/var/log/nginx/access_log
+        --http-client-body-temp-path=/tmp/nginx/client
+        --http-proxy-temp-path=/tmp/nginx/proxy
+        --http-fastcgi-temp-path=/tmp/nginx/fastcgi
+        --http-scgi-temp-path=/tmp/nginx/scgi
+        --http-uwsgi-temp-path=/tmp/nginx/uwsgi
+    )
+
+    option file-aio && myconf+=( --with-file-aio )
+    option ipv6 && myconf+=( --with-ipv6 )
+
+    local m
+
+    for m in "${NGINX_HTTP_OPTIONS[@]}"; do
+        option nginx_modules:${m} && \
+            myconf+=( --with-http_${m}_module )
+    done
+
+    for m in "${NGINX_DEFAULT_HTTP_OPTION[@]}"; do
+        option nginx_modules:${m} || \
+            myconf+=( --without-http_${m}_module )
+    done
+
+    option http || myconf+=( --without-http )
+    option http-cache || myconf+=( --without-http-cache )
+    option mail && myconf+=( --with-mail )
+
+    for m in "${NGINX_MAIL_OPTION[@]}"; do
+        option nginx_modules:${m} && \
+            myconf+=( --with-mail_${m}_module )
+    done
+
+    for m in "${NGINX_DEFAULT_MAIL_OPTION[@]}"; do
+        option nginx_modules:${m} || \
+            myconf+=( --without-mail_${m}_module )
+    done
+
+    edo ./configure "${myconf[@]}"
 }
 
 src_install() {
@@ -160,29 +175,5 @@ EOF
     option systemd && edo sed -i -e "1 i# for systemd, don't daemonize" \
                                  -e '1 idaemon off;' \
                                  "${IMAGE}"/etc/nginx/nginx.conf
-}
-
-nginx_with() {
-    if optionq "${1}"; then
-        echo "--with-${1}"
-    fi
-}
-
-nginx_without() {
-    if ! optionq "${1}"; then
-        echo "--without-${1}"
-    fi
-}
-
-nginx_module_with() {
-    if optionq "nginx_modules:${2}"; then
-        echo "--with-${1}_${2}_module"
-    fi
-}
-
-nginx_module_without() {
-    if ! optionq "nginx_modules:${2}"; then
-        echo "--without-${1}_${2}_module"
-    fi
 }
 
