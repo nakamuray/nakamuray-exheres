@@ -1,6 +1,8 @@
 # Copyright 2012 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
+require xfont
+
 export_exlib_phases src_compile src_install
 
 myexparam src_nr
@@ -9,8 +11,6 @@ MY_PNV="mplus-TESTFLIGHT-${PV}"
 PROJ_NAME="mplus-fonts"
 
 FONT="M+"
-
-require xfont
 
 SUMMARY="M+ Japanese outline fonts"
 HOMEPAGE="http://mplus-fonts.sourceforge.jp/mplus-outline-fonts/"
