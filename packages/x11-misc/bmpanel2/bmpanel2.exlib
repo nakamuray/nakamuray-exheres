@@ -10,7 +10,7 @@ HOMEPAGE="http://code.google.com/p/bmpanel2/"
 
 LICENCES="MIT"
 SLOT="0"
-MYOPTIONS="bmpanel2cfg"
+MYOPTIONS="bmpanel2cfg [[ description = [ install extra GUI configuration tool ] ]]"
 
 DEPENDENCIES="
     build+run:
