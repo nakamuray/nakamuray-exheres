@@ -16,7 +16,7 @@ SUMMARY="M+ Japanese outline fonts"
 HOMEPAGE="http://mplus-fonts.sourceforge.jp/mplus-outline-fonts/"
 DOWNLOADS="mirror://sourceforge.jp/${PROJ_NAME}/$(exparam src_nr)/${MY_PNV}.tar.xz"
 
-LICENCES="M+"
+LICENCES="as-is"
 SLOT="0"
 MYOPTIONS=""
 
