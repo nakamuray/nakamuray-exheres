@@ -23,6 +23,6 @@ WORK="${WORKBASE}"
 src_install() {
     insinto "/usr/share/themes"
     doins -r Zukini
-    dodoc INSTALL README
+    emagicdocs
 }
 

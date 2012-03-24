@@ -88,6 +88,6 @@ src_install() {
     dodir /usr/bin
     dosym "${prefix}"/bin/pypy-c /usr/bin/pypy
 
-    dodoc LICENSE README
+    emagicdocs
 }
 

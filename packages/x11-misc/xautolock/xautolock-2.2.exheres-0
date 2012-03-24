@@ -26,6 +26,5 @@ src_compile() {
 src_install() {
     default
     newman xautolock.man xautolock.1
-    dodoc Changelog Readme Todo
 }
 

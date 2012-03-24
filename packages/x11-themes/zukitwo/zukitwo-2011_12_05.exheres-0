@@ -23,6 +23,6 @@ WORK="${WORKBASE}"
 src_install() {
     insinto "/usr/share/themes"
     doins -r Zukitwo Zukitwo-Dark Zukitwo-Resonance Zukitwo-Shell
-    dodoc INSTALL README
+    emagicdocs
 }
 

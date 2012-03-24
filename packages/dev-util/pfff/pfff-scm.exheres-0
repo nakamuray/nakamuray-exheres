@@ -34,6 +34,6 @@ src_compile() {
 src_install() {
     # TODO: codemap pfff_db_heavy
     dobin pfff sgrep spatch scheck stags pfff_db ppp
-    dodoc *.txt
+    emagicdocs
 }
 

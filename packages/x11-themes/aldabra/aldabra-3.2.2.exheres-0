@@ -21,6 +21,6 @@ WORK="${WORKBASE}"
 src_install() {
     insinto "/usr/share/themes"
     doins -r Aldabra
-    dodoc COPYING NEWS
+    emagicdocs
 }
 
