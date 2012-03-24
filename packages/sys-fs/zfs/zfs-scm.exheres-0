@@ -26,12 +26,6 @@ src_install() {
     default
 
     edo rmdir "${IMAGE}"/usr/include/libzfs/linux
-}
-
-src_install() {
-    default
-
-    edo rmdir "${IMAGE}"/usr/include/libzfs/linux
 
     insinto /usr/src/${PNV}
     doins -r META config include module
