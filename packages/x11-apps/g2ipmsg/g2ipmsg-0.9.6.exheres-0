@@ -16,8 +16,9 @@ DEPENDENCIES="
     build:
         dev-util/intltool
     build+run:
-        gnome-platform/GConf
+        gnome-platform/GConf:2
         applet? ( gnome-desktop/gnome-applets )
+        ssl? ( dev-libs/openssl )
 "
 
 DEFAULT_SRC_CONFIGURE_PARAMS=(
