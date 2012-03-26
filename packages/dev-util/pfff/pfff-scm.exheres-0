@@ -26,9 +26,9 @@ src_configure() {
 }
 
 src_compile() {
-    edo make depend
-    edo make
-    #edo make opt
+    emake -j1 depend
+    emake -j1
+    #emake opt
 }
 
 src_install() {
