@@ -24,7 +24,6 @@ DEFAULT_SRC_CONFIGURE_PARAMS=(
 maildrop_src_install () {
     default
 
-    #fperms 4755 /usr/bin/maildrop
     edo chmod u+s "${IMAGE}/usr/bin/maildrop"
 }
 
