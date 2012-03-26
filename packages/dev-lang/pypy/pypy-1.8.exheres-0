@@ -23,24 +23,19 @@ LICENCES="MIT"
 SLOT="0"
 PLATFORMS="~amd64"
 #MYOPTIONS="bootstrap platform: amd64 x86"
-MYOPTIONS="bootstrap [[ description = [ use CPython to build pypy ] ]]"
+MYOPTIONS="expat ncurses ssl
+    bootstrap [[ description = [ use CPython to build pypy ] ]]
+"
 
 DEPENDENCIES="
     build:
         dev-libs/libffi
         bootstrap? ( dev-lang/python:*[>=2.5&<3.0] )
         !bootstrap? ( dev-lang/pypy )
+        expat? ( dev-libs/expat )
+        ncurses? ( sys-libs/ncurses )
+        ssl? ( dev-libs/openssl )
 "
-# optional deps
-#    pkg-config (to help us locate libffi files)
-#    libz-dev (for the optional zlib module)
-#    libbz2-dev (for the optional bz2 module)
-#    libncurses-dev (for the optional _minimal_curses module)
-#    libexpat1-dev (for the optional pyexpat module)
-#    libssl-dev (for the optional _ssl module)
-#    libgc-dev (for the Boehm garbage collector: only needed when translating with –opt=0, 1 or size)
-#    python-sphinx (for the optional documentation build. You need version 1.0.7 or later)
-#    python-greenlet (for the optional stackless support in interpreted mode/testing)
 
 #WORK="${WORKBASE}/${PN}-${PN}-release-${PV}"
 WORK="${WORKBASE}/${PN}-${PN}-${REVID}"
@@ -70,8 +65,28 @@ src_compile() {
         pypy=pypy
     fi
 
+    local myopts=()
+
+    if option expat; then
+        myopts+=( --withmod-pyexpat )
+    else
+        myopts+=( --withoutmod-pyexpat )
+    fi
+
+    if option ncurses; then
+        myopts+=( --withmod-_minimal_curses )
+    else
+        myopts+=( --withoutmod-_minimal_curses )
+    fi
+
+    if option ssl; then
+        myopts+=( --withmod-_ssl )
+    else
+        myopts+=( --withoutmod-_ssl )
+    fi
+
     cd pypy/translator/goal
-    edo "${pypy}" translate.py --opt=jit targetpypystandalone.py
+    edo "${pypy}" translate.py --opt=jit targetpypystandalone.py "${myopts[@]}"
 }
 
 src_install() {
