@@ -43,10 +43,6 @@ WORK="${WORKBASE}/${PN}-${PN}-${REVID}"
 #BOOTSTRAP_ID_AMD64="43780-b590cf6de419"
 #BOOTSTRAP_ID_X86=""
 
-pkg_setup() {
-    exdirectory --allow /opt
-}
-
 src_compile() {
     #if option bootstrap; then
     #    if option platform:amd64; then
@@ -90,7 +86,7 @@ src_compile() {
 }
 
 src_install() {
-    prefix=/opt/pypy
+    prefix=/usr/${LIBDIR}/pypy
 
     exeinto "${prefix}"/bin
     doexe "${WORK}"/pypy/translator/goal/pypy-c
