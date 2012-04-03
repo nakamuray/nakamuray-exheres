@@ -3,7 +3,7 @@
 
 export_exlib_phases src_configure
 
-require cmake googlecode [ suffix=tar.gz ]
+require cmake [ api=2 ] googlecode [ suffix=tar.gz ]
 
 SUMMARY="NETWM compliant panel for X"
 HOMEPAGE="http://code.google.com/p/bmpanel2/"
