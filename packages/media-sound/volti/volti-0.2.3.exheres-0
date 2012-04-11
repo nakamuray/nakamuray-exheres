@@ -1,11 +1,9 @@
 # Copyright 2011 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-require distutils
+require distutils googlecode [ suffix=tar.gz ]
 
 SUMMARY="GTK+ application for controlling audio volume from system tray/notification area"
-HOMEPAGE="http://code.google.com/p/volti/"
-DOWNLOADS="http://${PN}.googlecode.com/files/${PNV}.tar.gz"
 
 LICENCES="GPL-3"
 SLOT="0"
