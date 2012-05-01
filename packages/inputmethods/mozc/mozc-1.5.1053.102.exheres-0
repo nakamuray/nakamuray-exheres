@@ -17,7 +17,6 @@ SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS="
     ibus [[ description = [ build IBus engine module ] ]]
-    scim [[ description = [ build SCIM IMEngine module ] ]]
 "
 
 DEPENDENCIES="
@@ -28,10 +27,8 @@ DEPENDENCIES="
         dev-libs/glib:2
         dev-libs/openssl
         dev-libs/zinnia
-        net-misc/curl
         x11-libs/qt:4
         ibus? ( inputmethods/ibus )
-        scim? ( inputmethods/scim )
 "
 
 
@@ -60,13 +57,6 @@ src_compile() {
     if option ibus; then
         myargs+=(
             unix/ibus/ibus.gyp:ibus_mozc
-        )
-    fi
-
-    if option scim; then
-        myargs+=(
-            unix/scim/scim.gyp:scim_mozc
-            unix/scim/scim.gyp:scim_mozc_setup
         )
     fi
 
@@ -99,23 +89,6 @@ src_install() {
         newins ime_product_icon_opensource-32.png product_icon.png
         for f in ui-*; do
             newins "${f}" "${f/ui-}"
-        done
-        popd
-    fi
-
-    if option scim; then
-        exeinto "$(pkg-config --variable=moduledir scim)/IMEngine/"
-        newexe out_linux/Release/lib.target/libscim_mozc.so mozc.so
-
-        exeinto "$(pkg-config --variable=moduledir scim)/SetupUI/"
-        newexe out_linux/Release/lib.target/libscim_mozc_setup.so mozc-setup.so
-
-        insinto "$(pkg-config --variable=icondir scim)"
-        pushd data/images/unix
-        newins ime_product_icon_opensource-32.png scim-mozc.png
-        for f in ui-*
-        do
-            newins ${f} ${f/ui-/scim-mozc-}
         done
         popd
     fi
