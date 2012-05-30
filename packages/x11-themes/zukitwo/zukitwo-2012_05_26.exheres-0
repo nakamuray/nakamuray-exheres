@@ -1,7 +1,7 @@
 # Copyright 2011 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-require checksums [ sha1=[ ${PNV}.zip=1d322427ba23cb6d5d2de2384b0338ddc65af64c ] ]
+require checksums [ sha1=[ ${PNV}.zip=6e08f554e0d57c24de6197a5fbdf17b9045c9909 ] ]
 
 SUMMARY="GTK2, GTK3, GNOME-Shell theme"
 HOMEPAGE="http://gnome-look.org/content/show.php/Zukitwo?content=140562"
@@ -15,14 +15,14 @@ MYOPTIONS=""
 DEPENDENCIES="
     build+run:
         x11-themes/gtk-engines-murrine[>=0.98.1.1]
-        x11-themes/gtk-engines-unico
+        x11-themes/gtk-engines-unico[>=1.0.2]
 "
 
 WORK="${WORKBASE}"
 
 src_install() {
     insinto "/usr/share/themes"
-    doins -r Zukitwo Zukitwo-Dark Zukitwo-Resonance Zukitwo-Shell
+    doins -r Zukitwo Zukitwo-Dark Zukitwo-Shell
     emagicdocs
 }
 
