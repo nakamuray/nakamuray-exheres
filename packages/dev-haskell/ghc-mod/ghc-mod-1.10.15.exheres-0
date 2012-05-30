@@ -1,0 +1,55 @@
+# Copyright 2012 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require elisp-optional [ source_directory=elisp ] hackage [ has_bin=true has_lib=false ]
+
+SUMMARY="Happy Haskell programming on Emacs/Vim"
+HOMEPAGE+=" http://www.mew.org/~kazu/proj/ghc-mod/"
+
+LICENCES="BSD-3"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    $(haskell_bin_dependencies "
+        dev-haskell/Cabal
+        dev-haskell/directory
+        dev-haskell/filepath
+        dev-haskell/ghc-paths
+        dev-haskell/ghc-syb-utils
+        dev-haskell/hlint[>=1.7.1]
+        dev-haskell/io-choice
+        dev-haskell/old-time
+        dev-haskell/process
+        dev-haskell/regex-posix
+        dev-haskell/syb
+        dev-haskell/transformers
+    ")
+"
+
+src_compile() {
+    cabal_src_compile
+
+    elisp-optional_src_compile
+}
+
+src_install() {
+    cabal_src_install
+
+    edo rm -r "${IMAGE}"/usr/share
+    elisp-optional_src_install
+}
+
+pkg_postinst() {
+    haskell_pkg_postinst
+
+    elisp-optional_pkg_postinst
+}
+
+pkg_postrm() {
+    haskell_pkg_prerm
+
+    elisp-optional_pkg_postrm
+}
+
