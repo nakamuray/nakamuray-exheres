@@ -1,0 +1,20 @@
+# Copyright 2012 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require hackage
+
+SUMMARY="Scrap Your Boilerplate utilities for the GHC API"
+HOMEPAGE+=" http://github.com/nominolo/ghc-syb"
+
+LICENCES="BSD-3"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    $(haskell_lib_dependencies "
+        dev-haskell/syb[>=0.1.0]
+    ")
+"
+
+
