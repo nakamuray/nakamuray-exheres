@@ -17,7 +17,7 @@ DEPENDENCIES="
         sys-libs/spl
 "
 
-DEFAULT_SRC_CONFIGURE_PARAMS=( --with-config=user --with-udevdir=/${LIBDIR}/udev )
+DEFAULT_SRC_CONFIGURE_PARAMS=( --with-config=user --with-udevdir=/usr/${LIBDIR}/udev)
 
 # XXX: need root privileges. also, kernel modules should be build to run test
 RESTRICT="test"
