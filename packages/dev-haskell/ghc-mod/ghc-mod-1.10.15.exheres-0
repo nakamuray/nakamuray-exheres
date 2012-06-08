@@ -47,9 +47,3 @@ pkg_postinst() {
     elisp-optional_pkg_postinst
 }
 
-pkg_postrm() {
-    haskell_pkg_prerm
-
-    elisp-optional_pkg_postrm
-}
-
