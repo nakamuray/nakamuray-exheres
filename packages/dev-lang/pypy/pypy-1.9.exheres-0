@@ -1,7 +1,7 @@
 # Copyright 2011 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-REVID="2346207d9946"
+REVID="341e1e3821ff"
 
 SUMMARY="fast, compliant alternative implementation of the Python language"
 HOMEPAGE="http://pypy.org/"
@@ -93,7 +93,7 @@ src_install() {
 
     dodir "${prefix}"/lib-python/
     # to copy executable bit, use cp instead of doins
-    edo cp -r "${WORK}"/lib-python/2.7 "${WORK}"/lib-python/modified-2.7 "${IMAGE}/${prefix}"/lib-python/
+    edo cp -r "${WORK}"/lib-python/2.7 "${IMAGE}/${prefix}"/lib-python/
     edo cp -r "${WORK}"/lib_pypy "${WORK}"/include "${IMAGE}/${prefix}"
 
     dodir /usr/bin
