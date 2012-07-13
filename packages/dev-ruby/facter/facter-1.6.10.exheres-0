@@ -1,0 +1,24 @@
+# Copyright 2012 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="library for collecting facts about your system"
+HOMEPAGE="http://www.puppetlabs.com/puppet/related-projects/facter"
+DOWNLOADS="http://downloads.puppetlabs.com/facter/${PNV}.tar.gz"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        dev-lang/ruby:=
+"
+
+src_install() {
+    edo /usr/bin/ruby ./install.rb --destdir="${IMAGE}"
+    edo rmdir "${IMAGE}"/usr/sbin
+
+    dodoc CHANGELOG CONTRIBUTING.md README.md
+}
+
