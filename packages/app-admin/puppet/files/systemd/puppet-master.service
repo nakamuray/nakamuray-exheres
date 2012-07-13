@@ -1,0 +1,9 @@
+[Unit]
+Description=puppet master daemon
+
+[Service]
+ExecStart=/usr/bin/puppet master --no-daemon
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

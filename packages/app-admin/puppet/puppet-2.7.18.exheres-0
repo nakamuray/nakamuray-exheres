@@ -1,0 +1,46 @@
+# Copyright 2012 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require elisp-optional [ source_directory=ext/emacs/ ] systemd-service
+
+SUMMARY="an automated administrative engine for your Linux and Unix systems"
+HOMEPAGE="http://puppetlabs.com/"
+DOWNLOADS="http://www.puppetlabs.com/downloads/puppet/${PNV}.tar.gz"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="
+    vim [[ description = [ install vim syntax and plugin files ] ]]
+"
+
+DEPENDENCIES="
+    build+run:
+        dev-lang/ruby:=[>=1.8.5]
+        dev-ruby/facter[>=1.5.1]
+        user/puppet
+    suggestion:
+        dev-ruby/ruby-augeas [[ description = [ for augeas resource type ] ]]
+"
+
+src_compile() {
+    elisp-optional_src_compile
+}
+
+src_install() {
+    edo ./install.rb --destdir="${IMAGE}"
+
+    diropts -m 0755 -o puppet -g puppet
+    dodir /var/lib/puppet
+    keepdir /var/lib/puppet
+
+    install_systemd_files
+
+    if option vim; then
+        insinto /usr/share/vim/vimfiles
+        doins -r ext/vim/{ftdetect,ftplugin,indent,syntax}
+    fi
+
+    elisp-optional_src_install
+}
+

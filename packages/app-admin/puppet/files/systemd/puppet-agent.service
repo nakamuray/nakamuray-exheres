@@ -1,0 +1,9 @@
+[Unit]
+Description=puppet agent daemon
+
+[Service]
+ExecStart=/usr/bin/puppet agent --no-daemon
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
