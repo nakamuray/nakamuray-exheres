@@ -28,7 +28,10 @@ DEPENDENCIES="
         dev-libs/openssl
         dev-libs/zinnia
         x11-libs/qt:4
-        ibus? ( inputmethods/ibus )
+        ibus? (
+            inputmethods/ibus
+            x11-libs/gtk+:2
+        )
 "
 
 
@@ -57,6 +60,7 @@ src_compile() {
     if option ibus; then
         myargs+=(
             unix/ibus/ibus.gyp:ibus_mozc
+            renderer/renderer.gyp:mozc_renderer
         )
     fi
 
@@ -78,6 +82,9 @@ src_install() {
     fi
 
     if option ibus; then
+        exeinto /usr/${LIBDIR}/mozc
+        doexe out_linux/Release/mozc_renderer
+
         exeinto /usr/libexec
         newexe out_linux/Release/ibus_mozc ibus-engine-mozc
 
