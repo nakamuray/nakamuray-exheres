@@ -1,6 +1,8 @@
 # Copyright 2012 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.12 ] ]
+
 SCM_REPOSITORY="git://github.com/zfsonlinux/spl.git"
 require scm-git
 
@@ -18,6 +20,11 @@ DEFAULT_SRC_CONFIGURE_PARAMS=( --with-config=user )
 
 # XXX: need root privileges. also, kernel modules should be build to run test
 RESTRICT="test"
+
+src_prepare() {
+    AT_M4DIR=( config )
+    eautoreconf
+}
 
 src_install() {
     default
