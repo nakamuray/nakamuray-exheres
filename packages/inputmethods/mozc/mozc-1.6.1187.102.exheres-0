@@ -27,9 +27,10 @@ DEPENDENCIES="
         dev-libs/glib:2
         dev-libs/openssl
         dev-libs/zinnia
+        x11-libs/libxcb
         x11-libs/qt:4
         ibus? (
-            inputmethods/ibus
+            inputmethods/ibus[>=1.4.1]
             x11-libs/gtk+:2
         )
 "
@@ -42,7 +43,8 @@ src_prepare() {
 }
 
 src_configure() {
-    edo ${PYTHON} build_mozc.py gyp --server_dir=/usr/${LIBDIR}/mozc
+    # to avoid link failure, unset $LD
+    edo env -u LD ${PYTHON} build_mozc.py gyp --server_dir=/usr/${LIBDIR}/mozc
 }
 
 src_compile() {
