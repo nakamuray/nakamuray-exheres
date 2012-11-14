@@ -19,7 +19,9 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build+run:
+        dev-python/stevedore
         dev-python/virtualenv
+        dev-python/virtualenv-clone
 "
 
 
