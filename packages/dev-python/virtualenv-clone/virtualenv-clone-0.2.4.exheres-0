@@ -1,0 +1,11 @@
+# Copyright 2012 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require distutils [ python_dep=2.5 ] pypi
+
+SUMMARY="script to clone virtualenvs"
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+
