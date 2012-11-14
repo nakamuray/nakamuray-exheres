@@ -1,0 +1,11 @@
+# Copyright 2012 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require distutils [ python_dep="2.7" ] pypi
+
+SUMMARY="Manage dynamic plugins for Python applications"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+
