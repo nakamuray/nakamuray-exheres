@@ -35,6 +35,7 @@ DEPENDENCIES="
         )
 "
 
+DEFAULT_SRC_PREPARE_PATCHES=( -p0 "${FILES}"/${PN}_${PV}_ibus-1.5.patch )
 
 src_prepare() {
     default
