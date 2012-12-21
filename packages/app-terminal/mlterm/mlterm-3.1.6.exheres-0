@@ -1,0 +1,85 @@
+# Copyright 2012 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require sourceforge [ suffix=tar.gz ]
+
+SUMMARY="MLTERM - Multi Lingual TERMinal emulator on X"
+
+LICENCES="BSD-3"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="
+    cairo
+    (
+        gtk2 [[ description = [ Use GTK+-2.0 for some helper tools ] ]]
+        gtk3 [[ description = [ Use GTK+-3.0 for some helper tools ] ]]
+    ) [[ number-selected = at-most-one ]]
+    ibus [[ description = [ Support iBUS (Intelligent Input Bus) ] ]]
+    scim [[ description = [ Support SCIM (Smart Common Input Method platform) ] ]]
+    ssh [[ description = [ Use libssh2 to connect ssh2 server ] ]]
+    uim [[ description = [ Support uim (Universal? Input Method) ] ]]
+"
+
+DEPENDENCIES="
+    build+run:
+        x11-libs/libX11
+        x11-libs/libXft
+        cairo? ( x11-libs/cairo )
+        gtk2? (
+            x11-libs/gtk+:2
+            x11-libs/gdk-pixbuf
+        )
+        gtk3? (
+            x11-libs/gtk+:3
+            x11-libs/gdk-pixbuf
+        )
+        ibus? ( inputmethods/ibus )
+        scim? ( inputmethods/scim )
+        ssh? ( net-libs/libssh2 )
+        uim? ( inputmethods/uim )
+"
+
+src_configure() {
+    local args=(
+        --enable-optimize-redrawing
+        --enable-sixel
+        --with-gui=xlib
+        $(option_enable ibus)
+        $(option_enable scim)
+        $(option_enable ssh ssh2)
+        $(option_enable uim)
+        --hates=docdir
+    )
+
+    if option cairo; then
+        args+=( --with-type-engines=xcore,xft,cairo )
+    else
+        args+=( --with-type-engines=xcore,xft )
+    fi
+
+    if option gtk2; then
+        args+=(
+            --with-gtk=2.0
+            --with-imagelib=gdk-pixbuf
+        )
+    elif option gtk3; then
+        args+=(
+            --with-gtk=3.0
+            --with-imagelib=gdk-pixbuf
+        )
+    else
+        args+=(
+            --without-gtk
+            --without-imagelib
+        )
+    fi
+
+    econf "${args[@]}"
+}
+
+src_install() {
+    default
+
+    dodoc -r doc
+}
+
