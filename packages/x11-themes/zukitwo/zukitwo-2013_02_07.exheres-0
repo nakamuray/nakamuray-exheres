@@ -1,7 +1,7 @@
 # Copyright 2011 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-require checksums [ sha1=[ ${PNV}.zip=3a2522facdba0c58b7de765a3906196027c75a7e ] ]
+require checksums [ sha1=[ ${PNV}.zip=808a1313f5b1d7e51d6c5ebdfab78cb1798c1bec ] ]
 
 SUMMARY="GTK2, GTK3, GNOME-Shell theme"
 HOMEPAGE="http://gnome-look.org/content/show.php/Zukitwo?content=140562"
