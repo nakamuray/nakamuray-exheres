@@ -3,7 +3,7 @@
 
 require sourceforge [ suffix=tar.gz ]
 
-SUMMARY="MLTERM - Multi Lingual TERMinal emulator on X"
+SUMMARY="MLTERM - Multi Lingual TERMinal emulator"
 
 LICENCES="BSD-3"
 SLOT="0"
