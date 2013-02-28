@@ -1,0 +1,18 @@
+# Copyright 2013 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require hackage
+
+SUMMARY="Support for computations which consume random values"
+
+LICENCES="BSD-2"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    $(haskell_lib_dependencies "
+        dev-haskell/mtl
+        dev-haskell/random
+    ")
+"
+
