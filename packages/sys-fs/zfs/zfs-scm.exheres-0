@@ -19,7 +19,11 @@ DEPENDENCIES="
         sys-libs/spl
 "
 
-DEFAULT_SRC_CONFIGURE_PARAMS=( --with-config=user --with-udevdir=/usr/${LIBDIR}/udev)
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --with-config=user
+    --with-udevdir=/usr/${LIBDIR}/udev
+    --with-dracutdir=/usr/${LIBDIR}/dracut
+)
 
 # XXX: need root privileges. also, kernel modules should be build to run test
 RESTRICT="test"
