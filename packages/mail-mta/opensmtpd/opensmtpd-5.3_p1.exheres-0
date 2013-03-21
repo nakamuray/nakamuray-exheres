@@ -1,0 +1,51 @@
+# Copyright 2013 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.13 ] ] alternatives systemd-service
+
+MY_PNV=${PNV/_/}
+
+SUMMARY="Portable version of smtp server implementation for OpenBSD"
+HOMEPAGE="http://www.opensmtpd.org/"
+DOWNLOADS="http://www.opensmtpd.org/archives/${MY_PNV}.tar.gz"
+
+LICENCES="ISC"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/libevent
+        dev-libs/openssl
+        sys-libs/db:=
+    run:
+        user/_smtpd
+        user/_smtpf
+        user/_smtpq
+"
+
+WORK="${WORKBASE}"/${MY_PNV}
+
+src_prepare() {
+    mkdir m4
+
+    autotools_src_prepare
+}
+
+src_install() {
+    default
+
+    alternatives_for mta ${PN} 5 /usr/sbin/sendmail smtpctl
+
+    local f d n
+    for f in /usr/bin/{mailq,newaliases} /usr/share/man/man8/newaliases.8; do
+        d="${f%/*}"
+        n="${f##*/}"
+        edo mv "${IMAGE}${f}" "${IMAGE}${d}"/${PN}."${n}"
+        alternatives_for mta ${PN} 5 "${f}" ${PN}."${n}"
+    done
+
+    install_systemd_files
+}
+
