@@ -3,13 +3,13 @@
 
 require elisp-optional [ source_directory=unix/emacs ] python [ has_bin=false has_lib=false ]
 
-PROTOBUF_PV=2.4.1
+PROTOBUF_PV=2.5.0
 
 SUMMARY="Japanese Input Method"
 HOMEPAGE="http://code.google.com/p/mozc/"
 DOWNLOADS="
     http://mozc.googlecode.com/files/${PNV}.tar.bz2
-    http://protobuf.googlecode.com/files/protobuf-${PROTOBUF_PV}.tar.gz
+    http://protobuf.googlecode.com/files/protobuf-${PROTOBUF_PV}.tar.bz2
 "
 
 LICENCES="BSD-2"
@@ -34,8 +34,6 @@ DEPENDENCIES="
             x11-libs/gtk+:2
         )
 "
-
-DEFAULT_SRC_PREPARE_PATCHES=( -p0 "${FILES}"/${PN}_${PV}_ibus-1.5.patch )
 
 src_prepare() {
     default
