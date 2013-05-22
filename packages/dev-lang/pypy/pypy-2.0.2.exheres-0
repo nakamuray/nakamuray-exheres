@@ -1,13 +1,9 @@
 # Copyright 2011 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-REVID="341e1e3821ff"
-
 SUMMARY="fast, compliant alternative implementation of the Python language"
 HOMEPAGE="http://pypy.org/"
-DOWNLOADS="
-    https://bitbucket.org/pypy/pypy/get/release-${PV}.tar.bz2 -> ${PNV}-src.tar.bz2
-"
+DOWNLOADS="https://bitbucket.org/pypy/pypy/downloads/${PNV}-src.tar.bz2"
 # XXX: they depend on old openssl so can't use in exherbo
 #    bootstrap? (
 #        platform:amd64? (
@@ -18,7 +14,6 @@ DOWNLOADS="
 #        )
 #    )
 
-# TODO:
 LICENCES="MIT"
 SLOT="0"
 PLATFORMS="~amd64"
@@ -37,8 +32,7 @@ DEPENDENCIES="
         ssl? ( dev-libs/openssl )
 "
 
-#WORK="${WORKBASE}/${PN}-${PN}-release-${PV}"
-WORK="${WORKBASE}/${PN}-${PN}-${REVID}"
+WORK="${WORKBASE}"/${PNV}-src
 
 #BOOTSTRAP_ID_AMD64="43780-b590cf6de419"
 #BOOTSTRAP_ID_X86=""
@@ -81,15 +75,26 @@ src_compile() {
         myopts+=( --withoutmod-_ssl )
     fi
 
-    cd pypy/translator/goal
-    edo "${pypy}" translate.py --opt=jit targetpypystandalone.py "${myopts[@]}"
+    edo cd pypy/goal
+    edo "${pypy}" ../../rpython/bin/rpython -Ojit targetpypystandalone "${myopts[@]}"
+
+    # generate cffi caches
+    # XXX: unset CFLAGS to avoid `bad value` error
+    edo env -u CFLAGS -u CXXFLAGS \
+        PYTHONPATH="${WORK}/lib-python/2.7:${WORK}/lib_pypy" \
+        ./pypy-c -m _sqlite3
+    if option ncurses; then
+        edo env -u CFLAGS -u CXXFLAGS \
+            PYTHONPATH="${WORK}/lib-python/2.7:${WORK}/lib_pypy" \
+            ./pypy-c -m _curses
+    fi
 }
 
 src_install() {
     prefix=/usr/${LIBDIR}/pypy
 
     exeinto "${prefix}"/bin
-    doexe "${WORK}"/pypy/translator/goal/pypy-c
+    doexe "${WORK}"/pypy/goal/pypy-c
 
     dodir "${prefix}"/lib-python/
     # to copy executable bit, use cp instead of doins
