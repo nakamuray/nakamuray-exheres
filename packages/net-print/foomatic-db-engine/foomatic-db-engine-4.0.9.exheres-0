@@ -6,8 +6,8 @@ DESCRIPTION="
 Foomatic's database engine generates PPD files from the data in Foomatic's XML
 database. It also contains scripts to directly generate print queues and handle jobs.
 "
-HOMEPAGE="http://www.linuxprinting.org/foomatic.html"
-DOWNLOADS="http://www.linuxprinting.org/download/foomatic/${PNV}.tar.gz"
+HOMEPAGE="http://www.linuxfoundation.org/collaborate/workgroups/openprinting/database/foomatic"
+DOWNLOADS="http://www.openprinting.org/download/foomatic/${PNV}.tar.gz"
 
 LICENCES="GPL-2"
 SLOT="0"
