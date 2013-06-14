@@ -3,7 +3,7 @@
 
 export_exlib_phases src_install
 
-require sourceforge
+require sourceforge [ project=courier ]
 
 SUMMARY="Mail delivery agent/filter"
 HOMEPAGE="http://www.courier-mta.org/maildrop/"
