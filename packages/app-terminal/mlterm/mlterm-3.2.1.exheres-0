@@ -42,7 +42,6 @@ DEPENDENCIES="
 src_configure() {
     local args=(
         --enable-optimize-redrawing
-        --enable-sixel
         --with-gui=xlib
         $(option_enable ibus)
         $(option_enable scim)
@@ -81,5 +80,21 @@ src_install() {
     default
 
     dodoc -r doc
+
+    insinto /usr/share/pixmaps
+    doins contrib/icon/mlterm-icon.svg
+
+    insinto /usr/share/applications
+    hereins mlterm.desktop <<'EOF'
+[Desktop Entry]
+Name=mlterm
+GenericName=Terminal
+Exec=mlterm
+Terminal=false
+Type=Application
+Encoding=UTF-8
+Icon=mlterm-icon
+Categories=System;TerminalEmulator;
+EOF
 }
 
