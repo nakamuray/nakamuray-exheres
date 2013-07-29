@@ -1,0 +1,68 @@
+# Copyright 2013 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="The Go Programming Language"
+HOMEPAGE="http://golang.org/"
+DOWNLOADS="http://go.googlecode.com/files/${PN}${PV}.src.tar.gz"
+
+LICENCES="BSD-3"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="vim-plugin"
+
+DEPENDENCIES=""
+
+WORK="${WORKBASE}"/${PN}
+
+src_compile() {
+    export GOROOT="${WORK}"
+    export GOBIN="${WORK}"/bin
+    export GOROOT_FINAL=/usr/${LIBDIR}/go
+
+    cd src
+    edo ./make.bash --no-banner
+}
+
+src_test() {
+    # for os
+    esandbox allow_path /etc
+    esandbox allow_path /_go_os_test
+
+    # for net
+    esandbox disable_net
+
+    # for http
+    # XXX: how can I disallow to execute strace, using esandbox?
+    #esandbox disallow_exec /usr/bin/strace
+    if [[ -f /usr/bin/strace ]]; then
+        edo touch "${WORK}"/bin/strace
+        edo chmod 755 "${WORK}"/bin/strace
+    fi
+
+    cd src
+    edo env PATH="${WORK}/bin:${PATH}" ./run.bash --no-rebuild
+
+    esandbox disallow_path /etc
+    esandbox disallow_path /_go_os_test
+    esandbox enable_net
+    #esandbox allow_exec /usr/bin/strace
+    edo rm -f "${WORK}"/bin/strace
+}
+
+src_install() {
+    dobin bin/*
+
+    dodir /usr/${LIBDIR}/go
+    edo cp -r --preserve=mode,timestamp doc include lib pkg src "${IMAGE}"/usr/${LIBDIR}/go
+
+    # XXX: remove testdata, which hit cave fix-linkage
+    edo rm "${IMAGE}"/usr/${LIBDIR}/go/src/pkg/debug/elf/testdata/gcc-386-freebsd-exec
+
+    if option vim-plugin; then
+        insinto /usr/share/vim/vimfiles
+        doins -r misc/vim/*
+    fi
+
+    emagicdocs
+}
+
