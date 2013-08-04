@@ -3,13 +3,14 @@
 
 require systemd-service
 
+export_exlib_phases src_configure src_compile src_install
+
 SUMMARY="pair of programs which are used to maintain the accuracy of the system clock on a computer"
 HOMEPAGE="http://chrony.tuxfamily.org/"
 DOWNLOADS="http://download.tuxfamily.org/chrony/${PNV}.tar.gz"
 
 LICENCES="GPL-2"
 SLOT="0"
-PLATFORMS="~amd64 ~x86"
 MYOPTIONS="caps ipv6 readline"
 
 DEPENDENCIES="
@@ -19,9 +20,7 @@ DEPENDENCIES="
         readline? ( sys-libs/readline )
 "
 
-DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/chrony.git-6673cadfa259880e8daa61999b5ba503eced1d9b.patch )
-
-src_configure() {
+chrony_src_configure() {
     local myconf=()
 
     option caps || myconf+=( --disable-linuxcaps )
@@ -37,12 +36,12 @@ src_configure() {
         "${myconf[@]}"
 }
 
-src_compile() {
+chrony_src_compile() {
     emake all
     emake docs
 }
 
-src_install() {
+chrony_src_install() {
     default
 
     dodoc examples/*
@@ -55,6 +54,12 @@ src_install() {
     edo chown chrony "${IMAGE}"/var/lib/chrony
 
     install_systemd_files
-}
 
+    if option systemd ; then
+        insinto /usr/${LIBDIR}/systemd/ntp-units.d
+        hereins 50-chrony.list <<EOF
+chronyd.service
+EOF
+    fi
+}
 
