@@ -1,0 +1,7 @@
+# Copyright 2013 Ankur Kothari
+# Distributed under the terms of the GNU General Public License v2
+
+require chrony
+
+PLATFORMS="~amd64 ~x86"
+

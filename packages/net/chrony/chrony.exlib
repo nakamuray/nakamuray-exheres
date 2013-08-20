@@ -7,7 +7,14 @@ export_exlib_phases src_configure src_compile src_install
 
 SUMMARY="pair of programs which are used to maintain the accuracy of the system clock on a computer"
 HOMEPAGE="http://chrony.tuxfamily.org/"
-DOWNLOADS="http://download.tuxfamily.org/chrony/${PNV}.tar.gz"
+
+if ever is_scm ; then
+    SCM_REPOSITORY="git://git.tuxfamily.org/gitroot/chrony/chrony.git"
+    DOWNLOADS=""
+    require scm-git
+else
+    DOWNLOADS="http://download.tuxfamily.org/chrony/${PNV}.tar.gz"
+fi
 
 LICENCES="GPL-2"
 SLOT="0"
