@@ -1,13 +1,16 @@
 # Copyright 2010 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
+SCM_REPOSITORY="http://bzr.openprinting.org/foomatic/foomatic-db"
+SCM_BRANCH="."
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.13 ] ] scm-bzr
+
 SUMMARY="Foomatic database"
 DESCRIPTION="
 Foomatic - The collected knowledge about printers, drivers, and driver options in XML
 files, used by foomatic-db-engine to generate PPD files.
 "
 HOMEPAGE="http://www.linuxfoundation.org/collaborate/workgroups/openprinting/database/foomatic"
-DOWNLOADS="http://www.openprinting.org/download/foomatic/${PN}-$(ever replace 2 - $PV).tar.gz"
 
 LICENCES="GPL-2"
 SLOT="0"
@@ -19,6 +22,4 @@ DEPENDENCIES="
         dev-lang/perl:*
         dev-libs/libxml2
 "
-
-WORK="${WORKBASE}/${PN}-$(ever range 3 $PV)/"
 
