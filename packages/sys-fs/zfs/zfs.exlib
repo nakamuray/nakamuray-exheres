@@ -3,7 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.12 ] ]
-require github [ user=zfsonlinux suffix=tar.gz ]
+require github [ user=zfsonlinux suffix=tar.gz rev=${PNV} ]
 
 HOMEPAGE="http://zfsonlinux.org/"
 SUMMARY="Native ZFS for Linux"
