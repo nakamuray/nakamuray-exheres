@@ -1,59 +1,8 @@
 # Copyright 2012 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.12 ] ]
+require zfs
 
-SCM_REPOSITORY="git://github.com/zfsonlinux/zfs.git"
-require scm-git
-
-SUMMARY="Native ZFS for Linux"
-HOMEPAGE="http://zfsonlinux.org/"
-
-LICENCES="CDDL-1.0"
 SLOT="0"
 PLATFORMS="~amd64"
-MYOPTIONS=""
-
-DEPENDENCIES="
-    build+run:
-        sys-libs/spl
-"
-
-DEFAULT_SRC_CONFIGURE_PARAMS=(
-    --with-config=user
-    --with-udevdir=/usr/${LIBDIR}/udev
-    --with-dracutdir=/usr/${LIBDIR}/dracut
-)
-
-# XXX: need root privileges. also, kernel modules should be build to run test
-RESTRICT="test"
-
-src_prepare() {
-    AT_M4DIR=( config )
-    eautoreconf
-}
-
-src_install() {
-    default
-
-    edo rmdir "${IMAGE}"/usr/include/libzfs/linux
-
-    insinto /usr/src/${PNV}
-    doins -r META config include module
-    exeinto /usr/src/${PNV}
-    doexe configure
-
-    find ./ -name "*.in" | while read n; do
-        insinto /usr/src/${PNV}/"$(dirname "${n}")"
-        doins "${n}"
-    done
-}
-
-pkg_postinst() {
-    elog "The kernel module source is installed into /usr/src/${PNV}"
-    elog "You have to build it yourself:"
-    elog "# cd /usr/src/${PNV}"
-    elog "# ./configure --with-config=kernel"
-    elog "# make && make install"
-}
 
