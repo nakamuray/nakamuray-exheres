@@ -1,50 +1,8 @@
 # Copyright 2012 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.12 ] ]
+require spl
 
-SCM_REPOSITORY="git://github.com/zfsonlinux/spl.git"
-require scm-git
-
-SUMMARY="Solaris Porting Layer"
-HOMEPAGE="http://zfsonlinux.org/"
-
-LICENCES="GPL-2"
 SLOT="0"
 PLATFORMS="~amd64"
-MYOPTIONS=""
-
-DEPENDENCIES=""
-
-DEFAULT_SRC_CONFIGURE_PARAMS=( --with-config=user )
-
-# XXX: need root privileges. also, kernel modules should be build to run test
-RESTRICT="test"
-
-src_prepare() {
-    AT_M4DIR=( config )
-    eautoreconf
-}
-
-src_install() {
-    default
-
-    insinto /usr/src/${PNV}
-    doins -r META config include module
-    exeinto /usr/src/${PNV}
-    doexe configure
-
-    find ./ -name "*.in" | while read n; do
-        insinto /usr/src/${PNV}/"$(dirname "${n}")"
-        doins "${n}"
-    done
-}
-
-pkg_postinst() {
-    elog "The kernel module source is installed int /usr/src/${PNV}"
-    elog "You have to build it yourself:"
-    elog "# cd /usr/src/${PNV}"
-    elog "# ./configure --with-config=kernel"
-    elog "# make && make install"
-}
 
