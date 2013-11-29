@@ -3,7 +3,7 @@
 
 SUMMARY="Network Kanji Filter"
 HOMEPAGE="http://nkf.sourceforge.jp/"
-DOWNLOADS="mirror://sourceforge.jp/${PN}/53171/${PNV}.tar.gz"
+DOWNLOADS="mirror://sourceforge.jp/${PN}/59912/${PNV}.tar.gz"
 
 LICENCES="as-is"
 SLOT="0"
