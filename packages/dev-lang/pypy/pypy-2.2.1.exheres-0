@@ -50,7 +50,7 @@ src_compile() {
     #    pypy=pypy
     #fi
     if option bootstrap; then
-        pypy=python
+        pypy=python2
     else
         pypy=pypy
     fi
@@ -79,15 +79,16 @@ src_compile() {
     edo "${pypy}" ../../rpython/bin/rpython -Ojit targetpypystandalone "${myopts[@]}"
 
     # generate cffi caches
-    # XXX: unset CFLAGS to avoid `bad value` error
-    edo env -u CFLAGS -u CXXFLAGS \
-        PYTHONPATH="${WORK}/lib-python/2.7:${WORK}/lib_pypy" \
-        ./pypy-c -m _sqlite3
+    local cffi_modules=(_sqlite3 syslog)
     if option ncurses; then
+        cffi_modules+=(_curses)
+    fi
+    for m in ${cffi_modules[@]}; do
+        # XXX: unset CFLAGS to avoid `bad value` error
         edo env -u CFLAGS -u CXXFLAGS \
             PYTHONPATH="${WORK}/lib-python/2.7:${WORK}/lib_pypy" \
-            ./pypy-c -m _curses
-    fi
+            ./pypy-c -m ${m}
+    done
 }
 
 src_install() {
@@ -103,6 +104,16 @@ src_install() {
 
     dodir /usr/bin
     dosym "${prefix}"/bin/pypy-c /usr/bin/pypy
+
+    # generate pyc and pyo
+    for d in lib-python lib_pypy; do
+        edo "${IMAGE}/${prefix}/bin/pypy-c" \
+            -mcompileall -f -q -d "${prefix}/${d}" -x "/tests?/" \
+            "${IMAGE}/${prefix}/${d}"
+        edo "${IMAGE}/${prefix}/bin/pypy-c" -O \
+            -mcompileall -f -q -d "${prefix}/${d}" -x "/tests?/" \
+            "${IMAGE}/${prefix}/${d}"
+    done
 
     emagicdocs
 }
