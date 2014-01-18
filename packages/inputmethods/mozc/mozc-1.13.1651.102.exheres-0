@@ -1,6 +1,11 @@
 # Copyright 2012 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
+SCM_REPOSITORY="http://gyp.googlecode.com/svn/"
+SCM_CHECKOUT_TO="gyp"
+SCM_UNPACK_TO="gyp"
+require scm-svn
+
 require elisp-optional [ source_directory=unix/emacs ] python [ has_bin=false has_lib=false ]
 
 PROTOBUF_PV=2.5.0
@@ -35,10 +40,19 @@ DEPENDENCIES="
         )
 "
 
+src_unpack() {
+    default
+
+    scm_src_unpack
+}
+
 src_prepare() {
     default
 
-    edo ln -s "${WORKBASE}"/protobuf-${PROTOBUF_PV} "${WORK}"/protobuf/files
+    edo ln -s "${WORKBASE}"/protobuf-${PROTOBUF_PV} "${WORK}"/third_party/protobuf
+
+    edo rmdir "${WORK}"/third_party/gyp
+    edo ln -s "${WORKBASE}"/gyp/gyp "${WORK}"/third_party/gyp
 }
 
 src_configure() {
