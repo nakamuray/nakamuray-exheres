@@ -3,7 +3,7 @@
 
 require systemd-service
 
-export_exlib_phases src_configure src_compile src_install
+export_exlib_phases src_compile src_install pkg_postinst
 
 SUMMARY="pair of programs which are used to maintain the accuracy of the system clock on a computer"
 HOMEPAGE="http://chrony.tuxfamily.org/"
@@ -18,29 +18,20 @@ fi
 
 LICENCES="GPL-2"
 SLOT="0"
-MYOPTIONS="ipv6 readline"
+MYOPTIONS=""
 
 DEPENDENCIES="
     build+run:
-        user/chrony
+        user/ntp
         sys-libs/libcap
-        readline? ( sys-libs/readline )
+        sys-libs/readline
 "
 
-chrony_src_configure() {
-    local myconf=()
-
-    option ipv6 || myconf+=( --disable-ipv6 )
-    option readline || myconf+=( --disable-readline )
-
-    edo ./configure \
-        --prefix=/usr \
-        --sysconfdir=/etc/chrony \
-        --infodir=/usr/share/info \
-        --mandir=/usr/share/man \
-        --docdir=/usr/share/doc/${PNV} \
-        "${myconf[@]}"
-}
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --sysconfdir=/etc/chrony
+    # XXX: to avoid installing /var/lib/lib/chrony
+    --localstatedir=/var
+)
 
 chrony_src_compile() {
     emake all
@@ -54,10 +45,9 @@ chrony_src_install() {
 
     insinto /etc/chrony
     newins examples/chrony.conf.example chrony.conf
-    edo sed -i -e '/^driftfile/ s:/etc/:/var/lib/chrony/:' "${IMAGE}"/etc/chrony/chrony.conf
 
     keepdir /var/lib/chrony
-    edo chown chrony "${IMAGE}"/var/lib/chrony
+    edo chown ntp "${IMAGE}"/var/lib/chrony
 
     install_systemd_files
 
@@ -66,6 +56,14 @@ chrony_src_install() {
         hereins 50-chrony.list <<EOF
 chronyd.service
 EOF
+    fi
+}
+
+chrony_pkg_postinst() {
+    # XXX: old exheres uses chrony user
+    edo chown ntp /var/lib/chrony
+    if [[ -f /var/lib/chrony/drift ]]; then
+        edo chown ntp:ntp /var/lib/chrony/drift
     fi
 }
 
