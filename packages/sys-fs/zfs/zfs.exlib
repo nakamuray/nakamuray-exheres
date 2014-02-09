@@ -5,6 +5,10 @@
 require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.12 ] ]
 require github [ user=zfsonlinux suffix=tar.gz rev=${PNV} ]
 
+if ever is_scm; then
+    require systemd-service
+fi
+
 HOMEPAGE="http://zfsonlinux.org/"
 SUMMARY="Native ZFS for Linux"
 DESCRIPTION="
@@ -31,6 +35,17 @@ DEFAULT_SRC_CONFIGURE_PARAMS=(
     --with-dracutdir=/usr/${LIBDIR}/dracut
 )
 
+if ever is_scm; then
+    DEFAULT_SRC_CONFIGURE_PARAMS+=(
+        --with-systemdunitdir="${SYSTEMDSYSTEMUNITDIR}"
+        --with-systemdpresetdir="${SYSTEMDSYSTEMUNITDIR}-preset"
+    )
+
+    DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
+        systemd
+    )
+fi
+
 # XXX: need root privileges. also, kernel modules should be build to run test
 RESTRICT="test"
 
@@ -55,6 +70,11 @@ zfs_src_install() {
         insinto /usr/src/${PNV}/"$(dirname "${n}")"
         doins "${n}"
     done
+
+    if ever is_scm && option systemd; then
+        edo mv "${IMAGE}"/usr/{lib,${LIBDIR}}/modules-load.d
+        edo rmdir "${IMAGE}"/usr/lib
+    fi
 }
 
 zfs_pkg_postinst() {
