@@ -3,11 +3,16 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.12 ] ]
-require github [ user=zfsonlinux suffix=tar.gz rev=${PNV} ]
 
 if ever is_scm; then
     require systemd-service
+
+    SCM_zfsimages_REPOSITORY="https://github.com/zfsonlinux/zfs-images.git"
+    SCM_SECONDARY_REPOSITORIES="zfsimages"
+    SCM_EXTERNAL_REFS="scripts/zfs-images:zfsimages"
 fi
+
+require github [ user=zfsonlinux suffix=tar.gz rev=${PNV} ]
 
 HOMEPAGE="http://zfsonlinux.org/"
 SUMMARY="Native ZFS for Linux"
