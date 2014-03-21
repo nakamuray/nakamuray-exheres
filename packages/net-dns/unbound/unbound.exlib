@@ -1,9 +1,9 @@
 # Copyright 2012 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-export_exlib_phases src_install
+require systemd-service easy-multibuild
 
-require systemd-service
+export_exlib_phases src_prepare src_install
 
 SUMMARY="validating, recursive, and caching DNS resolver"
 HOMEPAGE="http://www.unbound.net/"
@@ -11,13 +11,14 @@ DOWNLOADS="http://www.unbound.net/downloads/${PNV}.tar.gz"
 
 LICENCES="BSD-3"
 SLOT="0"
-MYOPTIONS="threads"
+MYOPTIONS="threads
+    multibuild_c: 32 64"
 
 DEPENDENCIES="
     build+run:
-        dev-libs/libevent
-        dev-libs/openssl
-        net-libs/ldns
+        dev-libs/libevent[multibuild_c:*(-)?]
+        dev-libs/openssl[multibuild_c:*(-)?]
+        net-libs/ldns[multibuild_c:*(-)?]
         user/unbound
 "
 
@@ -31,8 +32,15 @@ DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
     "threads pthreads"
 )
 
-unbound_src_install() {
+unbound_src_prepare(){
     default
+    # in multibuild, test data is kept with unpacked source rather than in build dir
+    edo sed -i 's#testdata/#'"$WORK"'/testdata/#' \
+        Makefile.in testcode/{unit{verify,msgparse}.c,{do-tests,testbed}.sh}
+}
+
+unbound_src_install() {
+    easy-multibuild_src_install
 
     install_systemd_files
 }
