@@ -1,7 +1,8 @@
 # Copyright 2013 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.13 ] ] alternatives systemd-service
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.13 ] ] \
+    alternatives systemd-service
 
 MY_PNV=${PNV/_/}
 
@@ -27,11 +28,6 @@ DEPENDENCIES="
 
 WORK="${WORKBASE}"/${MY_PNV}
 
-src_prepare() {
-    mkdir m4
-
-    autotools_src_prepare
-}
 
 src_install() {
     default
@@ -39,7 +35,10 @@ src_install() {
     alternatives_for mta ${PN} 5 /usr/sbin/sendmail smtpctl
 
     local f d n
-    for f in /usr/bin/{mailq,newaliases} /usr/share/man/man8/newaliases.8; do
+    for f in /usr/bin/sendmail                                   \
+             /usr/sbin/{mailq,newaliases}                        \
+             /usr/share/man/man5/{aliases,forward,table}.5       \
+             /usr/share/man/man8/{sendmail,makemap,newaliases}.8; do
         d="${f%/*}"
         n="${f##*/}"
         edo mv "${IMAGE}${f}" "${IMAGE}${d}"/${PN}."${n}"
