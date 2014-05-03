@@ -1,8 +1,7 @@
 # Copyright 2013 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.13 ] ] \
-    alternatives systemd-service
+require alternatives systemd-service
 
 MY_PNV=${PNV/_/}
 
