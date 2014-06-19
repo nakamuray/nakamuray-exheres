@@ -3,7 +3,7 @@
 
 SUMMARY="The Go Programming Language"
 HOMEPAGE="http://golang.org/"
-DOWNLOADS="http://go.googlecode.com/files/${PN}${PV}.src.tar.gz"
+DOWNLOADS="http://golang.org/dl/${PN}${PV}.src.tar.gz"
 
 LICENCES="BSD-3"
 SLOT="0"
