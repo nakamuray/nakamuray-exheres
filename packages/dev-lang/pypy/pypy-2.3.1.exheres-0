@@ -102,6 +102,8 @@ src_install() {
     edo cp -r "${WORK}"/lib-python/2.7 "${IMAGE}/${prefix}"/lib-python/
     edo cp -r "${WORK}"/lib_pypy "${WORK}"/include "${IMAGE}/${prefix}"
 
+    keepdir "${prefix}"/site-packages
+
     dodir /usr/bin
     dosym "${prefix}"/bin/pypy-c /usr/bin/pypy
 
