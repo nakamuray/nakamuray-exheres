@@ -5,4 +5,3 @@ require zfs
 
 SLOT="0"
 PLATFORMS="~amd64"
-

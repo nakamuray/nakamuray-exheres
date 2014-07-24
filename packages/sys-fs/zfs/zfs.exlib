@@ -3,16 +3,15 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.12 ] ]
+require systemd-service
 
 if ever is_scm; then
-    require systemd-service
-
     SCM_zfsimages_REPOSITORY="https://github.com/zfsonlinux/zfs-images.git"
     SCM_SECONDARY_REPOSITORIES="zfsimages"
     SCM_EXTERNAL_REFS="scripts/zfs-images:zfsimages"
 fi
 
-require github [ user=zfsonlinux suffix=tar.gz rev=${PNV} ]
+require github [ user=zfsonlinux suffix=tar.gz ]
 
 HOMEPAGE="http://zfsonlinux.org/"
 SUMMARY="Native ZFS for Linux"
@@ -36,20 +35,16 @@ DEPENDENCIES="
 
 DEFAULT_SRC_CONFIGURE_PARAMS=(
     --with-config=user
-    --with-udevdir=/usr/${LIBDIR}/udev
     --with-dracutdir=/usr/${LIBDIR}/dracut
+    --with-modulesloaddir=/usr/${LIBDIR}/modules-load.d
+    --with-udevdir=/usr/${LIBDIR}/udev
+    --with-systemdunitdir="${SYSTEMDSYSTEMUNITDIR}"
+    --with-systemdpresetdir="${SYSTEMDSYSTEMUNITDIR}-preset"
 )
 
-if ever is_scm; then
-    DEFAULT_SRC_CONFIGURE_PARAMS+=(
-        --with-systemdunitdir="${SYSTEMDSYSTEMUNITDIR}"
-        --with-systemdpresetdir="${SYSTEMDSYSTEMUNITDIR}-preset"
-    )
-
-    DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
-        systemd
-    )
-fi
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
+    systemd
+)
 
 # XXX: need root privileges. also, kernel modules should be build to run test
 RESTRICT="test"
@@ -58,6 +53,8 @@ export_exlib_phases src_prepare src_install pkg_postinst
 
 zfs_src_prepare() {
     AT_M4DIR=( config )
+    edo sed -i "s,modulesloaddir=/usr/lib/modules-load.d,modulesloaddir=/usr/${LIBDIR}/modules-load.d," config/user-systemd.m4
+
     eautoreconf
 }
 
