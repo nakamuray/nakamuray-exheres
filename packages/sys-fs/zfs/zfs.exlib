@@ -72,11 +72,6 @@ zfs_src_install() {
         insinto /usr/src/${PNV}/"$(dirname "${n}")"
         doins "${n}"
     done
-
-    if ever is_scm && option systemd; then
-        edo mv "${IMAGE}"/usr/{lib,${LIBDIR}}/modules-load.d
-        edo rmdir "${IMAGE}"/usr/lib
-    fi
 }
 
 zfs_pkg_postinst() {
