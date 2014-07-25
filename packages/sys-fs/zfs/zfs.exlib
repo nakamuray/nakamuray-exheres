@@ -11,7 +11,7 @@ if ever is_scm; then
     SCM_EXTERNAL_REFS="scripts/zfs-images:zfsimages"
 fi
 
-require github [ user=zfsonlinux suffix=tar.gz ]
+require github [ user=zfsonlinux rev=${PNV} ]
 
 HOMEPAGE="http://zfsonlinux.org/"
 SUMMARY="Native ZFS for Linux"

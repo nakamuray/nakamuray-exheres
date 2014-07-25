@@ -3,7 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.12 ] ]
-require github [ user=zfsonlinux suffix=tar.gz rev=${PNV} ]
+require github [ user=zfsonlinux rev=${PNV} ]
 
 SUMMARY="Solaris Porting Layer"
 HOMEPAGE="http://zfsonlinux.org/"
