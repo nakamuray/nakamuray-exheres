@@ -14,7 +14,7 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build+run:
-        net-libs/ldns[=${PV}]
+        net-libs/ldns[~${PV}]
 "
 
 WORK="${WORKBASE}/${MY_PNV}/drill"
