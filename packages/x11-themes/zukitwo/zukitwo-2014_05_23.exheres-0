@@ -1,7 +1,7 @@
 # Copyright 2011 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-require checksums [ sha1=[ ${PNV}.zip=7b7ff37c5f611ba367579f835b9bfcfbd10d11bd ] ]
+require checksums [ sha1=[ ${PNV}.zip=295cfc22ccecf7f71b0da748b1e45573e9985073 ] ]
 
 SUMMARY="GTK2, GTK3, GNOME-Shell theme"
 HOMEPAGE="http://gnome-look.org/content/show.php/Zukitwo?content=140562"
@@ -15,7 +15,8 @@ MYOPTIONS=""
 DEPENDENCIES="
     suggestion:
         x11-libs/gtk+:2
-        x11-libs/gtk+[>=3.6]
+        x11-libs/gtk+[>=3.12]
+        gnome-desktop/gtk-engines
         x11-themes/gtk-engines-murrine[>=0.98.1.1]
 "
 
