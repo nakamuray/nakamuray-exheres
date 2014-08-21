@@ -23,7 +23,7 @@ MYOPTIONS=""
 DEPENDENCIES="
     build:
         fonts/IPAfont
-        media-gfx/fontforge[native-script]
+        media-gfx/fontforge
 "
 
 WORK="${WORKBASE}/${MY_PNV}"
