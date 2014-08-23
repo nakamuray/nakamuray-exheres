@@ -104,7 +104,7 @@ src_install() {
         newexe out_linux/Release/ibus_mozc ibus-engine-mozc
 
         insinto /usr/share/ibus/component
-        doins out_linux/Release/obj/gen/unix/ibus/mozc.xml
+        doins out_linux/Release/gen/unix/ibus/mozc.xml
 
         insinto /usr/share/ibus-mozc
         pushd data/images/unix
