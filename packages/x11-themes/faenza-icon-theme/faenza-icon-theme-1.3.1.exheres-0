@@ -16,6 +16,8 @@ MYOPTIONS=""
 
 DEPENDENCIES=""
 
+WORK="${WORKBASE}/${PN}-1.3"
+
 src_prepare() {
     for d in Faenza Faenza-Dark; do
         edo pushd ${d}/places
@@ -39,5 +41,4 @@ src_install() {
 
     doins -r Faenza*
 }
-
 
