@@ -17,9 +17,9 @@ MYOPTIONS="threads
 DEPENDENCIES="
     build+run:
         dev-libs/libevent[multibuild_c:*(-)?]
-        dev-libs/openssl[multibuild_c:*(-)?]
         net-libs/ldns[multibuild_c:*(-)?]
         user/unbound
+        virtual/libssl[multibuild_c:*(-)?]
 "
 
 DEFAULT_SRC_CONFIGURE_PARAMS=(
