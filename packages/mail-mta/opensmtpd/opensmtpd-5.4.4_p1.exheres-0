@@ -18,6 +18,7 @@ DEPENDENCIES="
     build+run:
         dev-libs/libevent
         dev-libs/openssl
+        net-libs/libasr
         sys-libs/db:=
     run:
         user/_smtpd
