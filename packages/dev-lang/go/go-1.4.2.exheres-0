@@ -1,0 +1,71 @@
+# Copyright 2013 NAKAMURA Yoshitaka
+# Copyright 2015 Kylie McClain <somasissounds@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="The Go Programming Language"
+HOMEPAGE="https://golang.org"
+DOWNLOADS="${HOMEPAGE}/dl/${PN}${PV}.src.tar.gz"
+
+LICENCES="BSD-3"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="vim-plugin"
+
+DEPENDENCIES=""
+
+WORK="${WORKBASE}"/${PN}
+
+src_prepare() {
+    cd src/
+
+    # repeating yourself vs. being readable
+    edo rm  net/**/*_test.go os/path_test.go os/os{,_unix}_test.go \
+            os/signal/signal_test.go path/filepath/{match,path}_test.go \
+            log/syslog/syslog_test.go cmd/pack/pack_test.go
+
+    cd ../test
+    edo rm  rotate3.go
+
+    cd "${WORK}"
+    # we have to make shims because it seems like there's no way to fix
+    # go's build system in a way that doesn't require extensive patching...
+    mkdir shims/
+    for tool in ar;do
+        echo "making $tool shim for $(exhost --target)..."
+        echo "printf '#!/bin/sh\n%s%s $@;exit $?\n' \"$(exhost --tool-prefix)\" \"$tool\" > \"shims/$tool\""
+        printf '#!/bin/sh\n%s%s $@;exit $?\n' "$(exhost --tool-prefix)" "$tool" > "shims/$tool"
+        edo chmod +x "shims/$tool"
+    done
+}
+
+src_compile() {
+    export PATH="$PWD/shims/:${PATH}"
+    export GOROOT="${WORK}"
+    export GOBIN="${WORK}"/bin
+    export GOROOT_FINAL=/usr/$(exhost --target)/lib/go
+
+    cd src
+    edo ./make.bash --no-banner
+}
+
+src_test() {
+    cd src
+    edo env PATH="${WORK}/bin:${PATH}" ./run.bash --no-rebuild
+}
+
+src_install() {
+    dobin bin/*
+
+    dodir /usr/$(exhost --target)/lib/go
+    edo cp -r --preserve=mode,timestamp doc include lib pkg src "${IMAGE}"/usr/$(exhost --target)/lib/go
+
+    # XXX: remove testdata, which hit cave fix-linkage
+    edo rm "${IMAGE}"/usr/$(exhost --target)/lib/go/src/debug/elf/testdata/gcc-386-freebsd-exec
+
+    if option vim-plugin; then
+        insinto /usr/share/vim/vimfiles
+        doins -r misc/vim/*
+    fi
+
+    emagicdocs
+}
