@@ -9,7 +9,7 @@ DOWNLOADS="${HOMEPAGE}/dl/${PN}${PV}.src.tar.gz"
 LICENCES="BSD-3"
 SLOT="0"
 PLATFORMS="~amd64"
-MYOPTIONS="vim-plugin"
+MYOPTIONS=""
 
 DEPENDENCIES=""
 
@@ -61,11 +61,6 @@ src_install() {
 
     # XXX: remove testdata, which hit cave fix-linkage
     edo rm "${IMAGE}"/usr/$(exhost --target)/lib/go/src/debug/elf/testdata/gcc-386-freebsd-exec
-
-    if option vim-plugin; then
-        insinto /usr/share/vim/vimfiles
-        doins -r misc/vim/*
-    fi
 
     emagicdocs
 }
