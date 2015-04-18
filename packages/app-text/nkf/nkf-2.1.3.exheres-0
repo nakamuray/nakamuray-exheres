@@ -12,6 +12,8 @@ MYOPTIONS=""
 
 DEPENDENCIES=""
 
+DEFAULT_SRC_COMPILE_PARAMS=( CC="${CC}" )
+
 src_install() {
     dobin nkf
     doman nkf.1
