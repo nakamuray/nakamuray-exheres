@@ -1,10 +1,10 @@
 # Copyright 2012 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-SCM_REPOSITORY="http://gyp.googlecode.com/svn/"
+SCM_REPOSITORY="https://chromium.googlesource.com/external/gyp"
 SCM_CHECKOUT_TO="gyp"
 SCM_UNPACK_TO="gyp"
-require scm-svn
+require scm-git
 
 require elisp-optional [ source_directory=unix/emacs ] python [ has_bin=false has_lib=false ]
 
@@ -52,13 +52,19 @@ src_prepare() {
     default
 
     edo ln -s "${WORKBASE}"/protobuf-${PROTOBUF_PV} "${WORK}"/third_party/protobuf
-    edo ln -s "${WORKBASE}"/gyp/gyp "${WORK}"/third_party/gyp
+    edo ln -s "${WORKBASE}"/gyp "${WORK}"/third_party/gyp
+
+    # mozc hardcoded ar
+    local dir=${WORKBASE}/symlinked-build-tools
+    edo mkdir -p ${dir}
+    edo ln -s /usr/$(exhost --target)/bin/$(exhost --target)-ar ${dir}/ar
+    export PATH="${dir}:${PATH}"
 }
 
 src_configure() {
     # mozc uses $CXX as a linker by default
     # but if $LD is defined, use it instead and fail to link
-    LD="${CXX}" edo ${PYTHON} build_mozc.py gyp --server_dir=/usr/${LIBDIR}/mozc
+    LD="${CXX}" edo ${PYTHON} build_mozc.py gyp --server_dir=/usr/$(exhost --target)/lib/mozc
 }
 
 src_compile() {
@@ -86,7 +92,7 @@ src_compile() {
 }
 
 src_install() {
-    exeinto /usr/${LIBDIR}/mozc
+    exeinto /usr/$(exhost --target)/lib/mozc
     doexe out_linux/Release/mozc_server
     doexe out_linux/Release/mozc_tool
 
@@ -97,10 +103,10 @@ src_install() {
     fi
 
     if option ibus; then
-        exeinto /usr/${LIBDIR}/mozc
+        exeinto /usr/$(exhost --target)/lib/mozc
         doexe out_linux/Release/mozc_renderer
 
-        exeinto /usr/libexec
+        exeinto /usr/$(exhost --target)/libexec
         newexe out_linux/Release/ibus_mozc ibus-engine-mozc
 
         insinto /usr/share/ibus/component
