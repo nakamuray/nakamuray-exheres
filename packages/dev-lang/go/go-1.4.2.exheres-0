@@ -21,7 +21,7 @@ src_prepare() {
     # repeating yourself vs. being readable
     edo rm  net/**/*_test.go os/path_test.go os/os{,_unix}_test.go \
             os/signal/signal_test.go path/filepath/{match,path}_test.go \
-            log/syslog/syslog_test.go cmd/pack/pack_test.go
+            log/syslog/syslog_test.go cmd/pack/pack_test.go crypto/tls/tls_test.go
 
     cd ../test
     edo rm  rotate3.go
