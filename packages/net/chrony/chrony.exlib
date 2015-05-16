@@ -3,7 +3,7 @@
 
 require systemd-service
 
-export_exlib_phases src_compile src_install pkg_postinst
+export_exlib_phases src_prepare src_compile src_install pkg_postinst
 
 SUMMARY="pair of programs which are used to maintain the accuracy of the system clock on a computer"
 HOMEPAGE="http://chrony.tuxfamily.org/"
@@ -33,6 +33,11 @@ DEFAULT_SRC_CONFIGURE_PARAMS=(
     --localstatedir=/var
 )
 
+chrony_src_prepare() {
+    default
+    edo sed -e "s/pkg-config/${PKG_CONFIG}/" -i configure
+}
+
 chrony_src_compile() {
     emake all
     emake docs
@@ -52,7 +57,7 @@ chrony_src_install() {
     install_systemd_files
 
     if option systemd ; then
-        insinto /usr/${LIBDIR}/systemd/ntp-units.d
+        insinto /usr/$(exhost --target)/lib/systemd/ntp-units.d
         hereins 50-chrony.list <<EOF
 chronyd.service
 EOF
