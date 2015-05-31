@@ -23,6 +23,8 @@ export_exlib_phases src_prepare src_install pkg_postinst
 
 spl_src_prepare() {
     AT_M4DIR=( config )
+    edo sed -i -e "s/cpp/$(exhost --target)-cpp/" config/spl-build.m4
+
     eautoreconf
 }
 
