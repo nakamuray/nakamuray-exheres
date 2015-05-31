@@ -35,9 +35,9 @@ DEPENDENCIES="
 
 DEFAULT_SRC_CONFIGURE_PARAMS=(
     --with-config=user
-    --with-dracutdir=/usr/${LIBDIR}/dracut
-    --with-modulesloaddir=/usr/${LIBDIR}/modules-load.d
-    --with-udevdir=/usr/${LIBDIR}/udev
+    --with-dracutdir=/usr/$(exhost --target)/lib/dracut
+    --with-modulesloaddir=/usr/$(exhost --target)/lib/modules-load.d
+    --with-udevdir=/usr/$(exhost --target)/lib/udev
     --with-systemdunitdir="${SYSTEMDSYSTEMUNITDIR}"
     --with-systemdpresetdir="${SYSTEMDSYSTEMUNITDIR}-preset"
 )
@@ -53,7 +53,8 @@ export_exlib_phases src_prepare src_install pkg_postinst
 
 zfs_src_prepare() {
     AT_M4DIR=( config )
-    edo sed -i "s,modulesloaddir=/usr/lib/modules-load.d,modulesloaddir=/usr/${LIBDIR}/modules-load.d," config/user-systemd.m4
+    edo sed -i "s,modulesloaddir=/usr/lib/modules-load.d,modulesloaddir=/usr/$(exhost --target)/lib/modules-load.d," config/user-systemd.m4
+    edo sed -i -e "s/cpp/$(exhost --target)-cpp/" config/kernel.m4
 
     eautoreconf
 }
@@ -61,7 +62,12 @@ zfs_src_prepare() {
 zfs_src_install() {
     default
 
-    edo rmdir "${IMAGE}"/usr/include/libzfs/linux
+    if ever is_scm; then
+        edo mv "${IMAGE}"/sbin/mount.zfs "${IMAGE}"/usr/$(exhost --target)/bin
+        edo rmdir "${IMAGE}"/sbin
+    fi
+
+    edo rmdir "${IMAGE}"/usr/$(exhost --target)/include/libzfs/linux
 
     insinto /usr/src/${PNV}
     doins -r META config include module
