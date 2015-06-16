@@ -1,0 +1,33 @@
+Source: Thomas Anderson
+Reason: multiarch: our perl is set up in a way that `${PERL} -V:installprefix` results
+in an empty string. We fix this by exporting an environment variable and telling
+configure to respect that.
+Upstream: reported: https://bugs.linuxfoundation.org/show_bug.cgi?id=1294
+
+diff --git foomatic-db-engine-4.0.12-orig/configure.ac foomatic-db-engine-4.0.12/configure.ac
+index cf36ea2..794efd2 100644
+--- foomatic-db-engine-4.0.12-orig/configure.ac
++++ foomatic-db-engine-4.0.12/configure.ac
+@@ -196,13 +196,17 @@ else
+   PREFIX=$prefix
+ fi
+ echo -n Checking where Perl will find its libraries...
+-eval `${PERL} -V:installprefix`
+-PERLPREFIX=`echo $installprefix`
+-if test -n "$PERLPREFIX"; then
+-  echo " $PERLPREFIX"
++if test "$PERLPREFIX" = "" ; then
++    eval `${PERL} -V:installprefix`
++    PERLPREFIX=`echo $installprefix`
++    if test -n "$PERLPREFIX"; then
++      echo " $PERLPREFIX"
++    else
++      PERLPREFIX=/usr
++      echo " not found, installing the Perl libraries with prefix /usr."
++    fi
+ else
+-  PERLPREFIX=/usr
+-  echo " not found, installing the Perl libraries with prefix /usr."
++    echo " $PERLPREFIX"
+ fi
+ AC_SUBST(PERLPREFIX)

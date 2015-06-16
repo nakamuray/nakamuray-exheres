@@ -1,6 +1,8 @@
 # Copyright 2010 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.15 1.13 1.12 1.11 1.10 ]  ]
+
 SUMMARY="Foomatic's database engine"
 DESCRIPTION="
 Foomatic's database engine generates PPD files from the data in Foomatic's XML
@@ -18,11 +20,13 @@ DEPENDENCIES="
     build+run:
         dev-lang/perl:=
         dev-libs/libxml2
-        net-print/foomatic-filters
+        net-print/cups-filters
 "
 
 src_prepare() {
-    default
+    expatch "${FILES}"/${PN}-perl-installprefix.patch
+    autotools_src_prepare
+    export PERLPREFIX=/usr/$(exhost --target)
 
     edo sed -i -e "s:@LIB_CUPS@:$(cups-config --serverbin):" "${WORK}"/Makefile.in
 }
