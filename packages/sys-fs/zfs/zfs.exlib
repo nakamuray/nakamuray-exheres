@@ -34,16 +34,13 @@ DEPENDENCIES="
 "
 
 DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --enable-systemd
     --with-config=user
     --with-dracutdir=/usr/$(exhost --target)/lib/dracut
     --with-modulesloaddir=/usr/$(exhost --target)/lib/modules-load.d
     --with-udevdir=/usr/$(exhost --target)/lib/udev
     --with-systemdunitdir="${SYSTEMDSYSTEMUNITDIR}"
     --with-systemdpresetdir="${SYSTEMDSYSTEMUNITDIR}-preset"
-)
-
-DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
-    systemd
 )
 
 # XXX: need root privileges. also, kernel modules should be build to run test
