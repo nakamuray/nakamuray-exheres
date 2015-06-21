@@ -56,12 +56,10 @@ chrony_src_install() {
 
     install_systemd_files
 
-    if option systemd ; then
-        insinto /usr/$(exhost --target)/lib/systemd/ntp-units.d
-        hereins 50-chrony.list <<EOF
+    insinto /usr/$(exhost --target)/lib/systemd/ntp-units.d
+    hereins 50-chrony.list <<EOF
 chronyd.service
 EOF
-    fi
 }
 
 chrony_pkg_postinst() {
