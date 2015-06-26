@@ -1,4 +1,5 @@
 # Copyright 2011 NAKAMURA Yoshitaka
+# Copyright 2015 Thomas Anderson
 # Distributed under the terms of the GNU General Public License v2
 
 SUMMARY="An automatic X screen-locker/screen-saver"
@@ -12,19 +13,24 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build:
-        x11-utils/imake
         x11-utils/xorg-cf-files
     build+run:
+        x11-libs/libX11
         x11-libs/libXScrnSaver
 "
 
+# imake is a unmaintained broken build system, and there are only a few source
+# files to easily build by hand here
 src_compile() {
-    edo xmkmf
-    emake
+    edo cd src/
+    edo ${CC} -DHasVFork -DHasScreenSaver -DHasXIdle ${CFLAGS} \
+            -I../include -c *.c
+
+    edo ${CC} ${LDFLAGS} -o xautolock *.o -lXss -lX11
 }
 
 src_install() {
-    default
+    dobin src/xautolock
     newman xautolock.man xautolock.1
 }
 
