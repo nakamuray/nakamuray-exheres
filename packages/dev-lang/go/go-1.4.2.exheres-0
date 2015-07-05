@@ -32,7 +32,7 @@ src_prepare() {
     mkdir shims/
     for tool in ar;do
         echo "making $tool shim for $(exhost --target)..."
-        echo "printf '#!/bin/sh\n%s%s $@;exit $?\n' \"$(exhost --tool-prefix)\" \"$tool\" > \"shims/$tool\""
+        echo "printf '#!/bin/sh\n%s%s \$@;exit \$?\n' \"$(exhost --tool-prefix)\" \"$tool\" > \"shims/$tool\""
         printf '#!/bin/sh\n%s%s $@;exit $?\n' "$(exhost --tool-prefix)" "$tool" > "shims/$tool"
         edo chmod +x "shims/$tool"
     done
