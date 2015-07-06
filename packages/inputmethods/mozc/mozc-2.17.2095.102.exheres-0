@@ -1,33 +1,42 @@
 # Copyright 2012 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-SCM_REPOSITORY="https://chromium.googlesource.com/external/gyp"
-SCM_CHECKOUT_TO="gyp"
-SCM_UNPACK_TO="gyp"
-require scm-git
+SCM_TYPE="git"
+SCM_REPOSITORY="https://github.com/google/mozc.git"
+SCM_REVISION="321e0656b0f2e233ab1c164bd86c58568c9e92f2"
+SCM_CHECKOUT_TO="mozc"
 
-require elisp-optional [ source_directory=unix/emacs ] python [ has_bin=false has_lib=false ]
+SCM_gyp_TYPE="git"
+SCM_gyp_REPOSITORY="https://chromium.googlesource.com/external/gyp"
+SCM_gyp_REVISION="cdf037c1edc0ba3b5d25f8e3973661efe00980cc"
+SCM_gyp_CHECKOUT_TO="gyp"
+SCM_gyp_UNPACK_TO="gyp"
+
+SCM_japaneseusagedictionary_TYPE="svn"
+SCM_japaneseusagedictionary_REPOSITORY="http://japanese-usage-dictionary.googlecode.com/svn/"
+SCM_japaneseusagedictionary_REVISION="10"
+SCM_japaneseusagedictionary_CHECKOUT_TO="japanese_usage_dictionary"
+SCM_SECONDARY_REPOSITORIES="gyp japaneseusagedictionary"
+require scm
+
+require elisp-optional [ source_directory=src/unix/emacs ] python [ has_bin=false has_lib=false ]
 
 PROTOBUF_PV=2.5.0
 
 SUMMARY="Japanese Input Method"
 HOMEPAGE="http://code.google.com/p/mozc/"
 DOWNLOADS="
-    https://launchpad.net/ubuntu/+archive/primary/+files/${PN}_${PV}.orig.tar.gz 
     http://protobuf.googlecode.com/files/protobuf-${PROTOBUF_PV}.tar.bz2
 "
-# XXX: upstream project stop providing release tar ball
-#    http://mozc.googlecode.com/files/${PNV}.tar.bz2
 
 LICENCES="BSD-2"
 SLOT="0"
 PLATFORMS="~amd64"
-MYOPTIONS="
-    ibus [[ description = [ build IBus engine module ] ]]
-"
+MYOPTIONS=""
 
 DEPENDENCIES="
     build:
+        dev-lang/clang[>=3.4]
         dev-lang/python:*[>=2&<3]
         dev-util/pkg-config
         sys-devel/ninja
@@ -37,9 +46,6 @@ DEPENDENCIES="
         x11-libs/libxcb
         x11-libs/gtk+:2
         x11-libs/qt:4
-        ibus? (
-            inputmethods/ibus[>=1.4.1]
-        )
 "
 
 src_unpack() {
@@ -51,23 +57,30 @@ src_unpack() {
 src_prepare() {
     default
 
-    edo ln -s "${WORKBASE}"/protobuf-${PROTOBUF_PV} "${WORK}"/third_party/protobuf
-    edo ln -s "${WORKBASE}"/gyp "${WORK}"/third_party/gyp
+    edo ln -s "${WORKBASE}"/protobuf-${PROTOBUF_PV} "${WORK}"/src/third_party/protobuf
+    edo ln -s "${WORKBASE}"/gyp "${WORK}"/src/third_party/gyp
+    edo ln -s "${WORKBASE}"/japaneseusagedictionary "${WORK}"/src/third_party/japanese_usage_dictionary
 
-    # mozc hardcoded ar
+    # mozc hardcod some tools
     local dir=${WORKBASE}/symlinked-build-tools
     edo mkdir -p ${dir}
-    edo ln -s /usr/$(exhost --target)/bin/$(exhost --target)-ar ${dir}/ar
+    for t in ar ld nm readelf; do
+        edo ln -s /usr/$(exhost --target)/bin/$(exhost --target)-${t} ${dir}/${t}
+    done
     export PATH="${dir}:${PATH}"
 }
 
 src_configure() {
+    edo cd "${WORK}"/src
+
     # mozc uses $CXX as a linker by default
     # but if $LD is defined, use it instead and fail to link
     LD="${CXX}" edo ${PYTHON} build_mozc.py gyp --server_dir=/usr/$(exhost --target)/lib/mozc
 }
 
 src_compile() {
+    edo cd "${WORK}"/src
+
     local myargs=(
         server/server.gyp:mozc_server
         gui/gui.gyp:mozc_tool
@@ -79,19 +92,14 @@ src_compile() {
         )
     fi
 
-    if option ibus; then
-        myargs+=(
-            unix/ibus/ibus.gyp:ibus_mozc
-            renderer/renderer.gyp:mozc_renderer
-        )
-    fi
-
     edo ${PYTHON} build_mozc.py build -j ${EXJOBS} -c Release "${myargs[@]}"
 
     elisp-optional_src_compile
 }
 
 src_install() {
+    edo cd "${WORK}"/src
+
     exeinto /usr/$(exhost --target)/lib/mozc
     doexe out_linux/Release/mozc_server
     doexe out_linux/Release/mozc_tool
@@ -100,25 +108,6 @@ src_install() {
 
     if option emacs; then
         dobin out_linux/Release/mozc_emacs_helper
-    fi
-
-    if option ibus; then
-        exeinto /usr/$(exhost --target)/lib/mozc
-        doexe out_linux/Release/mozc_renderer
-
-        exeinto /usr/$(exhost --target)/libexec
-        newexe out_linux/Release/ibus_mozc ibus-engine-mozc
-
-        insinto /usr/share/ibus/component
-        doins out_linux/Release/gen/unix/ibus/mozc.xml
-
-        insinto /usr/share/ibus-mozc
-        pushd data/images/unix
-        newins ime_product_icon_opensource-32.png product_icon.png
-        for f in ui-*; do
-            newins "${f}" "${f/ui-}"
-        done
-        popd
     fi
 }
 
