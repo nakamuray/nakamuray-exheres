@@ -1,10 +1,11 @@
 # Copyright 2012 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-require sourceforge [ suffix=tar.gz ]
+require github [ user='taku910' ]
 
 SUMMARY="Morphological Analysis Tool"
-HOMEPAGE="http://mecab.sourceforge.net/"
+
+DOWNLOADS="https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7aG84cDRzS3IxWVk -> ${PNV}.tar.gz"
 
 LICENCES="GPL-2 LGPL-2.1 BSD-3"
 SLOT="0"
