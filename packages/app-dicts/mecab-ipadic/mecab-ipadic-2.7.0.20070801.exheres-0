@@ -3,4 +3,5 @@
 require mecab-ipadic
 
 PLATFORMS="~amd64"
+DOWNLOADS="https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7MWVlSDBCSXZMTXM -> ${MY_PNV}.tar.gz"
 
