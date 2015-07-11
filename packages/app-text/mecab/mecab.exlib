@@ -5,7 +5,7 @@ require github [ user='taku910' ]
 
 SUMMARY="Morphological Analysis Tool"
 
-DOWNLOADS="https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7aG84cDRzS3IxWVk -> ${PNV}.tar.gz"
+HOMEPAGE+=" http://taku910.github.io/mecab/"
 
 LICENCES="GPL-2 LGPL-2.1 BSD-3"
 SLOT="0"
