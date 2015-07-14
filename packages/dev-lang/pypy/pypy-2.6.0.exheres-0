@@ -18,24 +18,38 @@ LICENCES="MIT"
 SLOT="0"
 PLATFORMS="~amd64"
 #MYOPTIONS="bootstrap platform: amd64 x86"
-MYOPTIONS="expat ncurses ssl
+MYOPTIONS="expat gdbm ncurses sqlite ssl tk
     bootstrap [[ description = [ use CPython to build pypy ] ]]
 "
 
 DEPENDENCIES="
     build:
         dev-libs/libffi
+        virtual/pkg-config
         bootstrap? ( dev-lang/python:*[>=2.5&<3.0] )
         !bootstrap? ( dev-lang/pypy )
         expat? ( dev-libs/expat )
+        gdbm? ( sys-libs/gdbm )
         ncurses? ( sys-libs/ncurses )
+        sqlite? ( dev-db/sqlite:3 )
         ssl? ( dev-libs/openssl )
+        tk? ( dev-lang/tk )
 "
 
 WORK="${WORKBASE}"/${PNV}-src
 
 #BOOTSTRAP_ID_AMD64="43780-b590cf6de419"
 #BOOTSTRAP_ID_X86=""
+
+src_prepare() {
+    default
+
+    edo mkdir "${WORKBASE}"/bin
+    for tool in cc pkg-config; do
+        edo ln -s /usr/$(exhost --target)/bin/$(exhost --target)-${tool} "${WORKBASE}"/bin/${tool}
+    done
+    export PATH="${PATH}:${WORKBASE}/bin"
+}
 
 src_compile() {
     #if option bootstrap; then
@@ -75,27 +89,47 @@ src_compile() {
         myopts+=( --withoutmod-_ssl )
     fi
 
-    edo cd pypy/goal
+    edo pushd pypy/goal
     edo "${pypy}" ../../rpython/bin/rpython -Ojit targetpypystandalone "${myopts[@]}"
+    edo popd
 
-    # generate cffi caches
-    local cffi_modules=(_sqlite3 syslog)
-    if option ncurses; then
-        cffi_modules+=(_curses)
+    # generate cffi libraries
+    local cffi_build_scripts=(
+        _audioop_build.py
+        _syslog_build.py
+        _pwdgrp_build.py
+    )
+    if option gdbm; then
+        cffi_build_scripts+=(_gdbm_build.py)
     fi
-    for m in ${cffi_modules[@]}; do
+    if option ncurses; then
+        cffi_build_scripts+=(_curses_build.py)
+    fi
+    if option sqlite; then
+        cffi_build_scripts+=(_sqlite3_build.py)
+    fi
+    if option tk; then
+        cffi_build_scripts+=(_tkinter/tklib_build.py)
+    fi
+
+    edo pushd lib_pypy
+
+    for s in ${cffi_build_scripts[@]}; do
         # XXX: unset CFLAGS to avoid `bad value` error
         edo env -u CFLAGS -u CXXFLAGS \
             PYTHONPATH="${WORK}/lib-python/2.7:${WORK}/lib_pypy" \
-            ./pypy-c -m ${m}
+            "${WORK}"/pypy/goal/pypy-c ${s}
     done
+
+    edo popd
 }
 
 src_install() {
-    prefix=/usr/${LIBDIR}/pypy
+    prefix=/usr/$(exhost --target)/lib/pypy
 
     exeinto "${prefix}"/bin
     doexe "${WORK}"/pypy/goal/pypy-c
+    doexe "${WORK}"/pypy/goal/libpypy-c.so
 
     dodir "${prefix}"/lib-python/
     # to copy executable bit, use cp instead of doins
@@ -104,8 +138,8 @@ src_install() {
 
     keepdir "${prefix}"/site-packages
 
-    dodir /usr/bin
-    dosym "${prefix}"/bin/pypy-c /usr/bin/pypy
+    dodir /usr/$(exhost --target)/bin
+    dosym "${prefix}"/bin/pypy-c /usr/$(exhost --target)/bin/pypy
 
     # generate pyc and pyo
     for d in lib-python lib_pypy; do
