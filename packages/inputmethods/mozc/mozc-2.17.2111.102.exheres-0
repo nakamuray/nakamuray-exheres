@@ -3,7 +3,7 @@
 
 SCM_TYPE="git"
 SCM_REPOSITORY="https://github.com/google/mozc.git"
-SCM_REVISION="321e0656b0f2e233ab1c164bd86c58568c9e92f2"
+SCM_REVISION="d7b6196aeac52dd908ca051ba65e97b389f4503a"
 SCM_CHECKOUT_TO="mozc"
 
 SCM_gyp_TYPE="git"
