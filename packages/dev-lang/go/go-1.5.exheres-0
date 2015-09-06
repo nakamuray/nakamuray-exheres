@@ -1,0 +1,103 @@
+# Copyright 2013 NAKAMURA Yoshitaka
+# Copyright 2015 Kylie McClain <somasis@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="The Go Programming Language"
+HOMEPAGE="https://golang.org"
+
+last_c=1.4.2
+
+LICENCES="BSD-3"
+SLOT="0"
+PLATFORMS="~amd64"
+
+MYOPTIONS="
+    bootstrap   [[ description = [ Bootstrap the Go toolchain from the last C version of Go ] ]]
+"
+
+DOWNLOADS="
+    ${HOMEPAGE}/dl/${PN}${PV}.src.tar.gz
+    bootstrap? ( ${HOMEPAGE}/dl/${PN}${last_c}.src.tar.gz )
+"
+
+DEPENDENCIES="
+    build:
+        !bootstrap? ( dev-lang/go[>=1.4] )
+"
+
+# causes sydbox to hit invalid pointer errors as of 1.5 :(
+RESTRICT=test
+
+DEFAULT_SRC_INSTALL_EXTRA_DOCS=( PATENTS )
+
+src_unpack() {
+    unpack "${PN}${PV}.src.tar.gz"
+    edo mv "${WORKBASE}"/go "${WORKBASE}"/${PNV}
+    if option bootstrap;then
+        unpack "${PN}${last_c}.src.tar.gz"
+        edo mv "${WORKBASE}"/go "${WORKBASE}"/go-${last_c}
+    fi
+}
+
+src_prepare() {
+    ## remove broken tests
+    #edo cd src/
+    #edo rm  net/**/*_test.go os/path_test.go os/os{,_unix}_test.go \
+    #        os/signal/signal_test.go path/filepath/{match,path}_test.go \
+    #        log/syslog/syslog_test.go cmd/pack/pack_test.go crypto/tls/tls_test.go  \
+    #        cmd/go/go_test.go cmd/go/vendor_test.go cmd/go/note_test.go
+
+    #edo cd ../test
+    #edo rm  rotate3.go
+    #edo cd "${WORK}"
+
+    # we have to make shims because it seems like there's no way to fix
+    # go's build system in a way that doesn't require extensive patching...
+    edo mkdir shims
+    for tool in ar;do
+        edo ln -s /usr/$(exhost --target)/bin/$(exhost --tool-prefix)$tool shims/$tool
+    done
+}
+
+src_compile() {
+    export PATH="$PWD/shims/:${PATH}"
+    export GOROOT_FINAL=/usr/$(exhost --target)/lib/go
+
+    if option bootstrap;then
+        echo "Building go-${last_c}, to be used for bootstrapping ${PNV}..."
+        edo cd "${WORKBASE}"/${PN}-${last_c}/src
+        edo ./make.bash
+        echo "Building ${PNV}, to be installed..."
+        edo cd "${WORKBASE}"/${PNV}/src
+        edo env GOROOT_BOOTSTRAP="${WORKBASE}"/${PN}-${last_c} ./make.bash
+    else
+        edo cd "${WORKBASE}"/${PNV}/src
+        edo env GOROOT_BOOTSTRAP=/usr/$(exhost --target)/lib/go ./make.bash
+    fi
+}
+
+src_test() {
+    cd src
+    edo env GOROOT="${WORKBASE}"/${PNV} PATH="${WORK}/bin:${PATH}" ./run.bash --no-rebuild
+}
+
+src_install() {
+    edo mkdir -p "${IMAGE}"/usr/$(exhost --target)/{lib/go,bin}
+    edo cp -vr --preserve=mode,timestamp api bin lib pkg src "${IMAGE}"/usr/$(exhost --target)/lib/go
+    for bin in "${IMAGE}"/usr/$(exhost --target)/lib/go/bin/*;do
+        dosym /usr/$(exhost --target)/lib/go/bin/${bin##*/} /usr/$(exhost --target)/bin/${bin##*/}
+    done
+
+    edo mkdir -p "${IMAGE}"/usr/share/doc/${PNV}
+    dosym /usr/$(exhost --target)/lib/go/doc /usr/share/doc/${PNV}/doc
+    dosym /usr/$(exhost --target)/lib/go/api /usr/share/doc/${PNV}/api
+
+    # XXX: remove testdata, which hit cave fix-linkage
+    edo rm "${IMAGE}"/usr/$(exhost --target)/lib/go/src/debug/elf/testdata/gcc-386-freebsd-exec
+
+    edo rmdir "${IMAGE}"/usr/$(exhost --target)/lib/go/pkg/linux_*/internal/syscall/windows
+    edo rmdir "${IMAGE}"/usr/$(exhost --target)/lib/go/pkg/obj/linux_*
+    edo rmdir "${IMAGE}"/usr/$(exhost --target)/lib/go/pkg/obj
+
+    emagicdocs
+}
