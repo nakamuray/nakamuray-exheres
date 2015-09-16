@@ -11,14 +11,18 @@ DOWNLOADS="http://www.unbound.net/downloads/${PNV}.tar.gz"
 
 LICENCES="BSD-3"
 SLOT="0"
-MYOPTIONS="threads"
+MYOPTIONS="
+threads
+( providers: libressl openssl ) [[ number-selected = exactly-one ]]
+"
 
 DEPENDENCIES="
     build+run:
         dev-libs/libevent
         net-libs/ldns
         user/unbound
-        virtual/libssl
+        providers:openssl? ( dev-libs/openssl )
+        providers:libressl? ( dev-libs/libressl:= )
 "
 
 DEFAULT_SRC_CONFIGURE_PARAMS=(
