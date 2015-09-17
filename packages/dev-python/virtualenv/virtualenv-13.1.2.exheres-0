@@ -1,10 +1,20 @@
 # Copyright 2010 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
-require distutils [ python_dep="2.5" ] pypi
+
+require pypi setup-py [ import=setuptools test=pytest ]
 
 SUMMARY="Virtual Python Environment builder"
 
 LICENCES="MIT"
 SLOT="0"
 PLATFORMS="~amd64"
+MYOPTIONS=""
+
+# tests don't work
+RESTRICT="test"
+
+DEPENDENCIES="
+    test:
+        dev-python/mock[python_abis:*(-)?]
+"
 
