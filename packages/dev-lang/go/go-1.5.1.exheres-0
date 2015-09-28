@@ -72,7 +72,22 @@ src_compile() {
         edo env GOROOT_BOOTSTRAP="${WORKBASE}"/${PN}-${last_c} ./make.bash
     else
         edo cd "${WORKBASE}"/${PNV}/src
-        edo env GOROOT_BOOTSTRAP=/usr/$(exhost --target)/lib/go ./make.bash
+        if [[ -x "/usr/$(exhost --target)/lib/go/bin/go" ]];then
+            edo env GOROOT_BOOTSTRAP=/usr/$(exhost --target)/lib/go ./make.bash
+        # this elif statement is needed to fix upgrading straight from 1.4.2.
+        # since the GOROOT layout was changed when it was upgraded to 1.5.
+        elif [[ -x "/usr/$(exhost --target)/bin/go" ]];then
+            edo mkdir "${WORK}"/bootstrap
+            edo pushd "${WORK}"/bootstrap
+            for dir in /usr/$(exhost --target)/lib/go/{doc,include,lib,pkg,src};do
+                edo ln -s "${dir}" ./
+            done
+            edo ln -s /usr/$(exhost --target)/bin ./
+            edo popd
+            edo env GOROOT_BOOTSTRAP="${WORK}/bootstrap" ./make.bash
+        else
+            die "Can't find already-installed Go compiler."
+        fi
     fi
 }
 
