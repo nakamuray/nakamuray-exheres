@@ -2,6 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require alternatives systemd-service
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.15 ] ]
 
 MY_PNV=${PNV/_/}
 
@@ -30,16 +31,22 @@ DEFAULT_SRC_CONFIGURE_PARAMS=( --with-ca-file=/etc/ssl/certs/ca-certificates.crt
 
 WORK="${WORKBASE}"/${MY_PNV}
 
+src_prepare() {
+    default
+
+    edo sed -e "/^AC_PATH_PROG(\[AR\]/s/ar/${AR}/" \
+            -i configure.ac
+
+    eautoreconf
+}
+
 src_install() {
     default
 
-    alternatives_for mta ${PN} 5 /usr/sbin/sendmail smtpctl
-
     local f d n
-    for f in /usr/bin/sendmail                                   \
-             /usr/sbin/{mailq,newaliases}                        \
+    for f in /usr/$(exhost --target)/bin/{sendmail,mailq}        \
              /usr/share/man/man5/{aliases,forward,table}.5       \
-             /usr/share/man/man8/{sendmail,makemap,newaliases}.8; do
+             /usr/share/man/man8/sendmail.8; do
         d="${f%/*}"
         n="${f##*/}"
         edo mv "${IMAGE}${f}" "${IMAGE}${d}"/${PN}."${n}"
