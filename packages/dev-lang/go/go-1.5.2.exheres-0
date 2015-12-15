@@ -98,7 +98,9 @@ src_test() {
 
 src_install() {
     edo mkdir -p "${IMAGE}"/usr/$(exhost --target)/{lib/go,bin}
-    edo cp -vr --preserve=mode,timestamp api bin lib pkg src "${IMAGE}"/usr/$(exhost --target)/lib/go
+    edo cp -rp api bin lib pkg src "${IMAGE}"/usr/$(exhost --target)/lib/go
+    edo chown -R root:root "${IMAGE}"/usr
+
     for bin in "${IMAGE}"/usr/$(exhost --target)/lib/go/bin/*;do
         dosym /usr/$(exhost --target)/lib/go/bin/${bin##*/} /usr/$(exhost --target)/bin/${bin##*/}
     done
