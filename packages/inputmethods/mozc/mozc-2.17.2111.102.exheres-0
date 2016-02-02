@@ -32,7 +32,7 @@ DOWNLOADS="
 LICENCES="BSD-2"
 SLOT="0"
 PLATFORMS="~amd64"
-MYOPTIONS=""
+MYOPTIONS="ibus"
 
 DEPENDENCIES="
     build:
@@ -46,6 +46,7 @@ DEPENDENCIES="
         x11-libs/libxcb
         x11-libs/gtk+:2
         x11-libs/qt:4
+        ibus? ( inputmethods/ibus )
 "
 
 src_unpack() {
@@ -64,7 +65,7 @@ src_prepare() {
     # mozc hardcod some tools
     local dir=${WORKBASE}/symlinked-build-tools
     edo mkdir -p ${dir}
-    for t in ar ld nm readelf; do
+    for t in ar ld nm pkg-config readelf; do
         edo ln -s /usr/$(exhost --target)/bin/$(exhost --target)-${t} ${dir}/${t}
     done
     export PATH="${dir}:${PATH}"
@@ -75,7 +76,9 @@ src_configure() {
 
     # mozc uses $CXX as a linker by default
     # but if $LD is defined, use it instead and fail to link
-    LD="${CXX}" edo ${PYTHON} build_mozc.py gyp --server_dir=/usr/$(exhost --target)/lib/mozc
+    LD="${CXX}" \
+        GYP_DEFINES="ibus_mozc_path=/usr/$(exhost --target)/lib/ibus-mozc/ibus-engine-mozc" \
+        edo ${PYTHON} build_mozc.py gyp --server_dir=/usr/$(exhost --target)/lib/mozc
 }
 
 src_compile() {
@@ -89,6 +92,12 @@ src_compile() {
     if option emacs; then
         myargs+=(
             unix/emacs/emacs.gyp:mozc_emacs_helper
+        )
+    fi
+
+    if option ibus; then
+        myargs+=(
+            unix/ibus/ibus.gyp:ibus_mozc
         )
     fi
 
@@ -108,6 +117,22 @@ src_install() {
 
     if option emacs; then
         dobin out_linux/Release/mozc_emacs_helper
+    fi
+
+    if option ibus; then
+        exeinto /usr/$(exhost --target)/lib/ibus-mozc/
+        newexe out_linux/Release/ibus_mozc ibus-engine-mozc
+
+        insinto /usr/share/ibus/component
+        doins out_linux/Release/gen/unix/ibus/mozc.xml
+
+        edo pushd data/images/unix
+        insinto /usr/share/ibus-mozc
+        newins ime_product_icon_opensource-32.png product_icon.png
+        for f in ui-*.png; do
+            newins ${f} ${f#ui-}
+        done
+        edo popd
     fi
 }
 
