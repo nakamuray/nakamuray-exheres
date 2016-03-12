@@ -18,22 +18,25 @@ LICENCES="MIT"
 SLOT="0"
 PLATFORMS="~amd64"
 #MYOPTIONS="bootstrap platform: amd64 x86"
-MYOPTIONS="expat gdbm ncurses sqlite ssl tk
+MYOPTIONS="expat gdbm ncurses sqlite tk
     bootstrap [[ description = [ use CPython to build pypy ] ]]
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
 "
 
 DEPENDENCIES="
     build:
-        dev-libs/libffi
         virtual/pkg-config
         bootstrap? ( dev-lang/python:*[>=2.5&<3.0] )
         !bootstrap? ( dev-lang/pypy )
+    build+run:
+        dev-libs/libffi
         expat? ( dev-libs/expat )
         gdbm? ( sys-libs/gdbm )
         ncurses? ( sys-libs/ncurses )
         sqlite? ( dev-db/sqlite:3 )
-        ssl? ( dev-libs/openssl )
         tk? ( dev-lang/tk )
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl )
 "
 
 WORK="${WORKBASE}"/${PNV}-src
@@ -83,44 +86,27 @@ src_compile() {
         myopts+=( --withoutmod-_minimal_curses )
     fi
 
-    if option ssl; then
+    if option providers:openssl || option providers:libressl; then
         myopts+=( --withmod-_ssl )
     else
         myopts+=( --withoutmod-_ssl )
     fi
 
+    if ! option gdbm; then
+        edo rm lib_pypy/_gdbm_build.py
+    fi
+    if ! option ncurses; then
+        edo rm lib_pypy/_curses_build.py
+    fi
+    if ! option sqlite; then
+        edo rm lib_pypy/_sqlite3_build.py
+    fi
+    if ! option tk; then
+        edo rm lib_pypy/_tkinter/tklib_build.py
+    fi
+
     edo pushd pypy/goal
     edo "${pypy}" ../../rpython/bin/rpython -Ojit targetpypystandalone "${myopts[@]}"
-    edo popd
-
-    # generate cffi libraries
-    local cffi_build_scripts=(
-        _audioop_build.py
-        _syslog_build.py
-        _pwdgrp_build.py
-    )
-    if option gdbm; then
-        cffi_build_scripts+=(_gdbm_build.py)
-    fi
-    if option ncurses; then
-        cffi_build_scripts+=(_curses_build.py)
-    fi
-    if option sqlite; then
-        cffi_build_scripts+=(_sqlite3_build.py)
-    fi
-    if option tk; then
-        cffi_build_scripts+=(_tkinter/tklib_build.py)
-    fi
-
-    edo pushd lib_pypy
-
-    for s in ${cffi_build_scripts[@]}; do
-        # XXX: unset CFLAGS to avoid `bad value` error
-        edo env -u CFLAGS -u CXXFLAGS \
-            PYTHONPATH="${WORK}/lib-python/2.7:${WORK}/lib_pypy" \
-            "${WORK}"/pypy/goal/pypy-c ${s}
-    done
-
     edo popd
 }
 
