@@ -3,7 +3,7 @@
 
 require systemd-service
 
-export_exlib_phases src_install
+export_exlib_phases src_configure src_install
 
 SUMMARY="validating, recursive, and caching DNS resolver"
 HOMEPAGE="http://www.unbound.net/"
@@ -12,28 +12,42 @@ DOWNLOADS="http://www.unbound.net/downloads/${PNV}.tar.gz"
 LICENCES="BSD-3"
 SLOT="0"
 MYOPTIONS="
-threads
-( providers: libressl openssl ) [[ number-selected = exactly-one ]]
+    threads
+    ( providers: libressl nettle nss openssl ) [[ number-selected = exactly-one ]]
 "
 
 DEPENDENCIES="
     build+run:
+        dev-libs/expat
         dev-libs/libevent
-        net-libs/ldns
         user/unbound
+        providers:nettle? ( dev-libs/nettle )
+        providers:nss? ( dev-libs/nss )
         providers:openssl? ( dev-libs/openssl )
         providers:libressl? ( dev-libs/libressl:= )
 "
 
-DEFAULT_SRC_CONFIGURE_PARAMS=(
-    --with-pidfile=/run/unbound.pid
-    --with-ldns=/usr/$(exhost --target)
-    --with-libevent=/usr/$(exhost --target)
-)
-
-DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
-    "threads pthreads"
-)
+unbound_src_configure() {
+    # have to use this instead of DEFAULT_SRC_CONFIGURE_* because
+    # if you pass --without-{ssl,nettle.nss} it breaks it because of poorly
+    # written autoconf macros in ./configure.
+    econf \
+        --with-libevent=/usr/$(exhost --target) \
+        --with-libexpat=/usr/$(exhost --target) \
+        --with-pidfile=/run/unbound.pid         \
+        $(option_with threads pthreads)         \
+        $(case ${PROVIDERS} in
+            libressl|openssl)
+                echo --with-ssl=/usr/$(exhost --target)
+            ;;
+            nettle)
+                echo --with-nettle=/usr/$(exhost --target)
+            ;;
+            nss)
+                echo --with-nss=/usr/$(exhost --target)
+            ;;
+        esac)
+}
 
 unbound_src_install() {
     default
