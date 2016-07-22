@@ -1,33 +1,54 @@
 # Copyright 2012 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-SCM_TYPE="git"
 SCM_REPOSITORY="https://github.com/google/mozc.git"
-SCM_REVISION="d7b6196aeac52dd908ca051ba65e97b389f4503a"
+SCM_REVISION="2628af6995dbbbb9ccdb52d1160db1dbd5ed3bae"
 SCM_CHECKOUT_TO="mozc"
 
-SCM_gyp_TYPE="git"
-SCM_gyp_REPOSITORY="https://chromium.googlesource.com/external/gyp"
-SCM_gyp_REVISION="cdf037c1edc0ba3b5d25f8e3973661efe00980cc"
-SCM_gyp_CHECKOUT_TO="gyp"
-SCM_gyp_UNPACK_TO="gyp"
+SCM_SECONDARY_REPOSITORIES="
+    breakpad
+    fontTools
+    gmock
+    gtest
+    gyp
+    japanese_usage_dictionary
+    jsoncpp
+    protobuf
+    zinnia
+    zlib
+"
 
-SCM_japaneseusagedictionary_TYPE="svn"
-SCM_japaneseusagedictionary_REPOSITORY="http://japanese-usage-dictionary.googlecode.com/svn/"
-SCM_japaneseusagedictionary_REVISION="10"
-SCM_japaneseusagedictionary_CHECKOUT_TO="japanese_usage_dictionary"
-SCM_SECONDARY_REPOSITORIES="gyp japaneseusagedictionary"
-require scm
+SCM_EXTERNAL_REFS="
+    src/third_party/breakpad:breakpad
+    src/third_party/fontTools:fontTools
+    src/third_party/gmock:gmock
+    src/third_party/gtest:gtest
+    src/third_party/gyp:gyp
+    src/third_party/japanese_usage_dictionary:japanese_usage_dictionary
+    src/third_party/jsoncpp:jsoncpp
+    src/third_party/protobuf:protobuf
+    src/third_party/zinnia:zinnia
+    src/third_party/zlib/v1_2_8:zlib
+"
+
+SCM_breakpad_REPOSITORY="https://chromium.googlesource.com/breakpad/breakpad"
+SCM_fontTools_REPOSITORY="https://github.com/googlei18n/fonttools.git"
+SCM_gmock_REPOSITORY="https://github.com/google/googlemock.git"
+SCM_gtest_REPOSITORY="https://github.com/google/googletest.git"
+SCM_gyp_REPOSITORY="https://chromium.googlesource.com/external/gyp"
+SCM_japanese_usage_dictionary_REPOSITORY="https://github.com/hiroyuki-komatsu/japanese-usage-dictionary.git"
+SCM_jsoncpp_REPOSITORY="https://github.com/open-source-parsers/jsoncpp.git"
+SCM_protobuf_REPOSITORY="https://github.com/google/protobuf.git"
+SCM_zinnia_REPOSITORY="https://github.com/taku910/zinnia.git"
+SCM_zlib_REPOSITORY="https://github.com/madler/zlib.git"
+
+require scm-git
 
 require elisp-optional [ source_directory=src/unix/emacs ] python [ has_bin=false has_lib=false ]
 
-PROTOBUF_PV=2.5.0
-
 SUMMARY="Japanese Input Method"
-HOMEPAGE="http://code.google.com/p/mozc/"
-DOWNLOADS="
-    http://protobuf.googlecode.com/files/protobuf-${PROTOBUF_PV}.tar.bz2
-"
+HOMEPAGE="https://github.com/google/mozc"
+DOWNLOADS=""
 
 LICENCES="BSD-2"
 SLOT="0"
@@ -42,25 +63,14 @@ DEPENDENCIES="
         sys-devel/ninja
     build+run:
         dev-libs/glib:2
-        dev-libs/zinnia
         x11-libs/libxcb
         x11-libs/gtk+:2
         x11-libs/qt:4
         ibus? ( inputmethods/ibus )
 "
 
-src_unpack() {
-    default
-
-    scm_src_unpack
-}
-
 src_prepare() {
     default
-
-    edo ln -s "${WORKBASE}"/protobuf-${PROTOBUF_PV} "${WORK}"/src/third_party/protobuf
-    edo ln -s "${WORKBASE}"/gyp "${WORK}"/src/third_party/gyp
-    edo ln -s "${WORKBASE}"/japaneseusagedictionary "${WORK}"/src/third_party/japanese_usage_dictionary
 
     # mozc hardcod some tools
     local dir=${WORKBASE}/symlinked-build-tools
@@ -101,7 +111,7 @@ src_compile() {
         )
     fi
 
-    edo ${PYTHON} build_mozc.py build -j ${EXJOBS} -c Release "${myargs[@]}"
+    edo ${PYTHON} build_mozc.py build -c Release "${myargs[@]}"
 
     elisp-optional_src_compile
 }
