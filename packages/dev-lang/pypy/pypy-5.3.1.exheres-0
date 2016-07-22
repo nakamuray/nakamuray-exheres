@@ -1,9 +1,11 @@
 # Copyright 2011 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
+MY_PNV="${PN}2-v${PV}"
+
 SUMMARY="fast, compliant alternative implementation of the Python language"
 HOMEPAGE="http://pypy.org/"
-DOWNLOADS="https://bitbucket.org/pypy/pypy/downloads/${PNV}-src.tar.bz2"
+DOWNLOADS="https://bitbucket.org/pypy/pypy/downloads/${MY_PNV}-src.tar.bz2"
 # XXX: they depend on old openssl so can't use in exherbo
 #    bootstrap? (
 #        platform:amd64? (
@@ -39,7 +41,7 @@ DEPENDENCIES="
         providers:openssl? ( dev-libs/openssl )
 "
 
-WORK="${WORKBASE}"/${PNV}-src
+WORK="${WORKBASE}"/${MY_PNV}-src
 
 #BOOTSTRAP_ID_AMD64="43780-b590cf6de419"
 #BOOTSTRAP_ID_X86=""
@@ -51,7 +53,7 @@ src_prepare() {
     for tool in cc pkg-config; do
         edo ln -s /usr/$(exhost --target)/bin/$(exhost --target)-${tool} "${WORKBASE}"/bin/${tool}
     done
-    export PATH="${PATH}:${WORKBASE}/bin"
+    export PATH="${WORKBASE}/bin:${PATH}"
 }
 
 src_compile() {
@@ -106,7 +108,7 @@ src_compile() {
     fi
 
     edo pushd pypy/goal
-    edo "${pypy}" ../../rpython/bin/rpython -Ojit targetpypystandalone "${myopts[@]}"
+    edo "${pypy}" ../../rpython/bin/rpython -Ojit --batch targetpypystandalone "${myopts[@]}"
     edo popd
 }
 
