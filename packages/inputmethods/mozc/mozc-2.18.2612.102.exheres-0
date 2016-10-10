@@ -2,45 +2,39 @@
 # Distributed under the terms of the GNU General Public License v2
 
 SCM_REPOSITORY="https://github.com/google/mozc.git"
-SCM_REVISION="2628af6995dbbbb9ccdb52d1160db1dbd5ed3bae"
+SCM_REVISION="2315f957d1785130c2ed196e141a330b0857b065"
 SCM_CHECKOUT_TO="mozc"
 
 SCM_SECONDARY_REPOSITORIES="
     breakpad
     fontTools
-    gmock
     gtest
     gyp
     japanese_usage_dictionary
     jsoncpp
     protobuf
     zinnia
-    zlib
 "
 
 SCM_EXTERNAL_REFS="
     src/third_party/breakpad:breakpad
     src/third_party/fontTools:fontTools
-    src/third_party/gmock:gmock
     src/third_party/gtest:gtest
     src/third_party/gyp:gyp
     src/third_party/japanese_usage_dictionary:japanese_usage_dictionary
     src/third_party/jsoncpp:jsoncpp
     src/third_party/protobuf:protobuf
     src/third_party/zinnia:zinnia
-    src/third_party/zlib/v1_2_8:zlib
 "
 
 SCM_breakpad_REPOSITORY="https://chromium.googlesource.com/breakpad/breakpad"
 SCM_fontTools_REPOSITORY="https://github.com/googlei18n/fonttools.git"
-SCM_gmock_REPOSITORY="https://github.com/google/googlemock.git"
 SCM_gtest_REPOSITORY="https://github.com/google/googletest.git"
 SCM_gyp_REPOSITORY="https://chromium.googlesource.com/external/gyp"
 SCM_japanese_usage_dictionary_REPOSITORY="https://github.com/hiroyuki-komatsu/japanese-usage-dictionary.git"
 SCM_jsoncpp_REPOSITORY="https://github.com/open-source-parsers/jsoncpp.git"
 SCM_protobuf_REPOSITORY="https://github.com/google/protobuf.git"
 SCM_zinnia_REPOSITORY="https://github.com/taku910/zinnia.git"
-SCM_zlib_REPOSITORY="https://github.com/madler/zlib.git"
 
 require scm-git
 
@@ -53,7 +47,9 @@ DOWNLOADS=""
 LICENCES="BSD-2"
 SLOT="0"
 PLATFORMS="~amd64"
-MYOPTIONS="ibus"
+MYOPTIONS="ibus
+    ( providers: qt4 qt5 ) [[ number-selected = exactly-one ]]
+"
 
 DEPENDENCIES="
     build:
@@ -65,7 +61,8 @@ DEPENDENCIES="
         dev-libs/glib:2
         x11-libs/libxcb
         x11-libs/gtk+:2
-        x11-libs/qt:4
+        providers:qt4? ( x11-libs/qt:4 )
+        providers:qt5? ( x11-libs/qtbase:5 )
         ibus? ( inputmethods/ibus )
 "
 
@@ -84,11 +81,19 @@ src_prepare() {
 src_configure() {
     edo cd "${WORK}"/src
 
+    local qtver
+
+    if option providers:qt5; then
+        qtver=5
+    else
+        qtver=4
+    fi
+
     # mozc uses $CXX as a linker by default
     # but if $LD is defined, use it instead and fail to link
     LD="${CXX}" \
         GYP_DEFINES="ibus_mozc_path=/usr/$(exhost --target)/lib/ibus-mozc/ibus-engine-mozc" \
-        edo ${PYTHON} build_mozc.py gyp --server_dir=/usr/$(exhost --target)/lib/mozc
+        edo ${PYTHON} build_mozc.py gyp --server_dir=/usr/$(exhost --target)/lib/mozc --qtver=${qtver}
 }
 
 src_compile() {
