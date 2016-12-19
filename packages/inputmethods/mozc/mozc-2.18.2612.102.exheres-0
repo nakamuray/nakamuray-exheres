@@ -38,7 +38,7 @@ SCM_zinnia_REPOSITORY="https://github.com/taku910/zinnia.git"
 
 require scm-git
 
-require elisp-optional [ source_directory=src/unix/emacs ] python [ has_bin=false has_lib=false ]
+require elisp [ with_opt=true source_directory=src/unix/emacs ] python [ has_bin=false has_lib=false ]
 
 SUMMARY="Japanese Input Method"
 HOMEPAGE="https://github.com/google/mozc"
@@ -118,7 +118,7 @@ src_compile() {
 
     edo ${PYTHON} build_mozc.py build -c Release "${myargs[@]}"
 
-    elisp-optional_src_compile
+    elisp_src_compile
 }
 
 src_install() {
@@ -128,7 +128,7 @@ src_install() {
     doexe out_linux/Release/mozc_server
     doexe out_linux/Release/mozc_tool
 
-    elisp-optional_src_install
+    elisp_src_install
 
     if option emacs; then
         dobin out_linux/Release/mozc_emacs_helper
