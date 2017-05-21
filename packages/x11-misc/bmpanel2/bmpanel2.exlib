@@ -1,9 +1,9 @@
 # Copyright 2012 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-export_exlib_phases src_configure
-
 require cmake [ api=2 ] googlecode [ suffix=tar.gz ]
+
+export_exlib_phases src_configure
 
 SUMMARY="NETWM compliant panel for X"
 HOMEPAGE="http://code.google.com/p/bmpanel2/"
