@@ -5,3 +5,8 @@ require chrony
 
 PLATFORMS="~amd64 ~x86"
 
+DEPENDENCIES="
+    build:
+        app-text/asciidoctor
+"
+

@@ -1,0 +1,3 @@
+# Add -F1 to enable seccomp filter
+# For list of all available options see man chronyd
+OPTIONS=""

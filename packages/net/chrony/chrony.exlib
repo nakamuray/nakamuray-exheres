@@ -1,12 +1,17 @@
 # Copyright 2011 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-require systemd-service
+require systemd-service [ systemd_files=[ "examples/chronyd.service" ] ]
+require openrc-service [ openrc_confd_files=[ "${FILES}/openrc/confd/chrony" ] ]
 
 export_exlib_phases src_prepare src_compile src_install pkg_postinst
 
-SUMMARY="pair of programs which are used to maintain the accuracy of the system clock on a computer"
+SUMMARY="Versatile implementation of the Network Time Protocol"
 HOMEPAGE="http://chrony.tuxfamily.org/"
+DESCRIPTION="
+chrony can synchronise the system clock with NTP servers, reference clocks (e.g. GPS receiver),
+and manual input using wristwatch and keyboard. It can also operate as an NTPv4 (RFC 5905)
+server and peer to provide a time service to other computers in the network."
 
 if ever is_scm ; then
     SCM_REPOSITORY="git://git.tuxfamily.org/gitroot/chrony/chrony.git"
@@ -18,19 +23,32 @@ fi
 
 LICENCES="GPL-2"
 SLOT="0"
-MYOPTIONS=""
+MYOPTIONS="
+    seccomp [[ description = [ Support for system call filtering ] ]]
+"
 
 DEPENDENCIES="
     build+run:
         user/ntp
-        sys-libs/libcap
+        sys-libs/libcap [[ description = [ For dropping root privilegies ] ]]
+        sys-libs/ncurses
         sys-libs/readline
+        || (
+            dev-libs/nettle
+            dev-libs/nss
+        ) [[ *description = [ Support for hashes other than MD5 ] ]]
+        seccomp? ( sys-libs/libseccomp )
 "
 
 DEFAULT_SRC_CONFIGURE_PARAMS=(
     --sysconfdir=/etc/chrony
     # XXX: to avoid installing /var/lib/lib/chrony
     --localstatedir=/var
+    --with-user=ntp
+)
+
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
+    "seccomp scfilter"
 )
 
 chrony_src_prepare() {
@@ -49,11 +67,12 @@ chrony_src_install() {
     dodoc examples/*
 
     insinto /etc/chrony
-    newins examples/chrony.conf.example chrony.conf
+    newins examples/chrony.conf.example2 chrony.conf
 
     keepdir /var/lib/chrony
     edo chown ntp "${IMAGE}"/var/lib/chrony
 
+    install_openrc_files
     install_systemd_files
 
     insinto /usr/$(exhost --target)/lib/systemd/ntp-units.d
