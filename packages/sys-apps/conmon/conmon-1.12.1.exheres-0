@@ -1,0 +1,41 @@
+# Copyright 2018 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=kubernetes-sigs pn=cri-o tag=v${PV} ]
+
+SUMMARY="Conmon is a tool for monitoring OCI runtimes"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+"
+
+src_prepare() {
+    default
+
+    edo mkdir -p "${WORK}"/src/github.com/kubernetes-sigs
+    edo ln -s "${WORK}" "${WORK}"/src/github.com/kubernetes-sigs/cri-o
+    export GOPATH="${WORK}"
+
+    edo mkdir -p "${WORKBASE}"/tool
+    edo ln -s /usr/bin/$(exhost --target)-pkg-config "${WORKBASE}"/tool/pkg-config
+    export PATH="${WORKBASE}/tool:${PATH}"
+}
+
+src_compile() {
+    edo mkdir bin
+    emake bin/conmon
+}
+
+src_install() {
+    exeinto /usr/$(exhost --target)/libexec/podman
+    doexe bin/conmon
+
+    emagicdocs
+}
+

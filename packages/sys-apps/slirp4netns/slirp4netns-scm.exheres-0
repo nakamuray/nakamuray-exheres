@@ -1,0 +1,21 @@
+# Copyright 2018 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=rootless-containers ]
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 ] ]
+
+SUMMARY="User-mode networking for unprivileged network namespaces"
+
+LICENCES="GPL-2"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+"
+
+DEFAULT_SRC_COMPILE_PARAMS=( AR="${AR}" )
+RESTRICT="test"
+

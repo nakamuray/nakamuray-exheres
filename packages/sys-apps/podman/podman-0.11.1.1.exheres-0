@@ -1,0 +1,60 @@
+# Copyright 2018 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=containers pn=libpod tag=v${PV} ]
+
+SUMMARY="managing Pods, Containers, and Container Images"
+HOMEPAGE+=" https://podman.io/"
+DOWNLOADS+="
+    https://raw.githubusercontent.com/projectatomic/registries/master/registries.fedora
+    https://raw.githubusercontent.com/containers/skopeo/master/default-policy.json
+"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+        dev-lang/go
+        sys-apps/cni-plugins
+        sys-apps/conmon
+        sys-apps/runc[seccomp]
+    recommendation:
+        sys-apps/slirp4netns
+"
+
+WORK="${WORKBASE}"/src/github.com/containers/libpod
+RESTRICT="test"
+
+DEFAULT_SRC_INSTALL_PARAMS=(
+    PREFIX="${IMAGE}"/usr/$(exhost --target)
+)
+
+src_unpack() {
+    default
+
+    edo mkdir -p "${WORKBASE}"/src/github.com/containers
+    edo mv libpod-${PV} "${WORKBASE}"/src/github.com/containers/libpod
+}
+
+src_prepare() {
+    default
+
+    export GOPATH="${WORKBASE}"
+
+    edo mkdir -p "${WORKBASE}"/tool
+    edo ln -s /usr/bin/$(exhost --target)-pkg-config "${WORKBASE}"/tool/pkg-config
+    export PATH="${WORKBASE}/tool:${PATH}"
+}
+
+src_install() {
+    default
+
+    insinto /etc/containers
+    newins "${FETCHEDDIR}"/registries.fedora registries.conf
+    newins "${FETCHEDDIR}"/default-policy.json policy.json
+}
+
