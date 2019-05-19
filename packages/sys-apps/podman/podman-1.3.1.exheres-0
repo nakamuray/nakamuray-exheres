@@ -48,6 +48,8 @@ src_prepare() {
     edo mkdir -p "${WORKBASE}"/tool
     edo ln -s /usr/bin/$(exhost --target)-pkg-config "${WORKBASE}"/tool/pkg-config
     export PATH="${WORKBASE}/tool:${PATH}"
+
+    unset LDFLAGS
 }
 
 src_install() {
