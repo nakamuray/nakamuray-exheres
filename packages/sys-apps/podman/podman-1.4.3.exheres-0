@@ -30,7 +30,8 @@ WORK="${WORKBASE}"/src/github.com/containers/libpod
 RESTRICT="test"
 
 DEFAULT_SRC_INSTALL_PARAMS=(
-    PREFIX="${IMAGE}"/usr/$(exhost --target)
+    PREFIX=/usr/$(exhost --target)
+    MANDIR=/usr/share/man
 )
 
 src_unpack() {

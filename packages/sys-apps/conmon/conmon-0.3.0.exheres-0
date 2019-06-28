@@ -1,9 +1,9 @@
 # Copyright 2018 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user=kubernetes-sigs pn=cri-o tag=v${PV} ]
+require github [ user=containers tag=v${PV} ]
 
-SUMMARY="Conmon is a tool for monitoring OCI runtimes"
+SUMMARY="An OCI container runtime monitor"
 
 LICENCES="Apache-2.0"
 SLOT="0"
@@ -18,8 +18,8 @@ DEPENDENCIES="
 src_prepare() {
     default
 
-    edo mkdir -p "${WORK}"/src/github.com/kubernetes-sigs
-    edo ln -s "${WORK}" "${WORK}"/src/github.com/kubernetes-sigs/cri-o
+    edo mkdir -p "${WORK}"/src/github.com/containers
+    edo ln -s "${WORK}" "${WORK}"/src/github.com/containers/conmon
     export GOPATH="${WORK}"
 
     edo mkdir -p "${WORKBASE}"/tool
@@ -27,14 +27,8 @@ src_prepare() {
     export PATH="${WORKBASE}/tool:${PATH}"
 }
 
-src_compile() {
-    edo mkdir bin
-    emake bin/conmon
-}
-
 src_install() {
-    exeinto /usr/$(exhost --target)/libexec/podman
-    doexe bin/conmon
+    emake PREFIX=/usr/$(exhost --target) DESTDIR="${IMAGE}" podman
 
     emagicdocs
 }
