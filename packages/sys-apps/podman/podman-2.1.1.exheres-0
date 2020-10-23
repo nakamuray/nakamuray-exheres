@@ -1,7 +1,8 @@
 # Copyright 2018 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user=containers pn=libpod tag=v${PV} ]
+# podman build gets some meta from git repo
+require github [ user=containers tag=v${PV} force_git_clone=true ]
 
 SUMMARY="managing Pods, Containers, and Container Images"
 HOMEPAGE+=" https://podman.io/"
@@ -26,7 +27,6 @@ DEPENDENCIES="
         sys-apps/slirp4netns
 "
 
-WORK="${WORKBASE}"/src/github.com/containers/libpod
 RESTRICT="test"
 
 DEFAULT_SRC_INSTALL_PARAMS=(
@@ -34,23 +34,16 @@ DEFAULT_SRC_INSTALL_PARAMS=(
     MANDIR=/usr/share/man
 )
 
-src_unpack() {
-    default
-
-    edo mkdir -p "${WORKBASE}"/src/github.com/containers
-    edo mv libpod-${PV} "${WORKBASE}"/src/github.com/containers/libpod
-}
+# Keep varlink in so it will be linked in GOPATH
+# See https://github.com/containers/podman/issues/6451
+export BUILDTAGS='seccomp varlink systemd'
 
 src_prepare() {
     default
 
-    export GOPATH="${WORKBASE}"
-
     edo mkdir -p "${WORKBASE}"/tool
     edo ln -s /usr/bin/$(exhost --target)-pkg-config "${WORKBASE}"/tool/pkg-config
     export PATH="${WORKBASE}/tool:${PATH}"
-
-    unset LDFLAGS
 }
 
 src_install() {
