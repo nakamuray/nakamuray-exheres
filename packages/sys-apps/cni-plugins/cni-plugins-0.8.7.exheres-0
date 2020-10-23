@@ -17,7 +17,7 @@ DEPENDENCIES="
 "
 
 src_compile() {
-    edo ./build.sh
+    edo ./build_linux.sh
 }
 
 src_install() {
