@@ -1,7 +1,7 @@
 # Copyright 2018 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user=containers pn=libpod tag=v${PV} ]
+require github [ user=containers tag=v${PV} ]
 
 SUMMARY="managing Pods, Containers, and Container Images"
 HOMEPAGE+=" https://podman.io/"
@@ -13,20 +13,26 @@ DOWNLOADS+="
 LICENCES="Apache-2.0"
 SLOT="0"
 PLATFORMS="~amd64"
-MYOPTIONS=""
+MYOPTIONS="
+    btrfs [[ description = [ graphdriver btrfs ] ]]
+    systemd [[ description = [ journald logging ] ]]
+"
 
 DEPENDENCIES="
     build:
+        dev-golang/go-md2man
     build+run:
-        dev-lang/go
+        dev-lang/go[>=1.12]
         sys-apps/cni-plugins
         sys-apps/conmon
         sys-apps/runc[seccomp]
+        sys-libs/libseccomp
+        btrfs? ( sys-fs/btrfs-progs )
+        systemd? ( sys-apps/systemd )
     recommendation:
         sys-apps/slirp4netns
 "
 
-WORK="${WORKBASE}"/src/github.com/containers/libpod
 RESTRICT="test"
 
 DEFAULT_SRC_INSTALL_PARAMS=(
@@ -34,23 +40,15 @@ DEFAULT_SRC_INSTALL_PARAMS=(
     MANDIR=/usr/share/man
 )
 
-src_unpack() {
-    default
-
-    edo mkdir -p "${WORKBASE}"/src/github.com/containers
-    edo mv libpod-${PV} "${WORKBASE}"/src/github.com/containers/libpod
-}
-
-src_prepare() {
-    default
-
-    export GOPATH="${WORKBASE}"
-
-    edo mkdir -p "${WORKBASE}"/tool
-    edo ln -s /usr/bin/$(exhost --target)-pkg-config "${WORKBASE}"/tool/pkg-config
-    export PATH="${WORKBASE}/tool:${PATH}"
-
-    unset LDFLAGS
+src_compile() {
+    BUILDTAGS="seccomp exclude_graphdriver_devicemapper"
+    if ! option btrfs; then
+        BUILDTAGS+=" exclude_graphdriver_btrfs"
+    fi
+    if option systemd; then
+        BUILDTAGS+=" systemd"
+    fi
+    emake BUILDTAGS="${BUILDTAGS}"
 }
 
 src_install() {

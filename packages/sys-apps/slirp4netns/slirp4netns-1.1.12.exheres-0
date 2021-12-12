@@ -1,7 +1,7 @@
 # Copyright 2018 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user=rootless-containers ]
+require github [ user=rootless-containers tag=v${PV} ]
 require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 ] ]
 
 SUMMARY="User-mode networking for unprivileged network namespaces"
@@ -14,8 +14,11 @@ MYOPTIONS=""
 DEPENDENCIES="
     build:
     build+run:
+        dev-libs/glib:2
+        dev-libs/libpcap
+        net-libs/libslirp[>=4.1.0]
+        sys-libs/libseccomp
 "
 
-DEFAULT_SRC_COMPILE_PARAMS=( AR="${AR}" )
 RESTRICT="test"
 

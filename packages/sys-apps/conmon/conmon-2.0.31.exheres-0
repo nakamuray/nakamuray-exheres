@@ -1,0 +1,27 @@
+# Copyright 2018 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=containers tag=v${PV} ]
+
+SUMMARY="An OCI container runtime monitor"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        dev-golang/go-md2man
+    build+run:
+        dev-libs/glib:2
+        sys-libs/libseccomp
+"
+
+RESTRICT="test"
+
+DEFAULT_SRC_INSTALL_PARAMS=(
+    PREFIX=/usr/$(exhost --target)
+    MANDIR=/usr/share/man
+)
+
