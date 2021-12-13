@@ -1,0 +1,21 @@
+# Copyright 2021 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=containers tag=v${PV} ]
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 ] ]
+
+SUMMARY="FUSE implementation for overlayfs"
+
+LICENCES="GPL-3"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+        sys-fs/fuse:3
+"
+
+AT_M4DIR=( m4 )
+
