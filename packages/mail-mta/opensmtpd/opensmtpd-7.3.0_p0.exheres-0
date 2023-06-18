@@ -1,14 +1,15 @@
 # Copyright 2013 NAKAMURA Yoshitaka
 # Distributed under the terms of the GNU General Public License v2
 
+MY_PV=${PV/_/}
+MY_PNV=${PN}-${MY_PV}
+
 require alternatives systemd-service
 require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.15 ] ]
 
-MY_PNV=${PNV/_/}
-
 SUMMARY="Portable version of smtp server implementation for OpenBSD"
 HOMEPAGE="http://www.opensmtpd.org/"
-DOWNLOADS="http://www.opensmtpd.org/archives/${MY_PNV}.tar.gz"
+DOWNLOADS="https://www.opensmtpd.org/archives/${MY_PNV}.tar.gz"
 
 LICENCES="ISC"
 SLOT="0"
@@ -17,8 +18,8 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build+run:
-        dev-libs/libevent
-        dev-libs/openssl
+        dev-libs/libevent:=
+        dev-libs/libressl:=
         net-libs/libasr
         sys-libs/db:=
     run:
@@ -43,9 +44,13 @@ src_prepare() {
 src_install() {
     default
 
+    local c
+    for c in {sendmail,send-mail,mailq,makemap,newaliases}; do
+        alternatives_for mta ${PN} 5 /usr/$(exhost --target)/bin/${c} smtpctl
+    done
+
     local f d n
-    for f in /usr/$(exhost --target)/bin/{sendmail,mailq}        \
-             /usr/share/man/man5/{aliases,forward,table}.5       \
+    for f in /usr/share/man/man5/{aliases,forward,table}.5       \
              /usr/share/man/man8/sendmail.8; do
         d="${f%/*}"
         n="${f##*/}"
