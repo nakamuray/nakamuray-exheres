@@ -2,6 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require github [ user=containers tag=v${PV} ]
+require bash-completion zsh-completion
 
 SUMMARY="managing Pods, Containers, and Container Images"
 HOMEPAGE+=" https://podman.io/"
@@ -58,5 +59,12 @@ src_install() {
     insinto /etc/containers
     newins "${FETCHEDDIR}"/registries.fedora registries.conf
     newins "${FETCHEDDIR}"/default-policy.json policy.json
+
+    for f in completions/bash/*; do
+        dobashcompletion "$f"
+    done
+    for f in completions/zsh/*; do
+        dozshcompletion "$f"
+    done
 }
 
