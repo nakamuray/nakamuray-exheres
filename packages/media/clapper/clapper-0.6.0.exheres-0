@@ -1,0 +1,62 @@
+# Copyright 2024 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=Rafostar tag=${PV} ]
+require gsettings gtk-icon-cache freedesktop-desktop freedesktop-mime
+require meson
+
+SUMMARY="Level up your video experience with a modern and user-friendly media player. "
+HOMEPAGE+=" https://rafostar.github.io/clapper/"
+
+LICENCES="GPL-3.0 LGPL-2.1"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="gobject-introspection vapi"
+
+DEPENDENCIES="
+    build:
+    build+run:
+        dev-libs/glib[>=2.76.0]
+        dev-libs/libadwaita:1[>=1.4.0]
+        media-libs/gstreamer[>=1.20.0]
+        media-plugins/gst-plugins-base:1.0
+        net-libs/libmicrodns[>=0.2.0]
+        x11-libs/gtk:4.0[>=4.10.0]
+        gobject-introspection? ( gnome-desktop/gobject-introspection:1 )
+"
+
+MESON_SRC_CONFIGURE_PARAMS=(
+    -Dclapper=enabled
+    -Dclapper-gtk=enabled
+    -Dclapper-app=enabled
+    -Dgst-plugin=enabled
+    -Ddoc=false
+
+    -Ddiscoverer=enabled
+    -Dmpris=enabled
+    -Dserver=enabled
+
+    -Dglimporter=enabled
+    -Dgluploader=enabled
+    -Drawimporter=enabled
+)
+
+MESON_SRC_CONFIGURE_OPTION_FEATURES=(
+    'gobject-introspection introspection' vapi
+)
+
+pkg_postinst() {
+    gsettings_pkg_postinst
+    gtk-icon-cache_pkg_postinst
+    freedesktop-desktop_pkg_postinst
+    freedesktop-mime_pkg_postinst
+}
+
+pkg_postrm() {
+    gsettings_pkg_postrm
+    gtk-icon-cache_pkg_postrm
+    freedesktop-desktop_pkg_postrm
+    freedesktop-mime_pkg_postrm
+}
+
+
