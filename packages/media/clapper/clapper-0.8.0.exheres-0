@@ -18,6 +18,7 @@ DEPENDENCIES="
     build+run:
         dev-libs/glib[>=2.76.0]
         dev-libs/libadwaita:1[>=1.4.0]
+        dev-libs/libpeas:2
         media-libs/gstreamer[>=1.20.0]
         media-plugins/gst-plugins-base:1.0
         net-libs/libmicrodns[>=0.2.0]
@@ -39,6 +40,7 @@ MESON_SRC_CONFIGURE_PARAMS=(
     -Dglimporter=enabled
     -Dgluploader=enabled
     -Drawimporter=enabled
+    -Denhancers-loader=enabled
 )
 
 MESON_SRC_CONFIGURE_OPTION_FEATURES=(
