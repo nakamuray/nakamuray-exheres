@@ -1,0 +1,29 @@
+# Copyright 2018 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=containernetworking pn=plugins tag=v${PV} ]
+
+SUMMARY="Some standard networking plugins, maintained by the CNI team."
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+        dev-lang/go
+"
+
+src_compile() {
+    edo ./build_linux.sh
+}
+
+src_install() {
+    exeinto /usr/$(exhost --target)/libexec/cni
+    doexe bin/*
+
+    emagicdocs
+}
+
