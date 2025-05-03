@@ -1,0 +1,38 @@
+# Copyright 2025 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require cargo
+require github [ user=Supreeeme tag=v${PV} ]
+require systemd-service [ systemd_files=[ ] systemd_user_files=[ resources/xwayland-satellite.service ] ]
+
+SUMMARY="Xwayland outside your Wayland"
+
+LICENCES="MPL-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="systemd"
+
+DEPENDENCIES="
+    build:
+    build+run:
+        x11-libs/libxcb
+        x11-server/xwayland[>=23.1]
+        x11-utils/xcb-util-cursor
+"
+
+RESTRICT="test"
+
+ECARGO_FEATURE_ENABLES=( systemd )
+
+src_prepare() {
+    default
+
+    edo sed -i -e "/ExecStart/ s:/local/:/$(exhost --target)/:" resources/xwayland-satellite.service
+}
+
+src_install() {
+    cargo_src_install
+
+    option systemd && install_systemd_files
+}
+
