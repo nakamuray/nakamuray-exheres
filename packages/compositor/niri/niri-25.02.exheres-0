@@ -1,0 +1,50 @@
+# Copyright 2025 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require cargo
+require github [ user=YaLTeR tag=v${PV} ]
+require systemd-service [ systemd_files=[ ] systemd_user_files=[ resources/niri.service resources/niri-shutdown.target ] ]
+
+SUMMARY="A scrollable-tiling Wayland compositor"
+
+LICENCES="GPL-3.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+        dev-libs/glib:2
+        dev-libs/libdisplay-info
+        media/pipewire
+        sys-apps/systemd
+        sys-libs/libinput
+        sys-libs/wayland
+        x11-dri/mesa
+        x11-libs/cairo
+        x11-libs/libxkbcommon
+        x11-libs/pango
+    recommendation:
+        gnome-desktop/gnome-keyring
+        sys-apps/xdg-desktop-portal-gnome
+        sys-apps/xdg-desktop-portal-gtk
+"
+
+src_install() {
+    cargo_src_install
+
+    dobin resources/niri-session
+
+    insinto /usr/share/wayland-sessions/
+    doins resources/niri.desktop
+
+    insinto /usr/share/xdg-desktop-portal/
+    doins resources/niri-portals.conf
+
+    dodoc resources/default-config.kdl
+    dodoc -r wiki
+
+    install_systemd_files
+}
+
