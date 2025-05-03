@@ -1,0 +1,29 @@
+# Copyright 2025 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require meson
+
+SUMMARY="App launcher and fuzzy finder for Wayland, inspired by rofi(1) and dmenu(1)"
+HOMEPAGE="https://codeberg.org/dnkl/fuzzel"
+DOWNLOADS="https://codeberg.org/dnkl/${PN}/releases/download/${PV}/${PNV}.tar.gz"
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        app-doc/scdoc
+        dev-libs/tllist
+        sys-libs/wayland-protocols
+    build+run:
+        gnome-desktop/librsvg
+        media-libs/fcft
+        media-libs/libpng
+        sys-libs/wayland
+        x11-libs/cairo
+        x11-libs/libxkbcommon
+        x11-libs/pixman
+"
+
