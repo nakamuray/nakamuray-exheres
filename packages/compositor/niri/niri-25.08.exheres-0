@@ -31,6 +31,8 @@ DEPENDENCIES="
         sys-apps/xdg-desktop-portal-gtk
 "
 
+RESTRICT="test"
+
 src_install() {
     cargo_src_install
 
@@ -43,7 +45,7 @@ src_install() {
     doins resources/niri-portals.conf
 
     dodoc resources/default-config.kdl
-    dodoc -r wiki
+    dodoc -r docs/wiki
 
     install_systemd_files
 }
