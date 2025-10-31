@@ -1,0 +1,43 @@
+# Copyright 2025 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require cargo
+require github [ user=helix-editor release=${PV} pnv=${PNV}-source suffix=tar.xz ]
+require bash-completion zsh-completion
+
+SUMMARY=" A post-modern modal text editor"
+HOMEPAGE+=" https://helix-editor.com/"
+
+LICENCES="MPL-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+"
+
+#CARGO_SRC_COMPILE_PARAMS=( --profile opt )
+
+WORK="${WORKBASE}"
+
+src_prepare() {
+    default
+
+    export HELIX_DEFAULT_RUNTIME="/usr/$(exhost --target)/lib/helix/runtime"
+}
+
+src_install() {
+    CRATE_PATH=helix-term cargo_src_install
+
+    insinto "${HELIX_DEFAULT_RUNTIME}"
+    doins -r runtime/!(grammars)
+
+    insinto "${HELIX_DEFAULT_RUNTIME}"/grammars
+    INSOPTIONS="-m0755" doins runtime/grammars/*.so
+
+    dobashcompletion contrib/completion/hx.bash hx
+    dozshcompletion contrib/completion/hx.zsh _hx
+}
+
