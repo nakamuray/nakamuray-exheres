@@ -33,6 +33,9 @@ src_prepare() {
 src_install() {
     cargo_src_install
 
+    insinto /usr/share/man/man1
+    newins xwayland-satellite.man xwayland-satellite.1
+
     option systemd && install_systemd_files
 }
 
