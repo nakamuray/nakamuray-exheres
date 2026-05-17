@@ -1,0 +1,19 @@
+# Copyright 2018 NAKAMURA Yoshitaka
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=containers tag=v${PV} ] meson
+
+SUMMARY="An OCI container runtime monitor"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        virtual/pkg-config
+    build+run:
+        dev-libs/glib:2
+"
+
